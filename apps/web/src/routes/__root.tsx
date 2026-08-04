@@ -1,16 +1,16 @@
-import { HeadContent, Outlet, createRootRouteWithContext } from "@tanstack/react-router"
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
-import { QueryClientProvider } from "@tanstack/react-query"
-import { ReactLenis } from "lenis/react"
+import { HeadContent, Outlet, createRootRouteWithContext } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactLenis } from "lenis/react";
 
-import { ThemeProvider } from "@/provider/theme-provider"
-import { Toaster } from "@/components/ui/sonner"
-import { queryClient } from "@/lib/query-client"
+import { ThemeProvider } from "@/provider/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
+import { queryClient } from "@/lib/query-client";
 
-import "../index.css"
+import "../index.css";
 
 export interface RouterAppContext {
-  queryClient: typeof queryClient
+  queryClient: typeof queryClient;
 }
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({
@@ -25,7 +25,7 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
     ],
     links: [{ rel: "icon", href: "/favicon.ico" }],
   }),
-})
+});
 
 function RootComponent() {
   return (
@@ -39,7 +39,7 @@ function RootComponent() {
           </ReactLenis>
         </ThemeProvider>
       </QueryClientProvider>
-      <TanStackRouterDevtools position="bottom-left" />
+      {/* <TanStackRouterDevtools position="bottom-left" /> */}
     </>
-  )
+  );
 }

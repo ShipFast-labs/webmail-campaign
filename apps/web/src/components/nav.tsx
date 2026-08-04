@@ -1,11 +1,26 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "./mode-toggle";
+import { useAuthStore } from "@/store/auth-store";
 
 const APP_NAME = "Campaign"; // TODO: replace with product name
 
+const DEV_SEED = import.meta.env.DEV;
+
 export function Nav() {
+  const navigate = useNavigate();
+
+  function enterDevPreview() {
+    useAuthStore.getState().setAuth({
+      user: { userId: "dev-user", email: "dev@campaign.app", role: "ADMIN" },
+      workspace: { workspaceId: "dev-ws", name: "Demo workspace", slug: "demo", plan: "free" },
+      accessToken: "dev-token",
+      refreshToken: "dev-refresh",
+    });
+    navigate({ to: "/dashboard" });
+  }
+
   return (
     <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
       <nav
@@ -46,6 +61,16 @@ export function Nav() {
         <div className="hidden md:block w-px h-4 bg-border mx-1" aria-hidden />
 
         <div className="flex items-center gap-1">
+          {DEV_SEED && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="hidden md:flex rounded-full text-xs text-muted-foreground border border-dashed border-border"
+              onClick={enterDevPreview}
+            >
+              Dev preview
+            </Button>
+          )}
           <Link
             to="/login"
             className="hidden md:block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-full"

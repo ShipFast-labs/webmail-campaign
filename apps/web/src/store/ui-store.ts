@@ -8,22 +8,24 @@ interface Notification {
 }
 
 interface UiState {
-  sidebarOpen: boolean;
+  mobileSidebarOpen: boolean;
+  sidebarCollapsed: boolean;
   notifications: Notification[];
 
-  setSidebarOpen: (open: boolean) => void;
-  toggleSidebar: () => void;
+  setMobileSidebarOpen: (open: boolean) => void;
+  toggleSidebarCollapsed: () => void;
 
   addNotification: (n: Omit<Notification, "id">) => void;
   removeNotification: (id: string) => void;
 }
 
 export const useUiStore = create<UiState>()((set) => ({
-  sidebarOpen: true,
+  mobileSidebarOpen: false,
+  sidebarCollapsed: false,
   notifications: [],
 
-  setSidebarOpen: (open) => set({ sidebarOpen: open }),
-  toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
+  setMobileSidebarOpen: (open) => set({ mobileSidebarOpen: open }),
+  toggleSidebarCollapsed: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
 
   addNotification: (n) =>
     set((s) => ({
