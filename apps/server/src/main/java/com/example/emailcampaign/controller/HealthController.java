@@ -1,22 +1,25 @@
 package com.example.emailcampaign.controller;
 
-import java.util.Map;
-
-import org.springframework.web.bind.annotation.CrossOrigin;
+import com.example.emailcampaign.common.api.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
-// Pinned to the CORS_ORIGIN env var when set, permissive otherwise.
-@CrossOrigin(origins = "${CORS_ORIGIN:*}")
+@RequestMapping("/health")
+@Tag(name = "System & Health", description = "Public endpoints for checking backend service operational status")
 public class HealthController {
 
-  @GetMapping("/health")
-  public Map<String, String> health() {
-    return Map.of(
-      "status", "ok",
-      "application", "email-campaign",
-      "framework", "spring-boot"
-    );
-  }
+    @GetMapping
+    @Operation(summary = "Check service health", description = "Returns status UP when the API server is running and healthy.")
+    @SecurityRequirements()
+    public ResponseEntity<ApiResponse<Map<String, String>>> health() {
+        return ResponseEntity.ok(ApiResponse.ok(Map.of("status", "UP", "service", "email-campaign-backend")));
+    }
 }
