@@ -22,6 +22,56 @@ parts — Kafka pipeline, Quartz wiring, dual-provider webhook validation, state
 
 ---
 
+## Implementation Progress Checklist
+
+### Backend Progress
+- [x] **Day 1 — Foundation (Backend)**
+  - [x] Spring Boot project init with Maven & dependencies (`pom.xml`)
+  - [x] `docker-compose.yml` (PostgreSQL, Redis, Kafka, Zookeeper, Kafka-UI, Prometheus, Grafana)
+  - [x] Spring Data JPA / Hibernate configuration in `application.yml` (using schema auto-creation in place of Flyway per user decision)
+- [x] **Day 2 — Auth & Workspace (Backend)**
+  - [x] `Workspace`, `WorkspaceMember`, `User`, and `RefreshToken` JPA entities & Spring Data JPA repositories
+  - [x] `JwtTokenProvider` (JJWT 0.12.6 HMAC-SHA256), `JwtAuthenticationFilter`, `UserPrincipal`, `CustomUserDetailsService`
+  - [x] `SecurityConfig` (stateless JWT, public vs. protected endpoints)
+  - [x] `WorkspaceContext` (`ThreadLocal<UUID>`) & `GlobalExceptionHandler` (`ApiResponse`, `ApiErrorResponse`)
+  - [x] `AuthService`, `AuthServiceImpl` (with auto-workspace creation on registration) & `AuthController`
+  - [x] `WorkspaceService`, `WorkspaceServiceImpl` & `WorkspaceController`
+  - [x] Scalar OpenAPI UI setup (`springdoc-openapi-starter-webmvc-scalar` 3.0.2 at `/api-docs`) with JWT security scheme
+- [ ] **Day 3 — Contacts (Backend)**
+  - [ ] `Contact` & `ImportJob` JPA entities and repositories
+  - [ ] `ContactService` & `ContactController` (CRUD, filtering, search)
+  - [ ] `ContactImportService` (`@Async` CSV chunked import with OpenCSV & progress tracking)
+- [ ] **Day 4 — Lists & Templates (Backend)**
+  - [ ] `ContactList` entity, repository, service, and controller
+  - [ ] `Template` entity, Freemarker `StringTemplateLoader` implementation, render preview endpoint
+- [ ] **Day 5 — Campaign Scheduling & Engine (Backend)**
+  - [ ] `Campaign` & `CampaignSendJob` entities, repository, service, and controller
+  - [ ] Quartz Scheduler integration (`CampaignQuartzJob`, trigger scheduling, immediate send)
+- [ ] **Day 6 — Sending Pipeline & Providers (Backend)**
+  - [ ] Kafka topics, producer (`EmailSendProducer`), and batch consumer (`EmailSendConsumer`)
+  - [ ] Resend & SES email provider implementations (`EmailSender` strategy interface)
+  - [ ] Rate-limiting & idempotency checks
+- [ ] **Day 7 — Tracking Pixels & Webhooks (Backend)**
+  - [ ] Public `/t/o/{token}` open pixel & `/t/c/{token}` click redirect endpoints
+  - [ ] Signature-validated webhook endpoints for Resend and AWS SES bounce/complaint handling
+- [ ] **Day 8 — Analytics & Outbox (Backend)**
+  - [ ] `EmailEvent` repository & analytics queries (KPI rates, time-series bucketing)
+  - [ ] Transactional Outbox pattern for event publishing
+- [ ] **Day 9 — Integration & Polish (Backend)**
+  - [ ] End-to-end backend verification and performance tuning
+
+### Frontend Progress
+- [ ] **Day 1 — Foundation (Frontend)** (Vite + React 18 + TS, Tailwind, Shadcn/ui, AppShell skeleton)
+- [ ] **Day 2 — Auth (Frontend)** (Login/Register pages, ProtectedRoute, Axios JWT interceptors)
+- [ ] **Day 3 — Contacts (Frontend)** (Contact list table, filters, CSV upload modal, progress bar)
+- [ ] **Day 4 — Lists & Templates (Frontend)** (List management, Template editor & preview)
+- [ ] **Day 5 — Campaigns (Frontend)** (4-step Campaign Creation Wizard, Quartz scheduler date picker)
+- [ ] **Day 6 — Dashboard & Overview (Frontend)** (Dashboard KPI cards, recent campaigns, charts)
+- [ ] **Day 7–8 — Analytics & Detail View (Frontend)** (Campaign detail report, open/click charts, recipient table)
+- [ ] **Day 9 — Polish & E2E Testing (Frontend)** (End-to-end browser walkthroughs and UX polish)
+
+---
+
 ## Tech Stack
 
 | Layer              | Technology                                                  |
