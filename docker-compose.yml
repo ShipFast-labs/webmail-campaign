@@ -1,0 +1,32 @@
+name: email-campaign
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile.vite
+      args:
+        VITE_SERVER_URL: http://localhost:8080
+    env_file:
+      - apps/web/.env
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - app
+    restart: unless-stopped
+
+  app:
+    build:
+      context: apps/server
+      dockerfile: Dockerfile
+    env_file:
+      - apps/server/.env
+    ports:
+      - "8080:8080"
+    environment:
+      - CORS_ORIGIN=http://localhost:3001
+      - PORT=8080
+      - SPRING_PROFILES_ACTIVE=prod
+    restart: unless-stopped

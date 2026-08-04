@@ -1,0 +1,22 @@
+package com.example.emailcampaign.controller;
+
+import java.util.Map;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+// Pinned to the CORS_ORIGIN env var when set, permissive otherwise.
+@CrossOrigin(origins = "${CORS_ORIGIN:*}")
+public class HealthController {
+
+  @GetMapping("/health")
+  public Map<String, String> health() {
+    return Map.of(
+      "status", "ok",
+      "application", "email-campaign",
+      "framework", "spring-boot"
+    );
+  }
+}

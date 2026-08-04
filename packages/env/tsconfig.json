@@ -1,0 +1,3 @@
+{
+  "extends": "@email-campaign/config/tsconfig.base.json"
+}
