@@ -58,6 +58,11 @@ app:
     ses:
       region: ${AWS_REGION:us-east-1}
 
+springdoc:
+  scalar:
+    enabled: true
+    url: /api-docs
+
 management:
   endpoints:
     web:
