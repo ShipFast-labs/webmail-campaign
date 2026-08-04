@@ -1,0 +1,38 @@
+package com.example.emailcampaign.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+@Data
+@Component
+@ConfigurationProperties(prefix = "app")
+public class AppProperties {
+
+    private final Jwt jwt = new Jwt();
+    private final Email email = new Email();
+
+    @Data
+    public static class Jwt {
+        private String secret;
+        private long accessTokenExpirationMs = 3600000L;
+        private long refreshTokenExpirationMs = 604800000L;
+    }
+
+    @Data
+    public static class Email {
+        private String provider = "resend";
+        private final Resend resend = new Resend();
+        private final Ses ses = new Ses();
+
+        @Data
+        public static class Resend {
+            private String apiKey;
+        }
+
+        @Data
+        public static class Ses {
+            private String region = "us-east-1";
+        }
+    }
+}
