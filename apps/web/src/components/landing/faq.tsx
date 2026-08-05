@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 
+import { Button } from "@/components/ui/button"
+
 interface FaqItem {
   question: string
   answer: string
@@ -39,24 +41,24 @@ function FaqRow({ question, answer }: FaqItem) {
 
   return (
     <div className="border-b border-border">
-      <motion.button
-        onClick={() => setOpen((prev) => !prev)}
-        aria-expanded={open}
-        className="w-full flex items-center justify-between py-5 text-left gap-4 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
-        whileTap={{ scale: 0.995 }}
-      >
-        <span className="font-medium text-base transition-colors duration-150 hover:text-foreground/80">
-          {question}
-        </span>
-        <motion.span
-          animate={{ rotate: open ? 45 : 0 }}
-          transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
-          className="shrink-0 text-2xl leading-none text-muted-foreground select-none"
-          aria-hidden
+      <motion.div whileTap={{ scale: 0.998 }}>
+        <Button
+          variant="ghost"
+          onClick={() => setOpen((prev) => !prev)}
+          aria-expanded={open}
+          className="w-full justify-between py-5 h-auto text-left gap-4 rounded-none px-0 hover:bg-transparent focus-visible:ring-2 focus-visible:ring-ring"
         >
-          +
-        </motion.span>
-      </motion.button>
+          <span className="font-medium text-base text-foreground">{question}</span>
+          <motion.span
+            animate={{ rotate: open ? 45 : 0 }}
+            transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
+            className="shrink-0 text-2xl leading-none text-muted-foreground select-none"
+            aria-hidden
+          >
+            +
+          </motion.span>
+        </Button>
+      </motion.div>
 
       <AnimatePresence initial={false}>
         {open && (
@@ -84,13 +86,17 @@ export function Faq() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-        className="font-bold text-foreground mb-12 tracking-tight"
+        className="text-foreground mb-12"
         style={{
-          fontFamily: "var(--font-display)",
-          fontSize: "var(--text-display-s)",
+          fontFamily: "var(--font-heavy)",
+          fontSize: "clamp(2.5rem, 5vw + 1rem, 5.5rem)",
+          letterSpacing: "0.02em",
+          lineHeight: 0.95,
+          overflowWrap: "anywhere",
+          minWidth: 0,
         }}
       >
-        Questions.
+        QUESTIONS.
       </motion.h2>
 
       <motion.div

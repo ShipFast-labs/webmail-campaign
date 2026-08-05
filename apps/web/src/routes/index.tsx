@@ -15,6 +15,22 @@ export const Route = createFileRoute("/")({
 function LandingPage() {
   return (
     <>
+      {/* Fixed geometric grid — viewport-locked, never scrolls */}
+      <div
+        aria-hidden
+        className="fixed inset-0 -z-10 pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, var(--pattern-line) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--pattern-line) 1px, transparent 1px)
+          `,
+          backgroundSize: "20px 30px",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
+          maskImage:
+            "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
+        }}
+      />
       <Nav />
       <main>
         <Hero />

@@ -3,57 +3,70 @@ import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 
+interface Chip {
+  label: string;
+  value: string;
+  delay: number;
+}
+
+const CHIPS: Chip[] = [
+  { label: "Open rate", value: "28.4%", delay: 0.6 },
+  { label: "Sent today", value: "12,400", delay: 0.9 },
+  { label: "Clicks", value: "1,248", delay: 1.1 },
+  { label: "Bounce rate", value: "0.9%", delay: 1.3 },
+];
+
+function StatChip({ label, value, delay }: Chip) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <motion.div
+        animate={{ y: [0, -8, 0] }}
+        transition={{ duration: 3 + delay * 0.5, repeat: Infinity, ease: "easeInOut" }}
+        className="rounded-2xl px-4 py-3 bg-card border border-border shadow-sm min-w-[120px]"
+      >
+        <p className="text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+          {label}
+        </p>
+        <p
+          className="text-xl font-bold text-foreground mt-0.5"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
+          {value}
+        </p>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export function Hero() {
   return (
     <section
-      className="relative min-h-svh flex flex-col items-center justify-center px-6 pt-20 pb-16 text-center overflow-hidden"
+      className="relative min-h-svh flex items-center justify-center px-6 pt-20 pb-16 overflow-x-clip"
       aria-labelledby="hero-heading"
     >
-      {/* Diagonal cross grid with radial mask — fades from bottom up */}
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: `
-            linear-gradient(45deg, transparent 49%, var(--pattern-line) 49%, var(--pattern-line) 51%, transparent 51%),
-            linear-gradient(-45deg, transparent 49%, var(--pattern-line) 49%, var(--pattern-line) 51%, transparent 51%)
-          `,
-          backgroundSize: "40px 40px",
-          WebkitMaskImage:
-            "radial-gradient(ellipse 100% 80% at 50% 100%, #000 50%, transparent 90%)",
-          maskImage: "radial-gradient(ellipse 100% 80% at 50% 100%, #000 50%, transparent 90%)",
-        }}
-      />
-
-      {/* Drifting coral orbs */}
-
-      {/* Edge fades so content stays readable */}
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 60% at 50% 50%, transparent 40%, oklch(from var(--background) l c h / 0.7) 100%)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="absolute inset-x-0 top-0 h-32 pointer-events-none"
-        style={{ background: "linear-gradient(to bottom, var(--background), transparent)" }}
-      />
-      <div
-        aria-hidden
-        className="absolute inset-x-0 bottom-0 h-32 pointer-events-none"
-        style={{ background: "linear-gradient(to top, var(--background), transparent)" }}
-      />
+      {/* Floating chips — visible xl+ only, flanking the centered content */}
+      <div className="hidden xl:flex absolute inset-0 items-center justify-between pointer-events-none px-10 z-0">
+        <div className="flex flex-col gap-5">
+          <StatChip {...CHIPS[0]} />
+          <StatChip {...CHIPS[2]} />
+        </div>
+        <div className="flex flex-col gap-5 items-end">
+          <StatChip {...CHIPS[1]} />
+          <StatChip {...CHIPS[3]} />
+        </div>
+      </div>
 
       {/* Content */}
-      <div className="relative max-w-4xl">
+      <div className="relative z-10 max-w-3xl mx-auto text-center" style={{ overflowWrap: "anywhere", minWidth: 0 }}>
         <motion.p
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
-          className="text-sm font-semibold tracking-[0.12em] uppercase text-primary mb-6"
+          className="text-sm font-semibold tracking-[0.15em] uppercase text-primary mb-8"
         >
           Email marketing platform
         </motion.p>
@@ -63,24 +76,29 @@ export function Hero() {
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="font-bold leading-[1.06] tracking-[-0.035em] text-foreground"
+          className="text-foreground"
           style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "var(--text-display)",
+            fontFamily: "var(--font-heavy)",
+            fontSize: "clamp(3.5rem, 9vw + 1rem, 8rem)",
+            letterSpacing: "0.02em",
+            lineHeight: 0.95,
+            overflowWrap: "anywhere",
+            minWidth: 0,
           }}
         >
-          Email campaigns
-          <br className="hidden sm:block" /> that deliver.
+          EMAIL{" "}
+          <span style={{ color: "var(--primary)" }}>CAMPAIGNS</span>
+          <br className="hidden sm:block" />
+          {" "}THAT DELIVER.
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-6 text-lg md:text-xl text-muted-foreground max-w-[52ch] mx-auto leading-relaxed"
+          className="mt-8 text-lg md:text-xl text-muted-foreground max-w-[50ch] mx-auto leading-relaxed"
         >
-          Build, send, and track campaigns to your contact lists. Real-time analytics show you what
-          worked.
+          Build, send, and track campaigns to your contact lists. Real-time analytics show you what worked.
         </motion.p>
 
         <motion.div
@@ -89,41 +107,18 @@ export function Hero() {
           transition={{ duration: 0.55, delay: 0.34, ease: [0.22, 1, 0.36, 1] }}
           className="mt-10 flex items-center justify-center gap-3 flex-wrap"
         >
-          <motion.div
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ duration: 0.15 }}
-          >
+          <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
             <Button asChild size="lg" className="rounded-full px-9">
               <Link to="/register">Start free</Link>
             </Button>
           </motion.div>
-          <motion.div
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ duration: 0.15 }}
-          >
+          <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
             <Button asChild size="lg" variant="outline" className="rounded-full px-9">
               <a href="#how-it-works">See how it works</a>
             </Button>
           </motion.div>
         </motion.div>
       </div>
-
-      {/* Scroll cue */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.6 }}
-        aria-hidden
-      >
-        <motion.div
-          className="w-px h-10 bg-gradient-to-b from-transparent via-border to-transparent"
-          animate={{ scaleY: [0.6, 1, 0.6] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </motion.div>
     </section>
   );
 }

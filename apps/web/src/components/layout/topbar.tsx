@@ -13,7 +13,7 @@ export function TopBar() {
   const initials = user?.email?.slice(0, 2).toUpperCase() ?? "??";
 
   return (
-    <header className="sticky top-0 z-20 flex items-center h-14 px-4 gap-3 border-b border-border bg-background/90 backdrop-blur-sm shrink-0">
+    <header className="sticky top-0 z-20 flex items-center h-14 px-4 gap-3 border-b border-sidebar-border bg-sidebar shrink-0">
       <Button
         variant="ghost"
         size="icon"

@@ -1,9 +1,15 @@
-import { Outlet, createFileRoute } from "@tanstack/react-router"
+import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
 import { Sidebar } from "@/components/layout/sidebar"
 import { TopBar } from "@/components/layout/topbar"
+import { useAuthStore } from "@/store/auth-store"
 
 export const Route = createFileRoute("/_app")({
+  beforeLoad: () => {
+    if (!useAuthStore.getState().isAuthenticated()) {
+      throw redirect({ to: "/login" })
+    }
+  },
   component: AppShell,
 })
 
@@ -13,7 +19,7 @@ function AppShell() {
       <Sidebar />
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         <TopBar />
-        <main className="flex-1 overflow-auto p-6">
+        <main className="flex-1 overflow-auto p-6 bg-muted">
           <Outlet />
         </main>
       </div>

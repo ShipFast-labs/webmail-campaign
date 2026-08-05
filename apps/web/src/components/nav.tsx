@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
+import { motion } from "motion/react";
 
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "./mode-toggle";
@@ -47,14 +48,27 @@ export function Nav() {
             { href: "#how-it-works", label: "How it works" },
             { href: "#faq", label: "FAQ" },
           ].map(({ href, label }) => (
-            <a
+            <motion.a
               key={href}
               href={href}
               role="listitem"
-              className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors duration-150 rounded-full hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="relative px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors duration-150 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              initial="rest"
+              animate="rest"
+              whileHover="hovered"
             >
               {label}
-            </a>
+              <motion.span
+                aria-hidden
+                className="absolute bottom-0.5 left-3 right-3 h-px rounded-full"
+                style={{ backgroundColor: "var(--primary)", transformOrigin: "left" }}
+                variants={{
+                  rest: { scaleX: 0, opacity: 0 },
+                  hovered: { scaleX: 1, opacity: 1 },
+                }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              />
+            </motion.a>
           ))}
         </div>
 
