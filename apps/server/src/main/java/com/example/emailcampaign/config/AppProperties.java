@@ -15,7 +15,7 @@ public class AppProperties {
 
     @Data
     public static class Frontend {
-        private String oauth2RedirectUrl = "http://localhost:3000/oauth2/redirect";
+        private String oauth2RedirectUrl;
     }
 
     @Data
