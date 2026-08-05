@@ -11,6 +11,14 @@ spring:
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: profile, email
   jpa:
     open-in-view: false
     show-sql: true
@@ -47,14 +55,16 @@ spring:
       "[org.quartz.jobStore.clusterCheckinInterval]": 20000
 
 app:
+  frontend:
+    oauth2-redirect-url: ${FRONTEND_OAUTH2_REDIRECT_URL}
   jwt:
-    secret: ${JWT_SECRET:9a4f2c8d3b7a1e6f45c8a0b3f267d8b1d4e6f3c8a9d2b5f8e3a9c8b5f6v8a3d9e8f7a6b5c4d3e2f1}
+    secret: ${JWT_SECRET}
     access-token-expiration-ms: 3600000
     refresh-token-expiration-ms: 604800000
   email:
     provider: ${APP_EMAIL_PROVIDER:resend}
     resend:
-      api-key: ${RESEND_API_KEY:re_test_123456789}
+      api-key: ${RESEND_API_KEY}
     ses:
       region: ${AWS_REGION:us-east-1}
 
