@@ -1,32 +1,29 @@
 import { HeadContent, Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactLenis } from "lenis/react";
 
-import Header from "@/components/header";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/provider/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { queryClient } from "@/lib/query-client";
 
 import "../index.css";
 
-export interface RouterAppContext {}
+export interface RouterAppContext {
+  queryClient: typeof queryClient;
+}
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({
   component: RootComponent,
   head: () => ({
     meta: [
-      {
-        title: "email-campaign",
-      },
+      { title: "Campaign — Email campaigns that deliver" },
       {
         name: "description",
-        content: "email-campaign is a web application",
+        content: "Build, send, and track email campaigns to your contact lists.",
       },
     ],
-    links: [
-      {
-        rel: "icon",
-        href: "/favicon.ico",
-      },
-    ],
+    links: [{ rel: "icon", href: "/favicon.ico" }],
   }),
 });
 
@@ -34,21 +31,15 @@ function RootComponent() {
   return (
     <>
       <HeadContent />
-
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="dark"
-        disableTransitionOnChange
-        storageKey="vite-ui-theme"
-      >
-        <div className="grid grid-rows-[auto_1fr] h-svh">
-          <Header />
-          <Outlet />
-        </div>
-        <Toaster richColors />
-      </ThemeProvider>
-
-      <TanStackRouterDevtools position="bottom-left" />
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <ReactLenis root options={{ lerp: 0.1, duration: 1.4 }}>
+            <Outlet />
+            <Toaster richColors />
+          </ReactLenis>
+        </ThemeProvider>
+      </QueryClientProvider>
+      {/* <TanStackRouterDevtools position="bottom-left" /> */}
     </>
   );
 }

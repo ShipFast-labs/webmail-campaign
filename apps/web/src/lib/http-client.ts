@@ -1,13 +1,77 @@
 import axios from "axios";
 
-const serverBaseURL = "/api";
+import { queryClient } from "@/lib/query-client";
+import { useAuthStore } from "@/store/auth-store";
 
-export function createHttpClient(baseURL = serverBaseURL) {
-  return axios.create({
-    baseURL,
-    headers: { "Content-Type": "application/json" },
-    timeout: 10_000,
-  });
+export const api = axios.create({
+  baseURL: "/api/v1",
+  headers: { "Content-Type": "application/json" },
+  timeout: 15_000,
+});
+
+api.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().accessToken;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+let isRefreshing = false;
+let queue: Array<{ resolve: (token: string) => void; reject: (err: unknown) => void }> = [];
+
+function flushQueue(token: string | null, err?: unknown) {
+  queue.forEach((p) => (token ? p.resolve(token) : p.reject(err)));
+  queue = [];
 }
 
-export const httpClient = createHttpClient();
+function logout() {
+  useAuthStore.getState().clearAuth();
+  queryClient.clear();
+}
+
+api.interceptors.response.use(
+  (r) => r,
+  async (error) => {
+    const original = error.config;
+
+    if (error.response?.status !== 401 || original._retry) {
+      return Promise.reject(error);
+    }
+
+    const { refreshToken, setAccessToken } = useAuthStore.getState();
+
+    if (!refreshToken) {
+      logout();
+      return Promise.reject(error);
+    }
+
+    // Another request is already refreshing — queue this one
+    if (isRefreshing) {
+      return new Promise<string>((resolve, reject) => {
+        queue.push({ resolve, reject });
+      }).then((token) => {
+        original.headers.Authorization = `Bearer ${token}`;
+        return api(original);
+      });
+    }
+
+    original._retry = true;
+    isRefreshing = true;
+
+    try {
+      // Dynamic import breaks the circular dep at init time
+      const { authApi } = await import("@/api/auth");
+      const { accessToken } = await authApi.refresh(refreshToken);
+      setAccessToken(accessToken);
+      api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+      flushQueue(accessToken);
+      original.headers.Authorization = `Bearer ${accessToken}`;
+      return api(original);
+    } catch (refreshError) {
+      flushQueue(null, refreshError);
+      logout();
+      return Promise.reject(refreshError);
+    } finally {
+      isRefreshing = false;
+    }
+  },
+);
