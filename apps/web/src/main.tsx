@@ -3,13 +3,19 @@ import ReactDOM from "react-dom/client";
 
 import Loader from "./components/loader";
 import { queryClient } from "./lib/query-client";
+import { useAuthStore } from "./store/auth-store";
 import { routeTree } from "./routeTree.gen";
 
 const router = createRouter({
   routeTree,
   defaultPreload: "intent",
   defaultPendingComponent: () => <Loader />,
-  context: { queryClient },
+  context: { 
+    queryClient,
+    get auth() {
+      return useAuthStore.getState();
+    }
+  },
 });
 
 declare module "@tanstack/react-router" {

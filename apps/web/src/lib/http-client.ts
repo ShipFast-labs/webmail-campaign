@@ -2,6 +2,7 @@ import axios from "axios";
 
 import { queryClient } from "@/lib/query-client";
 import { useAuthStore } from "@/store/auth-store";
+import { authService } from "@/lib/auth-service";
 
 export const api = axios.create({
   baseURL: "/api/v1",
@@ -24,8 +25,7 @@ function flushQueue(token: string | null, err?: unknown) {
 }
 
 function logout() {
-  useAuthStore.getState().clearAuth();
-  queryClient.clear();
+  authService.logout();
 }
 
 api.interceptors.response.use(
@@ -33,7 +33,7 @@ api.interceptors.response.use(
   async (error) => {
     const original = error.config;
 
-    if (error.response?.status !== 401 || original._retry) {
+    if (error.response?.status !== 401 || original._retry || original.url?.includes("/auth/refresh")) {
       return Promise.reject(error);
     }
 

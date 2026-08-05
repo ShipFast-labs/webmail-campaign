@@ -13,6 +13,7 @@ import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useLogin } from "@/hooks/use-auth";
 import { getApiError } from "@/lib/api-error";
+import { useAuthStore } from "@/store/auth-store";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -39,7 +40,10 @@ function LoginPage() {
 
   function onSubmit(data: FormValues) {
     login(data, {
-      onSuccess: () => navigate({ to: "/dashboard" }),
+      onSuccess: () => navigate({ 
+        to: "/dashboard",
+        search: { workspace: useAuthStore.getState().workspace?.id } as any,
+      }),
       onError: (err) => toast.error(getApiError(err)),
     });
   }
@@ -58,6 +62,23 @@ function LoginPage() {
         </CardHeader>
 
         <CardContent>
+          <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.15 }} className="mb-4">
+            <Button asChild variant="outline" className="w-full">
+              <a href={`${import.meta.env.VITE_API_URL || "http://localhost:8080"}/oauth2/authorization/google`}>
+                Continue with Google
+              </a>
+            </Button>
+          </motion.div>
+
+          <div className="relative mb-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
             <FormField id="email" label="Email" error={errors.email?.message}>
               <Input

@@ -1,6 +1,7 @@
 import { Menu01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useAuthStore } from "@/store/auth-store";
@@ -28,12 +29,12 @@ export function TopBar() {
 
       <ModeToggle />
 
-      <div
-        className="h-8 w-8 rounded-full bg-primary/15 flex items-center justify-center text-xs font-semibold text-primary select-none cursor-default"
-        title={user?.email}
-      >
-        {initials}
-      </div>
+      <Avatar className="h-8 w-8 cursor-pointer" title={user?.email}>
+        <AvatarImage src={user?.avatarUrl} alt={user?.fullName || user?.email} referrerPolicy="no-referrer" />
+        <AvatarFallback className="bg-primary/15 text-primary text-xs font-semibold select-none">
+          {initials}
+        </AvatarFallback>
+      </Avatar>
     </header>
   );
 }

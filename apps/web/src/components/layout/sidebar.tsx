@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   ArrowLeft01Icon,
   Building01Icon,
@@ -13,11 +13,18 @@ import { useAuthStore } from "@/store/auth-store";
 import { useUiStore } from "@/store/ui-store";
 import { cn } from "@/lib/utils";
 import { SidebarNav } from "./sidebar-nav";
+import { authService } from "@/lib/auth-service";
 
 export function Sidebar() {
+  const navigate = useNavigate();
   const { mobileSidebarOpen, sidebarCollapsed, setMobileSidebarOpen, toggleSidebarCollapsed } =
     useUiStore();
-  const { workspace, clearAuth } = useAuthStore();
+  const { workspace } = useAuthStore();
+
+  const handleLogout = () => {
+    authService.logout();
+    navigate({ to: "/login" });
+  };
 
   return (
     <>
@@ -32,7 +39,7 @@ export function Sidebar() {
 
       <aside
         className={cn(
-          "relative fixed inset-y-0 left-0 z-40 flex flex-col bg-sidebar border-r border-sidebar-border",
+          "fixed inset-y-0 left-0 z-40 flex flex-col bg-sidebar border-r border-sidebar-border",
           "transition-[width,transform] duration-200 ease-in-out",
           "md:static md:translate-x-0 w-60",
           mobileSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
@@ -43,6 +50,7 @@ export function Sidebar() {
         <div className="flex items-center h-14 px-3 border-b border-sidebar-border shrink-0">
           <Link
             to="/dashboard"
+            search={{ workspace: workspace?.id } as any}
             className="flex items-center gap-2 min-w-0 flex-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md"
           >
             <span
@@ -106,7 +114,7 @@ export function Sidebar() {
           <motion.div whileHover={{ x: 3 }} transition={{ duration: 0.15 }}>
             <Button
               variant="ghost"
-              onClick={clearAuth}
+              onClick={handleLogout}
               className={cn(
                 "w-full justify-start gap-3 text-sidebar-foreground/70 hover:text-destructive hover:bg-destructive/10",
                 sidebarCollapsed && "md:justify-center md:px-0",

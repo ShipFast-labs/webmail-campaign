@@ -1,27 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 
-import { authApi } from "@/api/auth";
-import { useAuthStore } from "@/store/auth-store";
-
-function applyAuthResponse(data: Awaited<ReturnType<typeof authApi.login>>) {
-  useAuthStore.getState().setAuth({
-    user: data.user,
-    workspace: data.workspace,
-    accessToken: data.accessToken,
-    refreshToken: data.refreshToken,
-  });
-}
+import { authService } from "@/lib/auth-service";
 
 export function useLogin() {
   return useMutation({
-    mutationFn: authApi.login,
-    onSuccess: applyAuthResponse,
+    mutationFn: (req: Parameters<typeof authService.login>[0]) => authService.login(req),
   });
 }
 
 export function useRegister() {
   return useMutation({
-    mutationFn: authApi.register,
-    onSuccess: applyAuthResponse,
+    mutationFn: (req: Parameters<typeof authService.register>[0]) => authService.register(req),
   });
 }

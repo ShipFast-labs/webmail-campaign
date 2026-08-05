@@ -9,8 +9,15 @@ import { queryClient } from "@/lib/query-client";
 
 import "../index.css";
 
+import type { AuthUser, AuthWorkspace } from "@/store/auth-store";
+
 export interface RouterAppContext {
   queryClient: typeof queryClient;
+  auth: {
+    user: AuthUser | null;
+    workspace: AuthWorkspace | null;
+    isAuthenticated: () => boolean;
+  };
 }
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({

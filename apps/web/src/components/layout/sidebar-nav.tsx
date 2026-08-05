@@ -22,21 +22,25 @@ const NAV_ITEMS = [
   { to: "/analytics", label: "Analytics", icon: ChartAnalysisIcon },
 ] as const;
 
+import { useAuthStore } from "@/store/auth-store";
+
 type NavItemProps = {
   to: string;
   label: string;
   icon: (typeof NAV_ITEMS)[number]["icon"];
   active: boolean;
   collapsed: boolean;
+  workspaceId?: string;
 };
 
-function NavItem({ to, label, icon, active, collapsed }: NavItemProps) {
+function NavItem({ to, label, icon, active, collapsed, workspaceId }: NavItemProps) {
   const { setMobileSidebarOpen } = useUiStore();
 
   return (
     <motion.div whileHover={{ x: 3 }} transition={{ duration: 0.15, ease: "easeOut" }}>
       <Link
-        to={to}
+        to={to as any}
+        search={{ workspace: workspaceId } as any}
         onClick={() => setMobileSidebarOpen(false)}
         className={cn(
           "flex items-center gap-3 h-9 px-2.5 rounded-md text-sm font-medium transition-colors",
@@ -61,6 +65,7 @@ function NavItem({ to, label, icon, active, collapsed }: NavItemProps) {
 
 export function SidebarNav({ collapsed }: { collapsed: boolean }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const workspace = useAuthStore((s) => s.workspace);
 
   return (
     <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2 py-3 space-y-0.5">
@@ -72,6 +77,7 @@ export function SidebarNav({ collapsed }: { collapsed: boolean }) {
           icon={icon}
           active={pathname.startsWith(to)}
           collapsed={collapsed}
+          workspaceId={workspace?.id}
         />
       ))}
     </nav>
