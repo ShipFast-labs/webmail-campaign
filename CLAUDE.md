@@ -1,3 +1,5 @@
+Read Rules.md before executing anything. Follow it strickly.
+
 # email-campaign
 
 This file provides context about the project for AI assistants.
