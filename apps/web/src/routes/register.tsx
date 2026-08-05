@@ -71,7 +71,7 @@ function RegisterPage() {
         <CardContent>
           <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.15 }} className="mb-4">
             <Button asChild variant="outline" className="w-full">
-              <a href="http://localhost:8080/oauth2/authorization/google">
+              <a href={`${import.meta.env.VITE_API_URL || "http://localhost:8080"}/oauth2/authorization/google`}>
                 Continue with Google
               </a>
             </Button>
