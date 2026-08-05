@@ -1,0 +1,47 @@
+{"properties": [
+  {
+    "name": "springdoc.scalar.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'springdoc.scalar.enabled'"
+  },
+  {
+    "name": "springdoc.scalar.url",
+    "type": "java.lang.String",
+    "description": "A description for 'springdoc.scalar.url'"
+  },
+  {
+    "name": "app.jwt.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'app.jwt.secret'"
+  },
+  {
+    "name": "app.jwt.refresh-token-expiration-ms",
+    "type": "java.lang.String",
+    "description": "A description for 'app.jwt.refresh-token-expiration-ms'"
+  },
+  {
+    "name": "app.jwt.access-token-expiration-ms",
+    "type": "java.lang.String",
+    "description": "A description for 'app.jwt.access-token-expiration-ms'"
+  },
+  {
+    "name": "app.email.provider",
+    "type": "java.lang.String",
+    "description": "A description for 'app.email.provider'"
+  },
+  {
+    "name": "app.email.resend.api-key",
+    "type": "java.lang.String",
+    "description": "A description for 'app.email.resend.api-key'"
+  },
+  {
+    "name": "app.email.ses.region",
+    "type": "java.lang.String",
+    "description": "A description for 'app.email.ses.region'"
+  },
+  {
+    "name": "app.frontend.oauth2-redirect-url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.frontend.oauth2-redirect-url'"
+  }
+]}
