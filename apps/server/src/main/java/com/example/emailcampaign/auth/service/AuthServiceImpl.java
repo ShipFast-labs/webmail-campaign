@@ -1,5 +1,6 @@
 package com.example.emailcampaign.auth.service;
 
+import com.example.emailcampaign.auth.domain.AuthProvider;
 import com.example.emailcampaign.auth.domain.RefreshToken;
 import com.example.emailcampaign.auth.domain.User;
 import com.example.emailcampaign.auth.dto.AuthResponse;
@@ -134,5 +135,22 @@ public class AuthServiceImpl implements AuthService {
 
         long expiresInSeconds = appProperties.getJwt().getAccessTokenExpirationMs() / 1000;
         return new TokenResponse(accessToken, refreshTokenString, expiresInSeconds);
+    }
+    @Override
+    @Transactional
+    public TokenResponse processOAuth2PostLogin(String email, String name, String providerId, String avatarUrl) {
+        User user = userRepository.findByEmail(email).orElseGet(() -> {
+            User newUser = new User(email, name, AuthProvider.GOOGLE, providerId, avatarUrl);
+            newUser = userRepository.save(newUser);
+            workspaceService.createWorkspace(name + "'s Workspace", newUser.getId());
+            return newUser;
+        });
+
+        if (user.getAvatarUrl() == null && avatarUrl != null) {
+            user.setAvatarUrl(avatarUrl);
+            userRepository.save(user);
+        }
+        
+        return generateTokens(user.getId(), user.getEmail());
     }
 }

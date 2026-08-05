@@ -15,6 +15,7 @@ public class UserResponse {
     private UUID id;
     private String email;
     private String fullName;
+    private String avatarUrl;
     private Instant createdAt;
     private Instant updatedAt;
 
@@ -23,6 +24,7 @@ public class UserResponse {
                 user.getId(),
                 user.getEmail(),
                 user.getFullName(),
+                user.getAvatarUrl(),
                 user.getCreatedAt(),
                 user.getUpdatedAt()
         );

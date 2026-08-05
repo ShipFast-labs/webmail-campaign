@@ -11,6 +11,12 @@ public class AppProperties {
 
     private final Jwt jwt = new Jwt();
     private final Email email = new Email();
+    private final Frontend frontend = new Frontend();
+
+    @Data
+    public static class Frontend {
+        private String oauth2RedirectUrl = "http://localhost:3000/oauth2/redirect";
+    }
 
     @Data
     public static class Jwt {

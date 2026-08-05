@@ -15,4 +15,5 @@ public interface AuthService {
     TokenResponse refresh(RefreshTokenRequest request);
     void logout(String refreshToken);
     UserResponse getMe(UUID userId);
+    TokenResponse processOAuth2PostLogin(String email, String name, String providerId, String avatarUrl);
 }
