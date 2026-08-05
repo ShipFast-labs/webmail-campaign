@@ -2,16 +2,21 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export interface AuthUser {
-  userId: string;
+  id: string;
   email: string;
-  role: "ADMIN" | "MARKETER";
+  fullName: string;
+  avatarUrl?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AuthWorkspace {
-  workspaceId: string;
+  id: string;
   name: string;
-  slug: string;
-  plan: string;
+  ownerId: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface AuthState {

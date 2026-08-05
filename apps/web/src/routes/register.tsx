@@ -13,6 +13,7 @@ import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useRegister } from "@/hooks/use-auth";
 import { getApiError } from "@/lib/api-error";
+import { useAuthStore } from "@/store/auth-store";
 
 export const Route = createFileRoute("/register")({
   component: RegisterPage,
@@ -20,7 +21,7 @@ export const Route = createFileRoute("/register")({
 
 const schema = z
   .object({
-    workspaceName: z.string().min(2, "At least 2 characters"),
+    fullName: z.string().min(2, "Full name is required"),
     email: z.email("Enter a valid email"),
     password: z.string().min(8, "At least 8 characters"),
     confirmPassword: z.string(),
@@ -46,7 +47,10 @@ function RegisterPage() {
 
   function onSubmit({ confirmPassword: _omit, ...data }: FormValues) {
     registerUser(data, {
-      onSuccess: () => navigate({ to: "/dashboard" }),
+      onSuccess: () => navigate({ 
+        to: "/dashboard",
+        search: { workspace: useAuthStore.getState().workspace?.id } as any,
+      }),
       onError: (err) => toast.error(getApiError(err)),
     });
   }
@@ -60,25 +64,36 @@ function RegisterPage() {
           >
             Campaign
           </span>
-          <h1 className="text-xl font-semibold text-foreground">Create your workspace</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            Free to start. No credit card needed.
-          </p>
+          <h1 className="text-xl font-semibold text-foreground">Create account</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Start your free trial today.</p>
         </CardHeader>
 
         <CardContent>
+          <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.15 }} className="mb-4">
+            <Button asChild variant="outline" className="w-full">
+              <a href="http://localhost:8080/oauth2/authorization/google">
+                Continue with Google
+              </a>
+            </Button>
+          </motion.div>
+
+          <div className="relative mb-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-            <FormField
-              id="workspaceName"
-              label="Workspace name"
-              error={errors.workspaceName?.message}
-            >
+            <FormField id="fullName" label="Full name" error={errors.fullName?.message}>
               <Input
-                id="workspaceName"
-                placeholder="Acme Corp"
-                autoComplete="organization"
-                aria-invalid={!!errors.workspaceName}
-                {...register("workspaceName")}
+                id="fullName"
+                placeholder="John Doe"
+                autoComplete="name"
+                aria-invalid={!!errors.fullName}
+                {...register("fullName")}
               />
             </FormField>
 
@@ -123,7 +138,7 @@ function RegisterPage() {
               className="pt-1"
             >
               <Button type="submit" className="w-full" disabled={isPending}>
-                {isPending ? "Creating..." : "Create workspace"}
+                {isPending ? "Creating..." : "Create account"}
               </Button>
             </motion.div>
           </form>

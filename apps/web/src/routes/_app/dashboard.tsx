@@ -7,6 +7,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { createFileRoute } from "@tanstack/react-router"
 import { motion } from "motion/react"
+import { z } from "zod"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -70,19 +71,28 @@ const STATUS_PILL: Record<string, string> = {
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] } as any,
+})
+
+const searchParamsSchema = z.object({
+  workspace: z.string().optional(),
 })
 
 export const Route = createFileRoute("/_app/dashboard")({
+  validateSearch: (search) => searchParamsSchema.parse(search),
   component: DashboardPage,
 })
 
 function DashboardPage() {
+  const { workspace } = Route.useSearch()
+  
   return (
     <div className="space-y-6">
       <motion.div {...fadeUp(0)}>
         <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">Last 30 days across your workspace.</p>
+        <p className="text-sm text-muted-foreground mt-0.5">
+          {workspace ? `Viewing data for workspace: ${workspace}` : "Last 30 days across your workspace."}
+        </p>
       </motion.div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">

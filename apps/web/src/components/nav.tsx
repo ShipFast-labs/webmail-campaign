@@ -14,8 +14,8 @@ export function Nav() {
 
   function enterDevPreview() {
     useAuthStore.getState().setAuth({
-      user: { userId: "dev-user", email: "dev@campaign.app", role: "ADMIN" },
-      workspace: { workspaceId: "dev-ws", name: "Demo workspace", slug: "demo", plan: "free" },
+      user: { id: "dev-user", email: "dev@campaign.app", fullName: "Dev User", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      workspace: { id: "dev-ws", name: "Demo workspace", ownerId: "dev-user", role: "ADMIN", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
       accessToken: "dev-token",
       refreshToken: "dev-refresh",
     });

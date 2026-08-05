@@ -5,8 +5,8 @@ import { TopBar } from "@/components/layout/topbar"
 import { useAuthStore } from "@/store/auth-store"
 
 export const Route = createFileRoute("/_app")({
-  beforeLoad: () => {
-    if (!useAuthStore.getState().isAuthenticated()) {
+  beforeLoad: ({ context }) => {
+    if (!context.auth.isAuthenticated()) {
       throw redirect({ to: "/login" })
     }
   },
