@@ -65,7 +65,7 @@ parts — Kafka pipeline, Quartz wiring, dual-provider webhook validation, state
 
 - [x] **Day 1 — Foundation (Frontend)** (Vite + React 18 + TS, Tailwind, Shadcn/ui, AppShell skeleton)
 - [x] **Day 2 — Auth (Frontend)** (Login/Register pages, ProtectedRoute, Axios JWT interceptors)
-- [ ] **Day 3 — Contacts (Frontend)** (Contact list table, filters, CSV upload modal, progress bar)
+- [x] **Day 3 — Contacts (Frontend)** (Contact list table, filters, CSV upload modal, progress bar)
 - [ ] **Day 4 — Lists & Templates (Frontend)** (List management, Template editor & preview)
 - [ ] **Day 5 — Campaigns (Frontend)** (4-step Campaign Creation Wizard, Quartz scheduler date picker)
 - [ ] **Day 6 — Dashboard & Overview (Frontend)** (Dashboard KPI cards, recent campaigns, charts)
