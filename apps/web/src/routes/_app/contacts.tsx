@@ -9,15 +9,25 @@ import { ContactsTable } from "@/components/contacts/contacts-table";
 import { ContactFormModal } from "@/components/contacts/contact-form-modal";
 import { ImportModal } from "@/components/contacts/import-modal";
 
+import { useNavigate } from "@tanstack/react-router";
+import { z } from "zod";
+
+const contactsSearchSchema = z.object({
+  page: z.number().catch(0),
+  search: z.string().catch(""),
+  status: z.string().catch(""),
+  tag: z.string().catch(""),
+  workspace: z.string().optional().catch(undefined),
+});
+
 export const Route = createFileRoute("/_app/contacts")({
+  validateSearch: (search) => contactsSearchSchema.parse(search),
   component: ContactsPage,
 });
 
 function ContactsPage() {
-  const [page, setPage] = useState(0);
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("");
-  const [tag, setTag] = useState("");
+  const { page, search, status, tag } = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
   const [formOpen, setFormOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [editContact, setEditContact] = useState<Contact | null>(null);
@@ -39,18 +49,20 @@ function ContactsPage() {
   };
 
   const handleSearchChange = (value: string) => {
-    setSearch(value);
-    setPage(0);
+    navigate({ search: (prev) => ({ ...prev, search: value, page: 0 }), replace: true });
   };
 
   const handleStatusChange = (value: string) => {
-    setStatus(value);
-    setPage(0);
+    navigate({ search: (prev) => ({ ...prev, status: value, page: 0 }), replace: true });
   };
 
   const handleTagChange = (value: string) => {
-    setTag(value);
-    setPage(0);
+    navigate({ search: (prev) => ({ ...prev, tag: value, page: 0 }), replace: true });
+  };
+
+  const setPage = (updater: number | ((prev: number) => number)) => {
+    const newPage = typeof updater === "function" ? updater(page) : updater;
+    navigate({ search: (prev) => ({ ...prev, page: newPage }), replace: true });
   };
 
   return (
