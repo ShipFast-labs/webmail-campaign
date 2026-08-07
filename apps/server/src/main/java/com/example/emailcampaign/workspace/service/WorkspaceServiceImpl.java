@@ -26,10 +26,17 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     @Transactional
     public Workspace createWorkspace(String name, UUID ownerId) {
-        Workspace workspace = new Workspace(name, ownerId);
+        Workspace workspace = Workspace.builder()
+                .name(name)
+                .ownerId(ownerId)
+                .build();
         workspace = workspaceRepository.save(workspace);
 
-        WorkspaceMember member = new WorkspaceMember(workspace.getId(), ownerId, WorkspaceRole.ADMIN);
+        WorkspaceMember member = WorkspaceMember.builder()
+                .workspaceId(workspace.getId())
+                .userId(ownerId)
+                .role(WorkspaceRole.ADMIN)
+                .build();
         workspaceMemberRepository.save(member);
 
         return workspace;

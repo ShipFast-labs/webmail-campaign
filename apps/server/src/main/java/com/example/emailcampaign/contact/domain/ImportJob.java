@@ -23,18 +23,23 @@ public class ImportJob extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private ImportJobStatus status = ImportJobStatus.PENDING;
 
     @Column(nullable = false)
+    @Builder.Default
     private int totalRows = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private int processedRows = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private int successCount = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private int errorCount = 0;
 
     @Column(columnDefinition = "text")
