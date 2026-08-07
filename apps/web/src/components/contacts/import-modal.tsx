@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { useDropzone } from "react-dropzone";
+import { useState } from "react";
+
 import {
   Dialog,
   DialogContent,
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useImportContacts, useImportProgress } from "@/hooks/use-contacts";
 import { cn } from "@/lib/utils";
+import { FileUploadStruc } from "@/components/shadcn-space/radix/file-upload/file-upload-01";
 
 interface Props {
   open: boolean;
@@ -22,17 +23,6 @@ export function ImportModal({ open, onClose }: Props) {
 
   const importMutation = useImportContacts();
   const { data: progress } = useImportProgress(jobId);
-
-  const onDrop = useCallback((accepted: File[]) => {
-    if (accepted[0]) setFile(accepted[0]);
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: { "text/csv": [".csv"] },
-    maxFiles: 1,
-    disabled: !!jobId,
-  });
 
   const handleImport = async () => {
     if (!file) return;
@@ -62,31 +52,10 @@ export function ImportModal({ open, onClose }: Props) {
         <div className="space-y-4 py-2">
           {/* Drop zone */}
           {!jobId && (
-            <div
-              {...getRootProps()}
-              className={cn(
-                "border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors",
-                isDragActive
-                  ? "border-primary bg-primary/5"
-                  : "border-muted-foreground/25 hover:border-primary/50",
-              )}
-            >
-              <input {...getInputProps()} />
-              {file ? (
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">{file.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {(file.size / 1024).toFixed(1)} KB — click or drop to replace
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">Drop a CSV file here</p>
-                  <p className="text-xs text-muted-foreground">
-                    or click to browse — columns: email, first_name, last_name, tags
-                  </p>
-                </div>
-              )}
+            <div className="w-full py-4">
+              <FileUploadStruc onChange={(files) => {
+                if (files.length > 0) setFile(files[0]);
+              }} />
             </div>
           )}
 

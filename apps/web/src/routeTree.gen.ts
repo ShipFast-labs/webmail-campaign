@@ -19,8 +19,11 @@ import { Route as AppContactsRouteImport } from './routes/_app/contacts'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppListsRouteImport } from './routes/_app/lists'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
-import { Route as AppTemplatesRouteImport } from './routes/_app/templates'
 import { Route as Oauth2RedirectRouteImport } from './routes/oauth2.redirect'
+import { Route as AppListsIndexRouteImport } from './routes/_app/lists/index'
+import { Route as AppListsListIdRouteImport } from './routes/_app/lists/$listId'
+import { Route as AppTemplatesIndexRouteImport } from './routes/_app/templates/index'
+import { Route as AppTemplatesTemplateIdRouteImport } from './routes/_app/templates/$templateId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -71,15 +74,30 @@ const AppSettingsRoute = AppSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AppRoute,
 } as any)
-const AppTemplatesRoute = AppTemplatesRouteImport.update({
-  id: '/templates',
-  path: '/templates',
-  getParentRoute: () => AppRoute,
-} as any)
 const Oauth2RedirectRoute = Oauth2RedirectRouteImport.update({
   id: '/oauth2/redirect',
   path: '/oauth2/redirect',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppListsIndexRoute = AppListsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppListsRoute,
+} as any)
+const AppListsListIdRoute = AppListsListIdRouteImport.update({
+  id: '/$listId',
+  path: '/$listId',
+  getParentRoute: () => AppListsRoute,
+} as any)
+const AppTemplatesIndexRoute = AppTemplatesIndexRouteImport.update({
+  id: '/templates/',
+  path: '/templates/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTemplatesTemplateIdRoute = AppTemplatesTemplateIdRouteImport.update({
+  id: '/templates/$templateId',
+  path: '/templates/$templateId',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -90,10 +108,13 @@ export interface FileRoutesByFullPath {
   '/campaigns': typeof AppCampaignsRoute
   '/contacts': typeof AppContactsRoute
   '/dashboard': typeof AppDashboardRoute
-  '/lists': typeof AppListsRoute
+  '/lists': typeof AppListsRouteWithChildren
   '/settings': typeof AppSettingsRoute
-  '/templates': typeof AppTemplatesRoute
   '/oauth2/redirect': typeof Oauth2RedirectRoute
+  '/lists/$listId': typeof AppListsListIdRoute
+  '/templates/$templateId': typeof AppTemplatesTemplateIdRoute
+  '/lists/': typeof AppListsIndexRoute
+  '/templates/': typeof AppTemplatesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -103,10 +124,12 @@ export interface FileRoutesByTo {
   '/campaigns': typeof AppCampaignsRoute
   '/contacts': typeof AppContactsRoute
   '/dashboard': typeof AppDashboardRoute
-  '/lists': typeof AppListsRoute
   '/settings': typeof AppSettingsRoute
-  '/templates': typeof AppTemplatesRoute
   '/oauth2/redirect': typeof Oauth2RedirectRoute
+  '/lists/$listId': typeof AppListsListIdRoute
+  '/templates/$templateId': typeof AppTemplatesTemplateIdRoute
+  '/lists': typeof AppListsIndexRoute
+  '/templates': typeof AppTemplatesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -118,10 +141,13 @@ export interface FileRoutesById {
   '/_app/campaigns': typeof AppCampaignsRoute
   '/_app/contacts': typeof AppContactsRoute
   '/_app/dashboard': typeof AppDashboardRoute
-  '/_app/lists': typeof AppListsRoute
+  '/_app/lists': typeof AppListsRouteWithChildren
   '/_app/settings': typeof AppSettingsRoute
-  '/_app/templates': typeof AppTemplatesRoute
   '/oauth2/redirect': typeof Oauth2RedirectRoute
+  '/_app/lists/$listId': typeof AppListsListIdRoute
+  '/_app/templates/$templateId': typeof AppTemplatesTemplateIdRoute
+  '/_app/lists/': typeof AppListsIndexRoute
+  '/_app/templates/': typeof AppTemplatesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -135,8 +161,11 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/lists'
     | '/settings'
-    | '/templates'
     | '/oauth2/redirect'
+    | '/lists/$listId'
+    | '/templates/$templateId'
+    | '/lists/'
+    | '/templates/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -146,10 +175,12 @@ export interface FileRouteTypes {
     | '/campaigns'
     | '/contacts'
     | '/dashboard'
-    | '/lists'
     | '/settings'
-    | '/templates'
     | '/oauth2/redirect'
+    | '/lists/$listId'
+    | '/templates/$templateId'
+    | '/lists'
+    | '/templates'
   id:
     | '__root__'
     | '/'
@@ -162,8 +193,11 @@ export interface FileRouteTypes {
     | '/_app/dashboard'
     | '/_app/lists'
     | '/_app/settings'
-    | '/_app/templates'
     | '/oauth2/redirect'
+    | '/_app/lists/$listId'
+    | '/_app/templates/$templateId'
+    | '/_app/lists/'
+    | '/_app/templates/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -246,13 +280,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/templates': {
-      id: '/_app/templates'
-      path: '/templates'
-      fullPath: '/templates'
-      preLoaderRoute: typeof AppTemplatesRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/oauth2/redirect': {
       id: '/oauth2/redirect'
       path: '/oauth2/redirect'
@@ -260,17 +287,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Oauth2RedirectRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/lists/': {
+      id: '/_app/lists/'
+      path: '/'
+      fullPath: '/lists/'
+      preLoaderRoute: typeof AppListsIndexRouteImport
+      parentRoute: typeof AppListsRoute
+    }
+    '/_app/lists/$listId': {
+      id: '/_app/lists/$listId'
+      path: '/$listId'
+      fullPath: '/lists/$listId'
+      preLoaderRoute: typeof AppListsListIdRouteImport
+      parentRoute: typeof AppListsRoute
+    }
+    '/_app/templates/': {
+      id: '/_app/templates/'
+      path: '/templates'
+      fullPath: '/templates/'
+      preLoaderRoute: typeof AppTemplatesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/templates/$templateId': {
+      id: '/_app/templates/$templateId'
+      path: '/templates/$templateId'
+      fullPath: '/templates/$templateId'
+      preLoaderRoute: typeof AppTemplatesTemplateIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
+
+interface AppListsRouteChildren {
+  AppListsListIdRoute: typeof AppListsListIdRoute
+  AppListsIndexRoute: typeof AppListsIndexRoute
+}
+
+const AppListsRouteChildren: AppListsRouteChildren = {
+  AppListsListIdRoute: AppListsListIdRoute,
+  AppListsIndexRoute: AppListsIndexRoute,
+}
+
+const AppListsRouteWithChildren = AppListsRoute._addFileChildren(
+  AppListsRouteChildren,
+)
 
 interface AppRouteChildren {
   AppAnalyticsRoute: typeof AppAnalyticsRoute
   AppCampaignsRoute: typeof AppCampaignsRoute
   AppContactsRoute: typeof AppContactsRoute
   AppDashboardRoute: typeof AppDashboardRoute
-  AppListsRoute: typeof AppListsRoute
+  AppListsRoute: typeof AppListsRouteWithChildren
   AppSettingsRoute: typeof AppSettingsRoute
-  AppTemplatesRoute: typeof AppTemplatesRoute
+  AppTemplatesTemplateIdRoute: typeof AppTemplatesTemplateIdRoute
+  AppTemplatesIndexRoute: typeof AppTemplatesIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -278,9 +348,10 @@ const AppRouteChildren: AppRouteChildren = {
   AppCampaignsRoute: AppCampaignsRoute,
   AppContactsRoute: AppContactsRoute,
   AppDashboardRoute: AppDashboardRoute,
-  AppListsRoute: AppListsRoute,
+  AppListsRoute: AppListsRouteWithChildren,
   AppSettingsRoute: AppSettingsRoute,
-  AppTemplatesRoute: AppTemplatesRoute,
+  AppTemplatesTemplateIdRoute: AppTemplatesTemplateIdRoute,
+  AppTemplatesIndexRoute: AppTemplatesIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

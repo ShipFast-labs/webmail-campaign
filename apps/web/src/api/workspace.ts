@@ -9,4 +9,6 @@ interface BackendResponse<T> {
 export const workspaceApi = {
   listWorkspaces: () =>
     api.get<BackendResponse<AuthWorkspace[]>>("/workspaces").then((r) => r.data.data),
+  createWorkspace: (name: string) =>
+    api.post<BackendResponse<AuthWorkspace>>("/workspaces", { name }).then((r) => r.data.data),
 };
