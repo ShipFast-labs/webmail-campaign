@@ -1,12 +1,14 @@
 package com.example.emailcampaign.common.context;
 
+import lombok.NoArgsConstructor;
+
 import java.util.UUID;
 
+@NoArgsConstructor
 public final class WorkspaceContext {
     private static final ThreadLocal<UUID> WORKSPACE_ID = new ThreadLocal<>();
 
-    private WorkspaceContext() {
-    }
+    
 
     public static UUID getCurrentWorkspaceId() {
         return WORKSPACE_ID.get();

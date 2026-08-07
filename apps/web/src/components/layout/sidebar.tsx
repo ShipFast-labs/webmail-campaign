@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   ArrowLeft01Icon,
-  Building01Icon,
   Logout01Icon,
   Settings01Icon,
 } from "@hugeicons/core-free-icons";
@@ -9,7 +8,6 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { motion } from "motion/react";
 
 import { Button } from "@/components/ui/button";
-import { useAuthStore } from "@/store/auth-store";
 import { useUiStore } from "@/store/ui-store";
 import { cn } from "@/lib/utils";
 import { SidebarNav } from "./sidebar-nav";
@@ -19,8 +17,6 @@ export function Sidebar() {
   const navigate = useNavigate();
   const { mobileSidebarOpen, sidebarCollapsed, setMobileSidebarOpen, toggleSidebarCollapsed } =
     useUiStore();
-  const { workspace } = useAuthStore();
-
   const handleLogout = () => {
     authService.logout();
     navigate({ to: "/login" });
@@ -50,7 +46,6 @@ export function Sidebar() {
         <div className="flex items-center h-14 px-3 border-b border-sidebar-border shrink-0">
           <Link
             to="/dashboard"
-            search={{ workspace: workspace?.id } as any}
             className="flex items-center gap-2 min-w-0 flex-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md"
           >
             <span
@@ -75,21 +70,6 @@ export function Sidebar() {
 
         {/* Footer */}
         <div className="px-2 py-3 border-t border-sidebar-border space-y-0.5 shrink-0">
-          {sidebarCollapsed
-            ? null
-            : workspace && (
-                <div className="flex items-center gap-2 px-2.5 h-8">
-                  <HugeiconsIcon
-                    icon={Building01Icon}
-                    size={14}
-                    className="shrink-0 text-sidebar-foreground/40"
-                  />
-                  <span className="text-xs text-sidebar-foreground/50 truncate">
-                    {workspace.name}
-                  </span>
-                </div>
-              )}
-
           <motion.div whileHover={{ x: 3 }} transition={{ duration: 0.15 }}>
             <Button
               asChild
