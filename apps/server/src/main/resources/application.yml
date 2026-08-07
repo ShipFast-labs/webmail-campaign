@@ -67,6 +67,12 @@ app:
       api-key: ${RESEND_API_KEY}
     ses:
       region: ${AWS_REGION:us-east-1}
+  aws:
+    access-key: ${AWS_ACCESS_KEY}
+    secret-key: ${AWS_SECRET_KEY}
+    region: ${AWS_REGION:us-east-1}
+    s3:
+      bucket-name: ${AWS_BUCKET_NAME}
 
 springdoc:
   scalar:
