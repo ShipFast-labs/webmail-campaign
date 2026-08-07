@@ -32,6 +32,7 @@ interface AuthState {
     refreshToken: string;
   }) => void;
   setAccessToken: (accessToken: string) => void;
+  setWorkspace: (workspace: AuthWorkspace) => void;
   clearAuth: () => void;
   isAuthenticated: () => boolean;
 }
@@ -48,6 +49,8 @@ export const useAuthStore = create<AuthState>()(
         set({ user, workspace, accessToken, refreshToken }),
 
       setAccessToken: (accessToken) => set({ accessToken }),
+
+      setWorkspace: (workspace) => set({ workspace }),
 
       clearAuth: () =>
         set({ user: null, workspace: null, accessToken: null, refreshToken: null }),

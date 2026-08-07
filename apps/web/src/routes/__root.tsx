@@ -1,7 +1,6 @@
 import { HeadContent, Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { ReactLenis } from "lenis/react";
 
 import { ThemeProvider } from "@/provider/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -40,10 +39,8 @@ function RootComponent() {
       <HeadContent />
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-          <ReactLenis root options={{ lerp: 0.1, duration: 1.4 }}>
             <Outlet />
             <Toaster richColors />
-          </ReactLenis>
         </ThemeProvider>
       </QueryClientProvider>
       {/* <TanStackRouterDevtools position="bottom-left" /> */}

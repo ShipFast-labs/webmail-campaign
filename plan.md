@@ -25,6 +25,7 @@ parts — Kafka pipeline, Quartz wiring, dual-provider webhook validation, state
 ## Implementation Progress Checklist
 
 ### Backend Progress
+
 - [x] **Day 1 — Foundation (Backend)**
   - [x] Spring Boot project init with Maven & dependencies (`pom.xml`)
   - [x] `docker-compose.yml` (PostgreSQL, Redis, Kafka, Zookeeper, Kafka-UI, Prometheus, Grafana)
@@ -37,10 +38,10 @@ parts — Kafka pipeline, Quartz wiring, dual-provider webhook validation, state
   - [x] `AuthService`, `AuthServiceImpl` (with auto-workspace creation on registration) & `AuthController`
   - [x] `WorkspaceService`, `WorkspaceServiceImpl` & `WorkspaceController`
   - [x] Scalar OpenAPI UI setup (`springdoc-openapi-starter-webmvc-scalar` 3.0.2 at `/api-docs`) with JWT security scheme
-- [ ] **Day 3 — Contacts (Backend)**
-  - [ ] `Contact` & `ImportJob` JPA entities and repositories
-  - [ ] `ContactService` & `ContactController` (CRUD, filtering, search)
-  - [ ] `ContactImportService` (`@Async` CSV chunked import with OpenCSV & progress tracking)
+- [x] **Day 3 — Contacts (Backend)**
+  - [x] `Contact` & `ImportJob` JPA entities and repositories
+  - [x] `ContactService` & `ContactController` (CRUD, filtering, search)
+  - [x] `ContactImportService` (`@Async` CSV chunked import with OpenCSV & progress tracking)
 - [ ] **Day 4 — Lists & Templates (Backend)**
   - [ ] `ContactList` entity, repository, service, and controller
   - [ ] `Template` entity, Freemarker `StringTemplateLoader` implementation, render preview endpoint
@@ -61,6 +62,7 @@ parts — Kafka pipeline, Quartz wiring, dual-provider webhook validation, state
   - [ ] End-to-end backend verification and performance tuning
 
 ### Frontend Progress
+
 - [x] **Day 1 — Foundation (Frontend)** (Vite + React 18 + TS, Tailwind, Shadcn/ui, AppShell skeleton)
 - [x] **Day 2 — Auth (Frontend)** (Login/Register pages, ProtectedRoute, Axios JWT interceptors)
 - [ ] **Day 3 — Contacts (Frontend)** (Contact list table, filters, CSV upload modal, progress bar)
@@ -135,30 +137,30 @@ All tables use UUIDs (`gen_random_uuid()`), `timestamptz`, composite indexes on 
 
 **Core tables:**
 
-| Table                           | Key Columns                                                                                                                                                                    |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `workspaces`                    | workspace_id, name, slug, plan, daily_send_limit                                                                                                                               |
-| `users`                         | user_id, workspace_id, email, password_hash, role (ADMIN\|MARKETER)                                                                                                            |
-| `refresh_tokens`                | token_id, user_id, token_hash, expires_at                                                                                                                                      |
-| `contacts`                      | contact_id, workspace_id, email, first/last name, status (active\|unsubscribed\|bounced\|cleaned), custom_fields JSONB, tags text[]                                            |
-| `lists`                         | list_id, workspace_id, name, contact_count                                                                                                                                     |
-| `list_contacts`                 | (list_id, contact_id) PK, added_at                                                                                                                                             |
-| `templates`                     | template_id, workspace_id, name, subject, html_content (Freemarker), text_content, variables JSONB                                                                             |
-| `campaigns`                     | campaign_id, workspace_id, name, status, template_id, from_name/email, target_list_id, scheduled_at, settings JSONB                                                            |
-| `campaign_contacts`             | (campaign_id, contact_id) PK, idempotency_key UNIQUE, status (pending\|sent\|delivered\|failed\|bounced), provider_message_id                                                  |
-| `tracking_tokens`               | token (PK, URL-safe base64), token_type (open\|click), campaign_id, contact_id, url                                                                                            |
-| `tracking_events`               | event_id, workspace_id, campaign_id, contact_id, event_type (sent\|delivered\|opened\|clicked\|bounced\|complained\|unsubscribed), event_data JSONB, provider_event_id (dedup) |
-| `campaign_analytics`            | campaign_id (PK), total_sent/delivered/opened/clicked/bounced/unsubscribed, unique_opens/clicks, hard/soft_bounces                                                             |
-| `campaign_analytics_timeseries` | (campaign_id, bucket, event_type) PK, count — hourly buckets via `date_trunc('hour', ...)`                                                                                     |
-| `outbox_events`                 | event_id, aggregate_type/id, event_type, payload JSONB, topic, status (pending\|published\|failed), retry_count                                                                |
-| `import_jobs`                   | import_job_id, workspace_id, list_id, file_name, status, total_rows, processed_rows, success/error_count, error_details JSONB                                                  |
-| `quartz_*`                      | Standard 11-table Quartz JDBC schema (V008 migration)                                                                                                                          |
+| Table                           | Key Columns                                                                                                                   |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `workspaces`                    | workspace_id, name, slug, plan, daily_send_limit                                                                              |
+| `users`                         | user_id, workspace_id, email, password_hash, role (ADMIN                                                                      | MARKETER)                            |
+| `refresh_tokens`                | token_id, user_id, token_hash, expires_at                                                                                     |
+| `contacts`                      | contact_id, workspace_id, email, first/last name, status (active                                                              | unsubscribed                         | bounced              | cleaned), custom_fields JSONB, tags text[] |
+| `lists`                         | list_id, workspace_id, name, contact_count                                                                                    |
+| `list_contacts`                 | (list_id, contact_id) PK, added_at                                                                                            |
+| `templates`                     | template_id, workspace_id, name, subject, html_content (Freemarker), text_content, variables JSONB                            |
+| `campaigns`                     | campaign_id, workspace_id, name, status, template_id, from_name/email, target_list_id, scheduled_at, settings JSONB           |
+| `campaign_contacts`             | (campaign_id, contact_id) PK, idempotency_key UNIQUE, status (pending                                                         | sent                                 | delivered            | failed                                     | bounced), provider_message_id |
+| `tracking_tokens`               | token (PK, URL-safe base64), token_type (open                                                                                 | click), campaign_id, contact_id, url |
+| `tracking_events`               | event_id, workspace_id, campaign_id, contact_id, event_type (sent                                                             | delivered                            | opened               | clicked                                    | bounced                       | complained | unsubscribed), event_data JSONB, provider_event_id (dedup) |
+| `campaign_analytics`            | campaign_id (PK), total_sent/delivered/opened/clicked/bounced/unsubscribed, unique_opens/clicks, hard/soft_bounces            |
+| `campaign_analytics_timeseries` | (campaign_id, bucket, event_type) PK, count — hourly buckets via `date_trunc('hour', ...)`                                    |
+| `outbox_events`                 | event_id, aggregate_type/id, event_type, payload JSONB, topic, status (pending                                                | published                            | failed), retry_count |
+| `import_jobs`                   | import_job_id, workspace_id, list_id, file_name, status, total_rows, processed_rows, success/error_count, error_details JSONB |
+| `quartz_*`                      | Standard 11-table Quartz JDBC schema (V008 migration)                                                                         |
 
 ---
 
 ## API Design
 
-**Base:** `/api/v1` — all endpoints require `Authorization: Bearer <jwt>` except `/auth/**`, `/t/**`, `/webhooks/**`.
+**Base:** `/api/v1` — all endpoints require `Authorization: Bearer <jwt>` except `/auth/`**, `/t/**`, `/webhooks/**`.
 `workspace_id` is always derived from JWT claims, never from URL.
 
 ### Auth — `/api/v1/auth`

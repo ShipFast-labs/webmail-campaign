@@ -1,9 +1,10 @@
 package com.example.emailcampaign.workspace.domain;
 
 import com.example.emailcampaign.common.domain.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.example.emailcampaign.contact.domain.Contact;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +13,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "workspaces")
 public class Workspace extends BaseEntity {
@@ -23,8 +26,5 @@ public class Workspace extends BaseEntity {
     @Column(nullable = false)
     private UUID ownerId;
 
-    public Workspace(String name, UUID ownerId) {
-        this.name = name;
-        this.ownerId = ownerId;
-    }
+   
 }

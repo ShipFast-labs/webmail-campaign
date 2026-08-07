@@ -8,18 +8,18 @@ type Props = { children: React.ReactNode };
 export function AuthLayout({ children }: Props) {
   return (
     <div className="relative min-h-svh flex items-center justify-center px-4 py-12 overflow-hidden bg-background">
-      {/* Cross grid pattern — fades toward center */}
+      {/* Geometric grid — matches landing page pattern */}
       <div
         aria-hidden
-        className="absolute inset-0 pointer-events-none"
+        className="fixed inset-0 pointer-events-none"
         style={{
           backgroundImage: `
-            linear-gradient(45deg, transparent 49%, var(--pattern-line) 49%, var(--pattern-line) 51%, transparent 51%),
-            linear-gradient(-45deg, transparent 49%, var(--pattern-line) 49%, var(--pattern-line) 51%, transparent 51%)
+            linear-gradient(to right, var(--pattern-line) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--pattern-line) 1px, transparent 1px)
           `,
-          backgroundSize: "40px 40px",
-          WebkitMaskImage: "radial-gradient(ellipse 90% 90% at 50% 50%, transparent 30%, #000 80%)",
-          maskImage: "radial-gradient(ellipse 90% 90% at 50% 50%, transparent 30%, #000 80%)",
+          backgroundSize: "20px 30px",
+          WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
+          maskImage: "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
         }}
       />
 

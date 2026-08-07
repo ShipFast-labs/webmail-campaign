@@ -1,12 +1,9 @@
 package com.example.emailcampaign.workspace.domain;
 
 import com.example.emailcampaign.common.domain.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +12,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(
         name = "workspace_members",
@@ -34,10 +33,6 @@ public class WorkspaceMember extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private WorkspaceRole role;
-
-    public WorkspaceMember(UUID workspaceId, UUID userId, WorkspaceRole role) {
-        this.workspaceId = workspaceId;
-        this.userId = userId;
-        this.role = role;
-    }
+    
+    
 }

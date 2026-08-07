@@ -82,6 +82,7 @@ services:
     command: |
       "
       echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic contact.import.jobs --replication-factor 1 --partitions 4
       kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic email.campaign.scheduled --replication-factor 1 --partitions 4
       kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic email.send.batches --replication-factor 1 --partitions 12
       kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic email.send.batches.DLT --replication-factor 1 --partitions 4
