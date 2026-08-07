@@ -2,6 +2,7 @@ package com.example.emailcampaign.contact.repository;
 
 import com.example.emailcampaign.contact.domain.Contact;
 import com.example.emailcampaign.contact.domain.Status;
+import jakarta.persistence.criteria.Expression;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.UUID;
@@ -40,10 +41,10 @@ public class ContactSpecification {
 
     public static Specification<Contact> withTag(String tag) {
         if (tag == null || tag.isBlank()) return null;
-        // array_position(tags, ?) IS NOT NULL — checks if tag exists in the PostgreSQL text[] column
-        return (root, query, cb) ->
-                cb.isNotNull(
-                        cb.function("array_position", Integer.class, root.get("tags"), cb.literal(tag))
-                );
+        return (root, query, cb) -> {
+            Expression<String> tagsStr = cb.function(
+                    "array_to_string", String.class, root.get("tags"), cb.literal(","));
+            return cb.like(cb.lower(tagsStr), "%" + tag.trim().toLowerCase() + "%");
+        };
     }
 }

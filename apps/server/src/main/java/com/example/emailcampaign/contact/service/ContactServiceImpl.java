@@ -21,8 +21,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -41,12 +44,15 @@ public class ContactServiceImpl implements ContactService {
     public Page<ContactResponse> getContacts(UUID workspaceId, String status, String search, String tag, UUID listId, Pageable pageable) {
         Status parsedStatus = parseStatus(status);
 
-        Specification<Contact> spec = Specification
-                .where(ContactSpecification.withWorkspaceId(workspaceId))
-                .and(ContactSpecification.excludeCleaned())
-                .and(ContactSpecification.withStatus(parsedStatus))
-                .and(ContactSpecification.withSearch(search))
-                .and(ContactSpecification.withTag(tag));
+        List<Specification<Contact>> specs = Stream.of(
+                ContactSpecification.withWorkspaceId(workspaceId),
+                ContactSpecification.excludeCleaned(),
+                ContactSpecification.withStatus(parsedStatus),
+                ContactSpecification.withSearch(search),
+                ContactSpecification.withTag(tag)
+        ).filter(Objects::nonNull).toList();
+
+        Specification<Contact> spec = Specification.allOf(specs);
 
         return contactRepository.findAll(spec, pageable).map(contactMapper::toResponse);
     }

@@ -11,8 +11,9 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = useAuthStore.getState().accessToken;
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  const { accessToken, workspace } = useAuthStore.getState();
+  if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
+  if (workspace?.id) config.headers["X-Workspace-Id"] = workspace.id;
   return config;
 });
 

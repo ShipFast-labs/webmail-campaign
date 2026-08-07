@@ -4,6 +4,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
+import { WorkspaceSwitcher } from "@/components/layout/workspace-switcher";
 import { useAuthStore } from "@/store/auth-store";
 import { useUiStore } from "@/store/ui-store";
 
@@ -27,6 +28,7 @@ export function TopBar() {
 
       <div className="flex-1" />
 
+      <WorkspaceSwitcher />
       <ModeToggle />
 
       <Avatar className="h-8 w-8 cursor-pointer" title={user?.email}>

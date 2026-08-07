@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
+import { ReactLenis } from "lenis/react"
 
 import { Footer } from "@/components/footer"
 import { Nav } from "@/components/nav"
@@ -14,7 +15,7 @@ export const Route = createFileRoute("/")({
 
 function LandingPage() {
   return (
-    <>
+    <ReactLenis root options={{ lerp: 0.1, duration: 1.4 }}>
       {/* Fixed geometric grid — viewport-locked, never scrolls */}
       <div
         aria-hidden
@@ -40,6 +41,6 @@ function LandingPage() {
         <CtaStrip />
       </main>
       <Footer />
-    </>
+    </ReactLenis>
   )
 }
