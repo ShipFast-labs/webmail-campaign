@@ -57,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
 
         // Auto-create default workspace
         Workspace defaultWorkspace = workspaceService.createWorkspace(
-                request.getFullName() + "'s Workspace", user.getId());
+                "Default", user.getId());
 
         TokenResponse tokens = generateTokens(user.getId(), user.getEmail());
 
