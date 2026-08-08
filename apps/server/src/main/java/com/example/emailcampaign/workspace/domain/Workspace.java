@@ -1,7 +1,6 @@
 package com.example.emailcampaign.workspace.domain;
 
 import com.example.emailcampaign.common.domain.BaseEntity;
-import com.example.emailcampaign.contact.domain.Contact;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
