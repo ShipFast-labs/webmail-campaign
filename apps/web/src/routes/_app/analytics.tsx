@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 import { motion } from "motion/react";
 import { format } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -49,6 +50,12 @@ function GlobalAnalyticsPage() {
             <p className="text-muted-foreground mt-1 max-w-sm">
               You haven't sent any campaigns yet. Once a campaign starts sending or is completed, its analytics will appear here.
             </p>
+            <Button variant="outline" className="mt-6" asChild>
+              <Link to="/campaigns/$campaignId/analytics" params={{ campaignId: "mock-1" }}>
+                <HugeiconsIcon icon={ChartHistogramIcon} size={16} className="mr-2" />
+                View Mock Analytics Demo
+              </Link>
+            </Button>
           </CardContent>
         </Card>
       ) : (
@@ -69,7 +76,7 @@ function GlobalAnalyticsPage() {
                     <div className="flex items-center text-sm text-muted-foreground mt-2">
                       <HugeiconsIcon icon={Calendar01Icon} size={14} className="mr-2" />
                       {format(new Date(camp.createdAt), "MMM d, yyyy")}
-                      
+
                       <div className="ml-auto flex items-center text-primary font-medium text-xs">
                         View Report &rarr;
                       </div>

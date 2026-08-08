@@ -13,9 +13,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { 
-  PlusSignIcon, 
-  PlayIcon, 
+import {
+  PlusSignIcon,
+  PlayIcon,
   Cancel01Icon,
   ChartHistogramIcon,
   Calendar01Icon
@@ -118,15 +118,15 @@ function CampaignsIndexPage() {
                     <TableCell className="text-sm text-muted-foreground">
                       {campaign.status === "SCHEDULED" && campaign.scheduledAt
                         ? format(new Date(campaign.scheduledAt), "MMM d, yyyy h:mm a")
-                        : campaign.status === "COMPLETED" 
-                        ? format(new Date(campaign.createdAt), "MMM d, yyyy") // Mock completed date
-                        : "—"}
+                        : campaign.status === "COMPLETED"
+                          ? format(new Date(campaign.createdAt), "MMM d, yyyy") // Mock completed date
+                          : "—"}
                     </TableCell>
                     <TableCell className="text-right space-x-2">
                       {campaign.status === "DRAFT" && (
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button
+                          variant="outline"
+                          size="sm"
                           className="h-8 text-xs gap-1.5"
                           onClick={() => sendNow.mutate(campaign.id)}
                           disabled={sendNow.isPending}
@@ -135,11 +135,11 @@ function CampaignsIndexPage() {
                           Send Now
                         </Button>
                       )}
-                      
+
                       {campaign.status === "SCHEDULED" && (
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           className="h-8 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 gap-1.5"
                           onClick={() => cancelCampaign.mutate(campaign.id)}
                           disabled={cancelCampaign.isPending}
@@ -148,11 +148,11 @@ function CampaignsIndexPage() {
                           Cancel
                         </Button>
                       )}
-                      
+
                       {campaign.status === "COMPLETED" && (
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           className="h-8 text-xs gap-1.5 text-blue-500 hover:text-blue-600 hover:bg-blue-500/10"
                           asChild
                         >
