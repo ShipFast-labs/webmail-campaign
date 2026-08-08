@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
+import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -172,7 +172,7 @@ public class ContactImportService {
         progress.put("successCount", String.valueOf(job.getSuccessCount()));
         progress.put("errorCount", String.valueOf(job.getErrorCount()));
         redisTemplate.opsForHash().putAll(key, progress);
-        redisTemplate.expire(key, REDIS_TTL_HOURS, TimeUnit.HOURS);
+        redisTemplate.expire(key, Duration.ofHours(REDIS_TTL_HOURS));
     }
 
     private void failJob(ImportJob job, UUID jobId, String reason) {
