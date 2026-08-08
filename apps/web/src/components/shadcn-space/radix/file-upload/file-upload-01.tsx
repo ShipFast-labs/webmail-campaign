@@ -16,9 +16,11 @@ const secondaryVariant = {
 
 interface FileUploadProps {
   onChange?: (files: File[]) => void;
+  accept?: string;
+  acceptDropzone?: Record<string, string[]>;
 }
 
-export const FileUploadStruc: React.FC<FileUploadProps> = ({ onChange }) => {
+export const FileUploadStruc: React.FC<FileUploadProps> = ({ onChange, accept, acceptDropzone }) => {
   const [files, setFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -36,6 +38,7 @@ export const FileUploadStruc: React.FC<FileUploadProps> = ({ onChange }) => {
     noClick: true,
     onDrop: handleFileChange,
     onDropRejected: console.error,
+    accept: acceptDropzone,
   });
 
   const formatFileSize = (size: number) => (size / (1024 * 1024)).toFixed(2);
@@ -53,6 +56,7 @@ export const FileUploadStruc: React.FC<FileUploadProps> = ({ onChange }) => {
           ref={fileInputRef}
           id="file-upload-handle"
           type="file"
+          accept={accept}
           onChange={(e) => handleFileChange(Array.from(e.target.files || []))}
           className="hidden"
         />

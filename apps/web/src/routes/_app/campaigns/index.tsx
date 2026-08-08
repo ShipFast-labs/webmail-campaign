@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { 
   PlusSignIcon, 
@@ -76,11 +77,22 @@ function CampaignsIndexPage() {
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
-                    Loading campaigns...
-                  </TableCell>
-                </TableRow>
+                Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell>
+                      <Skeleton className="h-4 w-[150px] mb-2" />
+                      <Skeleton className="h-3 w-[250px]" />
+                    </TableCell>
+                    <TableCell><Skeleton className="h-5 w-[80px] rounded-full" /></TableCell>
+                    <TableCell><Skeleton className="h-4 w-[120px]" /></TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Skeleton className="h-8 w-[80px]" />
+                        <Skeleton className="h-8 w-[80px]" />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
               ) : !campaigns?.length ? (
                 <TableRow>
                   <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
