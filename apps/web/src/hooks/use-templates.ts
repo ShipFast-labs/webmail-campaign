@@ -1,42 +1,43 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { templateApi } from "@/api/templates";
-import type { TemplatePreviewRequest } from "@/api/templates";
+import type { CreateTemplatePayload, UpdateTemplatePayload, TemplatePreviewRequest } from "@/api/templates";
 import { toast } from "sonner";
 
 export function useTemplates() {
   return useQuery({
     queryKey: ["templates"],
-    queryFn: () => templateApi.getTemplates().then(res => res.data),
+    queryFn: () => templateApi.getTemplates(),
   });
 }
 
 export function useTemplate(id: string) {
   return useQuery({
     queryKey: ["templates", id],
-    queryFn: () => templateApi.getTemplate(id).then(res => res.data),
+    queryFn: () => templateApi.getTemplate(id),
     enabled: !!id,
   });
 }
 
 export function useCreateTemplate() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: Parameters<typeof templateApi.createTemplate>[0]) => templateApi.createTemplate(data),
+    mutationFn: (data: CreateTemplatePayload) => templateApi.createTemplate(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["templates"] });
-      toast.success("Template created successfully");
+      qc.invalidateQueries({ queryKey: ["templates"] });
+      toast.success("Template created");
     },
     onError: () => toast.error("Failed to create template"),
   });
 }
 
 export function useUpdateTemplate() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Parameters<typeof templateApi.updateTemplate>[1] }) => templateApi.updateTemplate(id, data),
+    mutationFn: ({ id, data }: { id: string; data: UpdateTemplatePayload }) =>
+      templateApi.updateTemplate(id, data),
     onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ["templates"] });
-      queryClient.invalidateQueries({ queryKey: ["templates", id] });
+      qc.invalidateQueries({ queryKey: ["templates"] });
+      qc.invalidateQueries({ queryKey: ["templates", id] });
       toast.success("Template saved");
     },
     onError: () => toast.error("Failed to save template"),
@@ -44,11 +45,11 @@ export function useUpdateTemplate() {
 }
 
 export function useDeleteTemplate() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => templateApi.deleteTemplate(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["templates"] });
+      qc.invalidateQueries({ queryKey: ["templates"] });
       toast.success("Template deleted");
     },
     onError: () => toast.error("Failed to delete template"),
@@ -56,11 +57,11 @@ export function useDeleteTemplate() {
 }
 
 export function useDuplicateTemplate() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => templateApi.duplicateTemplate(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["templates"] });
+      qc.invalidateQueries({ queryKey: ["templates"] });
       toast.success("Template duplicated");
     },
     onError: () => toast.error("Failed to duplicate template"),
@@ -69,6 +70,7 @@ export function useDuplicateTemplate() {
 
 export function usePreviewTemplate() {
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: TemplatePreviewRequest }) => templateApi.previewTemplate(id, data),
+    mutationFn: ({ id, data }: { id: string; data: TemplatePreviewRequest }) =>
+      templateApi.previewTemplate(id, data),
   });
 }

@@ -5,14 +5,14 @@ import { toast } from "sonner";
 export function useLists() {
   return useQuery({
     queryKey: ["lists"],
-    queryFn: () => listApi.getLists().then(res => res.data),
+    queryFn: () => listApi.getLists(),
   });
 }
 
 export function useList(id: string) {
   return useQuery({
     queryKey: ["lists", id],
-    queryFn: () => listApi.getList(id).then(res => res.data),
+    queryFn: () => listApi.getList(id),
     enabled: !!id,
   });
 }
@@ -20,69 +20,71 @@ export function useList(id: string) {
 export function useListContacts(id: string) {
   return useQuery({
     queryKey: ["lists", id, "contacts"],
-    queryFn: () => listApi.getListContacts(id).then(res => res.data),
+    queryFn: () => listApi.getListContacts(id),
     enabled: !!id,
   });
 }
 
 export function useCreateList() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (name: string) => listApi.createList(name),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["lists"] });
-      toast.success("List created successfully");
+      qc.invalidateQueries({ queryKey: ["lists"] });
+      toast.success("List created");
     },
     onError: () => toast.error("Failed to create list"),
   });
 }
 
 export function useUpdateList() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, name }: { id: string; name: string }) => listApi.updateList(id, name),
     onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ["lists"] });
-      queryClient.invalidateQueries({ queryKey: ["lists", id] });
-      toast.success("List updated successfully");
+      qc.invalidateQueries({ queryKey: ["lists"] });
+      qc.invalidateQueries({ queryKey: ["lists", id] });
+      toast.success("List updated");
     },
     onError: () => toast.error("Failed to update list"),
   });
 }
 
 export function useDeleteList() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => listApi.deleteList(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["lists"] });
-      toast.success("List deleted successfully");
+      qc.invalidateQueries({ queryKey: ["lists"] });
+      toast.success("List deleted");
     },
     onError: () => toast.error("Failed to delete list"),
   });
 }
 
 export function useAddContactsToList() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ listId, contactIds }: { listId: string; contactIds: string[] }) => listApi.addContactsToList(listId, contactIds),
+    mutationFn: ({ listId, contactIds }: { listId: string; contactIds: string[] }) =>
+      listApi.addContactsToList(listId, contactIds),
     onSuccess: (_, { listId }) => {
-      queryClient.invalidateQueries({ queryKey: ["lists"] });
-      queryClient.invalidateQueries({ queryKey: ["lists", listId] });
+      qc.invalidateQueries({ queryKey: ["lists"] });
+      qc.invalidateQueries({ queryKey: ["lists", listId] });
       toast.success("Contacts added to list");
     },
-    onError: () => toast.error("Failed to add contacts to list"),
+    onError: () => toast.error("Failed to add contacts"),
   });
 }
 
 export function useRemoveContactFromList() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ listId, contactId }: { listId: string; contactId: string }) => listApi.removeContactFromList(listId, contactId),
+    mutationFn: ({ listId, contactId }: { listId: string; contactId: string }) =>
+      listApi.removeContactFromList(listId, contactId),
     onSuccess: (_, { listId }) => {
-      queryClient.invalidateQueries({ queryKey: ["lists"] });
-      queryClient.invalidateQueries({ queryKey: ["lists", listId] });
-      toast.success("Contact removed from list");
+      qc.invalidateQueries({ queryKey: ["lists"] });
+      qc.invalidateQueries({ queryKey: ["lists", listId] });
+      toast.success("Contact removed");
     },
     onError: () => toast.error("Failed to remove contact"),
   });

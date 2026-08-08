@@ -19,7 +19,7 @@ function AppShell() {
       <Sidebar />
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         <TopBar />
-        <main className="flex-1 min-h-0 overflow-auto p-6 bg-muted">
+        <main className="flex-1 min-h-0 overflow-auto p-6 bg-app-shell-bg">
           <Outlet />
         </main>
       </div>
