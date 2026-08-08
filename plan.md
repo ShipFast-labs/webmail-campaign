@@ -68,8 +68,8 @@ parts — Kafka pipeline, Quartz wiring, dual-provider webhook validation, state
 - [x] **Day 3 — Contacts (Frontend)** (Contact list table, filters, CSV upload modal, progress bar)
 - [x] **Day 4 — Lists & Templates (Frontend)** (List management, Template editor & preview)
 - [x] **Day 5 — Campaigns (Frontend)** (4-step Campaign Creation Wizard, Quartz scheduler date picker)
-- [ ] **Day 6 — Dashboard & Overview (Frontend)** (Dashboard KPI cards, recent campaigns, charts)
-- [ ] **Day 7–8 — Analytics & Detail View (Frontend)** (Campaign detail report, open/click charts, recipient table)
+- [x] **Day 6 — Dashboard & Overview (Frontend)** (Dashboard KPI cards, recent campaigns, charts)
+- [x] **Day 7–8 — Analytics & Detail View (Frontend)** (Campaign detail report, open/click charts, recipient table)
 - [ ] **Day 9 — Polish & E2E Testing (Frontend)** (End-to-end browser walkthroughs and UX polish)
 
 ---
