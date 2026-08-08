@@ -11,10 +11,11 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { 
-  PlusSignIcon, 
-  PlayIcon, 
+import {
+  PlusSignIcon,
+  PlayIcon,
   Cancel01Icon,
   ChartHistogramIcon,
   Calendar01Icon
@@ -76,11 +77,22 @@ function CampaignsIndexPage() {
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
-                    Loading campaigns...
-                  </TableCell>
-                </TableRow>
+                Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell>
+                      <Skeleton className="h-4 w-[150px] mb-2" />
+                      <Skeleton className="h-3 w-[250px]" />
+                    </TableCell>
+                    <TableCell><Skeleton className="h-5 w-[80px] rounded-full" /></TableCell>
+                    <TableCell><Skeleton className="h-4 w-[120px]" /></TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Skeleton className="h-8 w-[80px]" />
+                        <Skeleton className="h-8 w-[80px]" />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
               ) : !campaigns?.length ? (
                 <TableRow>
                   <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
@@ -106,15 +118,15 @@ function CampaignsIndexPage() {
                     <TableCell className="text-sm text-muted-foreground">
                       {campaign.status === "SCHEDULED" && campaign.scheduledAt
                         ? format(new Date(campaign.scheduledAt), "MMM d, yyyy h:mm a")
-                        : campaign.status === "COMPLETED" 
-                        ? format(new Date(campaign.createdAt), "MMM d, yyyy") // Mock completed date
-                        : "—"}
+                        : campaign.status === "COMPLETED"
+                          ? format(new Date(campaign.createdAt), "MMM d, yyyy") // Mock completed date
+                          : "—"}
                     </TableCell>
                     <TableCell className="text-right space-x-2">
                       {campaign.status === "DRAFT" && (
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button
+                          variant="outline"
+                          size="sm"
                           className="h-8 text-xs gap-1.5"
                           onClick={() => sendNow.mutate(campaign.id)}
                           disabled={sendNow.isPending}
@@ -123,11 +135,11 @@ function CampaignsIndexPage() {
                           Send Now
                         </Button>
                       )}
-                      
+
                       {campaign.status === "SCHEDULED" && (
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           className="h-8 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 gap-1.5"
                           onClick={() => cancelCampaign.mutate(campaign.id)}
                           disabled={cancelCampaign.isPending}
@@ -136,15 +148,18 @@ function CampaignsIndexPage() {
                           Cancel
                         </Button>
                       )}
-                      
+
                       {campaign.status === "COMPLETED" && (
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           className="h-8 text-xs gap-1.5 text-blue-500 hover:text-blue-600 hover:bg-blue-500/10"
+                          asChild
                         >
-                          <HugeiconsIcon icon={ChartHistogramIcon} size={14} />
-                          Analytics
+                          <Link to="/campaigns/$campaignId/analytics" params={{ campaignId: campaign.id }}>
+                            <HugeiconsIcon icon={ChartHistogramIcon} size={14} />
+                            Analytics
+                          </Link>
                         </Button>
                       )}
                     </TableCell>
