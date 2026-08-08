@@ -142,9 +142,12 @@ function CampaignsIndexPage() {
                           variant="ghost" 
                           size="sm" 
                           className="h-8 text-xs gap-1.5 text-blue-500 hover:text-blue-600 hover:bg-blue-500/10"
+                          asChild
                         >
-                          <HugeiconsIcon icon={ChartHistogramIcon} size={14} />
-                          Analytics
+                          <Link to="/campaigns/$campaignId/analytics" params={{ campaignId: campaign.id }}>
+                            <HugeiconsIcon icon={ChartHistogramIcon} size={14} />
+                            Analytics
+                          </Link>
                         </Button>
                       )}
                     </TableCell>
