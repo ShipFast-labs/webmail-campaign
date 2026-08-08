@@ -40,7 +40,7 @@ function RootComponent() {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <Outlet />
-            <Toaster richColors />
+            <Toaster />
         </ThemeProvider>
       </QueryClientProvider>
       {/* <TanStackRouterDevtools position="bottom-left" /> */}

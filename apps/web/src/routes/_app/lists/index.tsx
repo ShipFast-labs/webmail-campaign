@@ -1,13 +1,18 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useLists, useCreateList, useDeleteList } from "@/hooks/use-lists";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useLists, useCreateList, useDeleteList, useUpdateList } from "@/hooks/use-lists";
 import { Button } from "@/components/ui/button";
-import { PlusSignIcon, Settings01Icon, UserMultiple02Icon, Delete02Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Card } from "@/components/ui/card";
-import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import {
+  PlusSignIcon, Delete02Icon, PencilEdit01Icon,
+  Search01Icon, UserMultiple02Icon, Loading03Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { motion, AnimatePresence } from "motion/react";
+import { useState, useMemo, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import type { AudienceList } from "@/api/lists";
 
 export const Route = createFileRoute("/_app/lists/")({
   component: ListsPage,
@@ -15,73 +20,152 @@ export const Route = createFileRoute("/_app/lists/")({
 
 function ListsPage() {
   const { data: lists, isLoading } = useLists();
-  const deleteList = useDeleteList();
-  
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [renameTarget, setRenameTarget] = useState<AudienceList | null>(null);
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    if (!search.trim()) return lists ?? [];
+    return (lists ?? []).filter((l) => l.name.toLowerCase().includes(search.toLowerCase()));
+  }, [lists, search]);
 
   return (
-    <div className="space-y-6 h-full flex flex-col max-w-6xl mx-auto w-full pb-10">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Audience Lists</h1>
-          <p className="text-muted-foreground mt-1">Manage your subscriber lists for campaigns.</p>
+          <h1 className="text-2xl font-semibold">Audience Lists</h1>
+          <p className="text-sm text-muted-foreground">
+            {lists !== undefined ? `${lists.length} list${lists.length !== 1 ? "s" : ""}` : "Loading…"}
+          </p>
         </div>
-        <Button onClick={() => setIsCreateOpen(true)}>
-          <HugeiconsIcon icon={PlusSignIcon} size={16} className="mr-2" />
-          Create List
+        <motion.div whileHover={{ x: 2 }} transition={{ duration: 0.15 }}>
+          <Button onClick={() => setIsCreateOpen(true)}>
+            <HugeiconsIcon icon={PlusSignIcon} size={15} />
+            New List
+          </Button>
+        </motion.div>
+      </div>
+
+      <div className="flex gap-1.5 max-w-sm">
+        <Input
+          placeholder="Search lists…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <Button size="icon" variant="outline" aria-label="Search">
+          <HugeiconsIcon icon={Search01Icon} size={15} />
         </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <AnimatePresence mode="wait">
         {isLoading ? (
-          Array.from({ length: 3 }).map((_, i) => (
-            <Card key={i} className="h-32 bg-muted/20 animate-pulse" />
-          ))
-        ) : lists?.length === 0 ? (
-          <div className="col-span-3 text-center py-20 bg-card rounded-xl border border-dashed">
-            <HugeiconsIcon icon={UserMultiple02Icon} size={48} className="mx-auto text-muted-foreground/50 mb-4" />
-            <h3 className="text-lg font-medium">No lists yet</h3>
-            <p className="text-muted-foreground">Create your first audience list to get started.</p>
-            <Button onClick={() => setIsCreateOpen(true)} className="mt-4" variant="outline">Create List</Button>
-          </div>
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+          >
+            <Card className="flex items-center justify-center py-24">
+              <HugeiconsIcon icon={Loading03Icon} size={24} className="animate-spin text-muted-foreground" />
+            </Card>
+          </motion.div>
         ) : (
-          lists?.map((list) => (
-            <Card key={list.id} className="p-5 flex flex-col group relative hover:border-primary/50 transition-colors">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-semibold text-lg line-clamp-1">{list.name}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {new Date(list.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={() => deleteList.mutate(list.id)}>
-                    <HugeiconsIcon icon={Delete02Icon} size={16} />
-                  </Button>
-                </div>
-              </div>
-              <div className="mt-auto pt-6 flex items-center justify-between">
-                <div className="flex items-center text-sm font-medium">
-                  <HugeiconsIcon icon={UserMultiple02Icon} size={16} className="mr-2 text-muted-foreground" />
-                  {list.contactCount.toLocaleString()} Contacts
-                </div>
-                <Button variant="secondary" size="sm" asChild>
-                  <Link to="/lists/$listId" params={{ listId: list.id }}>
-                    View
-                  </Link>
-                </Button>
+          <motion.div
+            key="data"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: "easeInOut" }}
+          >
+            <Card className="overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-muted/40">
+                    <tr className="border-b border-border/60">
+                      <th className="text-left font-medium px-4 py-3 text-muted-foreground">Name</th>
+                      <th className="text-left font-medium px-4 py-3 text-muted-foreground">Contacts</th>
+                      <th className="text-left font-medium px-4 py-3 text-muted-foreground">Created</th>
+                      <th className="px-4 py-3" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.length === 0 ? (
+                      <tr>
+                        <td colSpan={4} className="text-center py-20 text-muted-foreground">
+                          <HugeiconsIcon icon={UserMultiple02Icon} size={32} className="mx-auto mb-3 opacity-40" />
+                          <p>{search ? "No lists match your search." : "No lists yet. Create one to get started."}</p>
+                        </td>
+                      </tr>
+                    ) : (
+                      filtered.map((list, i) => (
+                        <ListRow
+                          key={list.id}
+                          list={list}
+                          index={i}
+                          onRename={() => setRenameTarget(list)}
+                        />
+                      ))
+                    )}
+                  </tbody>
+                </table>
               </div>
             </Card>
-          ))
+          </motion.div>
         )}
-      </div>
-      
+      </AnimatePresence>
+
       <CreateListModal open={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
+      <RenameListModal list={renameTarget} onClose={() => setRenameTarget(null)} />
     </div>
   );
 }
 
-function CreateListModal({ open, onClose }: { open: boolean, onClose: () => void }) {
+function ListRow({ list, index, onRename }: { list: AudienceList; index: number; onRename: () => void }) {
+  const deleteList = useDeleteList();
+  const navigate = useNavigate();
+
+  return (
+    <motion.tr
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.12, delay: index * 0.02 }}
+      className="border-b border-border/40 last:border-0 hover:bg-muted/30 transition-colors cursor-pointer"
+      onClick={() => navigate({ to: "/lists/$listId", params: { listId: list.id } })}
+    >
+      <td className="px-4 py-3.5 font-medium whitespace-nowrap">{list.name}</td>
+      <td className="px-4 py-3.5 whitespace-nowrap">
+        <span className="flex items-center gap-1.5 text-muted-foreground">
+          <HugeiconsIcon icon={UserMultiple02Icon} size={14} />
+          {list.contactCount.toLocaleString()}
+        </span>
+      </td>
+      <td className="px-4 py-3.5 text-muted-foreground whitespace-nowrap">
+        {new Date(list.createdAt).toLocaleDateString()}
+      </td>
+      <td className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-1 justify-end">
+          <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.15 }}>
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" onClick={onRename}>
+              <HugeiconsIcon icon={PencilEdit01Icon} size={14} />
+            </Button>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.15 }}>
+            <Button
+              variant="ghost" size="icon"
+              className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
+              onClick={() => deleteList.mutate(list.id)}
+            >
+              <HugeiconsIcon icon={Delete02Icon} size={14} />
+            </Button>
+          </motion.div>
+        </div>
+      </td>
+    </motion.tr>
+  );
+}
+
+function CreateListModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [name, setName] = useState("");
   const createList = useCreateList();
 
@@ -99,20 +183,61 @@ function CreateListModal({ open, onClose }: { open: boolean, onClose: () => void
           <DialogTitle>Create new list</DialogTitle>
         </DialogHeader>
         <div className="py-4">
-          <Label htmlFor="name">List Name</Label>
-          <Input 
-            id="name" 
-            placeholder="e.g. VIP Customers" 
-            value={name} 
-            onChange={(e) => setName(e.target.value)} 
-            className="mt-2" 
+          <Label htmlFor="list-name">List Name</Label>
+          <Input
+            id="list-name"
+            placeholder="e.g. VIP Customers"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="mt-2"
             onKeyDown={(e) => e.key === "Enter" && handleCreate()}
           />
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>Cancel</Button>
           <Button onClick={handleCreate} disabled={!name.trim() || createList.isPending}>
-            {createList.isPending ? "Creating..." : "Create List"}
+            {createList.isPending ? "Creating…" : "Create List"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function RenameListModal({ list, onClose }: { list: AudienceList | null; onClose: () => void }) {
+  const [name, setName] = useState("");
+  const updateList = useUpdateList();
+
+  useEffect(() => {
+    if (list) setName(list.name);
+  }, [list]);
+
+  const handleSave = async () => {
+    if (!name.trim() || !list) return;
+    await updateList.mutateAsync({ id: list.id, name });
+    onClose();
+  };
+
+  return (
+    <Dialog open={!!list} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Rename list</DialogTitle>
+        </DialogHeader>
+        <div className="py-4">
+          <Label htmlFor="rename-name">List Name</Label>
+          <Input
+            id="rename-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="mt-2"
+            onKeyDown={(e) => e.key === "Enter" && handleSave()}
+          />
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button onClick={handleSave} disabled={!name.trim() || updateList.isPending}>
+            {updateList.isPending ? "Saving…" : "Save"}
           </Button>
         </DialogFooter>
       </DialogContent>

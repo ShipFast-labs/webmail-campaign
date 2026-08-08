@@ -44,8 +44,8 @@ public class TemplateServiceImpl implements TemplateService {
         Template template = Template.builder()
                 .workspace(workspaceRepository.getReferenceById(workspaceId))
                 .name(request.name())
-                .subject(request.subject())
-                .htmlContent(request.htmlContent())
+                .subject(request.subject() != null ? request.subject() : "")
+                .htmlContent(request.htmlContent() != null ? request.htmlContent() : "")
                 .textContent(request.textContent())
                 .variables(request.variables())
                 .build();

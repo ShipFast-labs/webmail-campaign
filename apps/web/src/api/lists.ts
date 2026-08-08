@@ -10,7 +10,7 @@ export interface AudienceList {
 }
 
 export interface ListContact {
-  id: string;
+  contactId: string;
   email: string;
   firstName: string;
   lastName: string;

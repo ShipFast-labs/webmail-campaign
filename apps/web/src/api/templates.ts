@@ -6,7 +6,8 @@ export interface Template {
   name: string;
   subject: string;
   htmlContent: string;
-  textContent: string;
+  textContent: string | null;
+  variables: Record<string, string> | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -16,6 +17,7 @@ export interface CreateTemplatePayload {
   subject?: string;
   htmlContent?: string;
   textContent?: string;
+  variables?: Record<string, string>;
 }
 
 export interface UpdateTemplatePayload {
@@ -23,15 +25,16 @@ export interface UpdateTemplatePayload {
   subject?: string;
   htmlContent?: string;
   textContent?: string;
+  variables?: Record<string, string>;
 }
 
 export interface TemplatePreviewRequest {
-  htmlContent: string;
   variables: Record<string, string>;
 }
 
 export interface TemplatePreviewResponse {
   htmlContent: string;
+  textContent: string | null;
 }
 
 interface BackendResponse<T> {

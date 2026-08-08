@@ -1,4 +1,5 @@
-import { useReactTable, getCoreRowModel, flexRender, createColumnHelper } from "@tanstack/react-table";
+import { useLegacyTable, getCoreRowModel, legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
+import { flexRender } from "@tanstack/react-table";
 import { PencilEdit01Icon, Delete02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { AnimatePresence, motion } from "motion/react";
@@ -16,7 +17,7 @@ const STATUS_STYLES: Record<string, string> = {
   CLEANED: "bg-muted text-muted-foreground",
 };
 
-const col = createColumnHelper<Contact>();
+const col = legacyCreateColumnHelper<Contact>();
 
 interface Props {
   contacts: Contact[];
@@ -29,7 +30,7 @@ interface Props {
 export function ContactsTable({ contacts, isLoading, isFetching, page = 0, onEdit }: Props) {
   const deleteContact = useDeleteContact();
 
-  const columns = [
+  const columns = col.columns([
     col.accessor("email", { header: "Email" }),
     col.accessor(
       (r) => [r.firstName, r.lastName].filter(Boolean).join(" ") || "—",
@@ -76,9 +77,9 @@ export function ContactsTable({ contacts, isLoading, isFetching, page = 0, onEdi
         </div>
       ),
     }),
-  ];
+  ]);
 
-  const table = useReactTable({
+  const table = useLegacyTable({
     data: contacts,
     columns,
     getCoreRowModel: getCoreRowModel(),
