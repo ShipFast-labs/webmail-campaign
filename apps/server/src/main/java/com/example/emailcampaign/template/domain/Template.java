@@ -33,8 +33,7 @@ public class Template extends BaseEntity {
 
     @Column(name = "text_content", columnDefinition = "text")
     private String textContent;
-
-    // Freemarker variable names + sample values for preview
+    
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private Map<String, String> variables;
