@@ -42,9 +42,9 @@ parts — Kafka pipeline, Quartz wiring, dual-provider webhook validation, state
   - [x] `Contact` & `ImportJob` JPA entities and repositories
   - [x] `ContactService` & `ContactController` (CRUD, filtering, search)
   - [x] `ContactImportService` (`@Async` CSV chunked import with OpenCSV & progress tracking)
-- [ ] **Day 4 — Lists & Templates (Backend)**
-  - [ ] `ContactList` entity, repository, service, and controller
-  - [ ] `Template` entity, Freemarker `StringTemplateLoader` implementation, render preview endpoint
+- [x] **Day 4 — Lists & Templates (Backend)**
+  - [x] `ContactList` entity, repository, service, and controller
+  - [x] `Template` entity, Freemarker `StringTemplateLoader` implementation, render preview endpoint
 - [ ] **Day 5 — Campaign Scheduling & Engine (Backend)**
   - [ ] `Campaign` & `CampaignSendJob` entities, repository, service, and controller
   - [ ] Quartz Scheduler integration (`CampaignQuartzJob`, trigger scheduling, immediate send)
@@ -68,8 +68,8 @@ parts — Kafka pipeline, Quartz wiring, dual-provider webhook validation, state
 - [x] **Day 3 — Contacts (Frontend)** (Contact list table, filters, CSV upload modal, progress bar)
 - [x] **Day 4 — Lists & Templates (Frontend)** (List management, Template editor & preview)
 - [x] **Day 5 — Campaigns (Frontend)** (4-step Campaign Creation Wizard, Quartz scheduler date picker)
-- [ ] **Day 6 — Dashboard & Overview (Frontend)** (Dashboard KPI cards, recent campaigns, charts)
-- [ ] **Day 7–8 — Analytics & Detail View (Frontend)** (Campaign detail report, open/click charts, recipient table)
+- [x] **Day 6 — Dashboard & Overview (Frontend)** (Dashboard KPI cards, recent campaigns, charts)
+- [x] **Day 7–8 — Analytics & Detail View (Frontend)** (Campaign detail report, open/click charts, recipient table)
 - [ ] **Day 9 — Polish & E2E Testing (Frontend)** (End-to-end browser walkthroughs and UX polish)
 
 ---
