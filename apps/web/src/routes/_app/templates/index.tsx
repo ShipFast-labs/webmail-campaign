@@ -103,10 +103,10 @@ function CreateTemplateModal({ open, onClose }: { open: boolean, onClose: () => 
 
   const handleCreate = async () => {
     if (!name.trim()) return;
-    const res = await createTemplate.mutateAsync({ name });
+    const tpl = await createTemplate.mutateAsync({ name });
     setName("");
     onClose();
-    navigate({ to: "/templates/$templateId", params: { templateId: res.data.id } });
+    navigate({ to: "/templates/$templateId", params: { templateId: tpl.id } });
   };
 
   return (

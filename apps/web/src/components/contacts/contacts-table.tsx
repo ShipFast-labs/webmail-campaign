@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const STATUS_STYLES: Record<string, string> = {
   ACTIVE: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
@@ -23,10 +22,11 @@ interface Props {
   contacts: Contact[];
   isLoading: boolean;
   isFetching?: boolean;
+  page?: number;
   onEdit: (contact: Contact) => void;
 }
 
-export function ContactsTable({ contacts, isLoading, isFetching, onEdit }: Props) {
+export function ContactsTable({ contacts, isLoading, isFetching, page = 0, onEdit }: Props) {
   const deleteContact = useDeleteContact();
 
   const columns = [
@@ -87,67 +87,67 @@ export function ContactsTable({ contacts, isLoading, isFetching, onEdit }: Props
 
   return (
     <Card className={`overflow-hidden transition-opacity duration-200 ${isFetching && !isLoading ? "opacity-60" : "opacity-100"}`}>
-      <Table>
-        <TableHeader className="bg-muted/40">
-          {table.getHeaderGroups().map((hg) => (
-            <TableRow key={hg.id} className="border-b border-border/60 hover:bg-transparent">
-              {hg.headers.map((h) => (
-                <TableHead key={h.id} className="text-muted-foreground px-4 py-3 font-medium">
-                  {flexRender(h.column.columnDef.header, h.getContext())}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-muted/40">
+            {table.getHeaderGroups().map((hg) => (
+              <tr key={hg.id} className="border-b border-border/60">
+                {hg.headers.map((h) => (
+                  <th
+                    key={h.id}
+                    className="text-left font-medium px-4 py-3 text-muted-foreground whitespace-nowrap"
+                  >
+                    {flexRender(h.column.columnDef.header, h.getContext())}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
           <AnimatePresence mode="wait">
-            {isLoading ? (
-              Array.from({ length: 8 }).map((_, i) => (
-                <motion.tr
-                  key={`skeleton-${i}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.2, delay: i * 0.04 }}
-                  className="border-b border-border/40"
-                >
-                  {columns.map((_, j) => (
-                    <TableCell key={j} className="px-4 py-3.5">
-                      <Skeleton className="h-4 w-full" />
-                    </TableCell>
-                  ))}
-                </motion.tr>
-              ))
-            ) : table.getRowModel().rows.length === 0 ? (
-              <motion.tr
-                key="empty"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25 }}
-              >
-                <TableCell colSpan={columns.length} className="text-center py-16 text-muted-foreground">
-                  No contacts found
-                </TableCell>
-              </motion.tr>
-            ) : (
-              table.getRowModel().rows.map((row, i) => (
-                <motion.tr
-                  key={row.id}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2, delay: i * 0.03, ease: "easeOut" }}
-                  className="border-b border-border/40 last:border-0 hover:bg-muted/30 transition-colors"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="px-4 py-3.5">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </motion.tr>
-              ))
-            )}
+            <motion.tbody
+              key={isLoading ? "loading" : page}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.18, ease: "easeInOut" }}
+            >
+              {isLoading ? (
+                Array.from({ length: 8 }).map((_, i) => (
+                  <tr key={i} className="border-b border-border/40">
+                    {columns.map((_, j) => (
+                      <td key={j} className="px-4 py-3.5">
+                        <Skeleton className="h-4 w-full" />
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : table.getRowModel().rows.length === 0 ? (
+                <tr>
+                  <td colSpan={columns.length} className="text-center py-16 text-muted-foreground">
+                    No contacts found
+                  </td>
+                </tr>
+              ) : (
+                table.getRowModel().rows.map((row, i) => (
+                  <motion.tr
+                    key={row.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.12, delay: i * 0.02 }}
+                    className="border-b border-border/40 last:border-0 hover:bg-muted/30 transition-colors"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id} className="px-4 py-3.5 whitespace-nowrap">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
+                  </motion.tr>
+                ))
+              )}
+            </motion.tbody>
           </AnimatePresence>
-        </TableBody>
-      </Table>
+        </table>
+      </div>
     </Card>
   );
 }
