@@ -1,15 +1,16 @@
-import { HugeiconsIcon } from "@hugeicons/react"
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Cursor01Icon,
   MailBlock01Icon,
   MailOpen01Icon,
   MailSend01Icon,
-} from "@hugeicons/core-free-icons"
-import { createFileRoute } from "@tanstack/react-router"
-import { motion } from "motion/react"
-import { z } from "zod"
+} from "@hugeicons/core-free-icons";
+import { createFileRoute } from "@tanstack/react-router";
+import { motion } from "motion/react";
+import { z } from "zod";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Loader from "@/components/loader";
 
 const KPI = [
   {
@@ -52,46 +53,48 @@ const KPI = [
     iconColor: "text-amber-500",
     iconBg: "bg-amber-500/10",
   },
-] as const
+] as const;
 
 const RECENT_CAMPAIGNS = [
   { name: "Summer Sale Newsletter", status: "COMPLETED", sent: "12,400", openRate: "28.4%" },
   { name: "Product Launch Announcement", status: "SENDING", sent: "8,250", openRate: "31.2%" },
   { name: "Weekly Digest", status: "COMPLETED", sent: "5,100", openRate: "22.8%" },
   { name: "Re-engagement Series", status: "SCHEDULED", sent: "0", openRate: "—" },
-] as const
+] as const;
 
 const STATUS_PILL: Record<string, string> = {
   COMPLETED: "bg-green-500/10 text-green-600 dark:text-green-400",
   SENDING: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
   SCHEDULED: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
   DRAFT: "bg-muted text-muted-foreground",
-}
+};
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] } as any,
-})
+});
 
 const searchParamsSchema = z.object({
   workspace: z.string().optional(),
-})
+});
 
 export const Route = createFileRoute("/_app/dashboard")({
   validateSearch: (search) => searchParamsSchema.parse(search),
   component: DashboardPage,
-})
+});
 
 function DashboardPage() {
-  const { workspace } = Route.useSearch()
-  
+  const { workspace } = Route.useSearch();
+
   return (
     <div className="space-y-6">
       <motion.div {...fadeUp(0)}>
         <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
         <p className="text-sm text-muted-foreground mt-0.5">
-          {workspace ? `Viewing data for workspace: ${workspace}` : "Last 30 days across your workspace."}
+          {workspace
+            ? `Viewing data for workspace: ${workspace}`
+            : "Last 30 days across your workspace."}
         </p>
       </motion.div>
 
@@ -109,7 +112,9 @@ function DashboardPage() {
                   <div className="min-w-0">
                     <p className="text-sm text-muted-foreground">{label}</p>
                     <p className="text-2xl font-semibold text-foreground mt-1">{value}</p>
-                    <p className={`text-xs mt-1.5 font-medium ${trendGood ? "text-green-600 dark:text-green-400" : "text-red-500"}`}>
+                    <p
+                      className={`text-xs mt-1.5 font-medium ${trendGood ? "text-green-600 dark:text-green-400" : "text-red-500"}`}
+                    >
                       {trendUp ? "↑" : "↓"} {trend}
                     </p>
                   </div>
@@ -153,12 +158,18 @@ function DashboardPage() {
                   >
                     <td className="px-5 py-3.5 font-medium text-foreground">{name}</td>
                     <td className="px-4 py-3.5">
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_PILL[status]}`}>
+                      <span
+                        className={`text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_PILL[status]}`}
+                      >
                         {status.charAt(0) + status.slice(1).toLowerCase()}
                       </span>
                     </td>
-                    <td className="px-4 py-3.5 text-right text-muted-foreground tabular-nums">{sent}</td>
-                    <td className="px-5 py-3.5 text-right text-muted-foreground tabular-nums">{openRate}</td>
+                    <td className="px-4 py-3.5 text-right text-muted-foreground tabular-nums">
+                      {sent}
+                    </td>
+                    <td className="px-5 py-3.5 text-right text-muted-foreground tabular-nums">
+                      {openRate}
+                    </td>
                   </motion.tr>
                 ))}
               </tbody>
@@ -167,5 +178,5 @@ function DashboardPage() {
         </Card>
       </motion.div>
     </div>
-  )
+  );
 }
