@@ -89,6 +89,7 @@ function ContactsPage() {
         contacts={data?.contacts ?? []}
         isLoading={isLoading}
         isFetching={isFetching}
+        page={page}
         onEdit={handleEdit}
       />
 

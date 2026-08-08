@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { contactKeys } from "@/hooks/use-contacts";
 
 import {
   Dialog,
@@ -23,6 +25,13 @@ export function ImportModal({ open, onClose }: Props) {
 
   const importMutation = useImportContacts();
   const { data: progress } = useImportProgress(jobId);
+  const qc = useQueryClient();
+
+  useEffect(() => {
+    if (progress?.status === "COMPLETED") {
+      qc.invalidateQueries({ queryKey: contactKeys.all });
+    }
+  }, [progress?.status, qc]);
 
   const handleImport = async () => {
     if (!file) return;
@@ -53,9 +62,13 @@ export function ImportModal({ open, onClose }: Props) {
           {/* Drop zone */}
           {!jobId && (
             <div className="w-full py-4">
-              <FileUploadStruc onChange={(files) => {
-                if (files.length > 0) setFile(files[0]);
-              }} />
+              <FileUploadStruc 
+                accept=".csv"
+                acceptDropzone={{ "text/csv": [".csv"] }}
+                onChange={(files) => {
+                  if (files.length > 0) setFile(files[0]);
+                }} 
+              />
             </div>
           )}
 

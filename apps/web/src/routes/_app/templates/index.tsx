@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/_app/templates/")({
   component: TemplatesPage,
@@ -36,7 +37,13 @@ function TemplatesPage() {
       <div className="grid gap-4 md:grid-cols-3">
         {isLoading ? (
           Array.from({ length: 3 }).map((_, i) => (
-            <Card key={i} className="h-48 bg-muted/20 animate-pulse" />
+            <Card key={i} className="p-0 overflow-hidden flex flex-col">
+              <Skeleton className="h-32 w-full rounded-none" />
+              <div className="p-4 flex flex-col gap-2 bg-card">
+                <Skeleton className="h-5 w-3/4" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
+            </Card>
           ))
         ) : templates?.length === 0 ? (
           <div className="col-span-3 text-center py-20 bg-card rounded-xl border border-dashed">
@@ -103,10 +110,10 @@ function CreateTemplateModal({ open, onClose }: { open: boolean, onClose: () => 
 
   const handleCreate = async () => {
     if (!name.trim()) return;
-    const res = await createTemplate.mutateAsync({ name });
+    const tpl = await createTemplate.mutateAsync({ name });
     setName("");
     onClose();
-    navigate({ to: "/templates/$templateId", params: { templateId: res.data.id } });
+    navigate({ to: "/templates/$templateId", params: { templateId: tpl.id } });
   };
 
   return (
