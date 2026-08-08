@@ -1,16 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useLegacyTable, getCoreRowModel, legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
 import { flexRender } from "@tanstack/react-table";
-import { useList, useListContacts, useRemoveContactFromList } from "@/hooks/use-lists";
+import { useList, useListContacts, useRemoveContactFromList, useAddContactsToList } from "@/hooks/use-lists";
+import { useContacts } from "@/hooks/use-contacts";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import {
   ArrowLeft01Icon, PlusSignIcon, Delete02Icon,
-  Loading03Icon, UserMultiple02Icon,
+  Loading03Icon, UserMultiple02Icon, Search01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { AnimatePresence, motion } from "motion/react";
+import { useState, useMemo } from "react";
 import type { ListContact } from "@/api/lists";
 
 export const Route = createFileRoute("/_app/lists/$listId")({
@@ -31,6 +36,7 @@ function ListDetailPage() {
   const { data: list, isLoading: isListLoading } = useList(listId);
   const { data: contacts, isLoading: isContactsLoading } = useListContacts(listId);
   const removeContact = useRemoveContactFromList();
+  const [addOpen, setAddOpen] = useState(false);
 
   const columns = col.columns([
     col.accessor("email", { header: "Email", cell: (i) => <span className="font-medium">{i.getValue()}</span> }),
@@ -94,7 +100,7 @@ function ListDetailPage() {
           </p>
         </div>
         <motion.div whileHover={{ x: 2 }} transition={{ duration: 0.15 }}>
-          <Button>
+          <Button onClick={() => setAddOpen(true)}>
             <HugeiconsIcon icon={PlusSignIcon} size={15} />
             Add Contacts
           </Button>
@@ -169,6 +175,150 @@ function ListDetailPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <AddContactsModal
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+        listId={listId}
+        existingContactIds={new Set(contacts?.map((c) => c.contactId) ?? [])}
+      />
     </div>
+  );
+}
+
+function AddContactsModal({
+  open,
+  onClose,
+  listId,
+  existingContactIds,
+}: {
+  open: boolean;
+  onClose: () => void;
+  listId: string;
+  existingContactIds: Set<string>;
+}) {
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const addContacts = useAddContactsToList();
+
+  const { data, isLoading } = useContacts({ page: 0, size: 200, search: search || undefined });
+
+  const available = useMemo(
+    () => (data?.contacts ?? []).filter((c) => !existingContactIds.has(c.id)),
+    [data, existingContactIds],
+  );
+
+  const toggle = (id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (selected.size === available.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(available.map((c) => c.id)));
+    }
+  };
+
+  const handleAdd = async () => {
+    if (selected.size === 0) return;
+    await addContacts.mutateAsync({ listId, contactIds: Array.from(selected) });
+    setSelected(new Set());
+    onClose();
+  };
+
+  const handleClose = () => {
+    setSelected(new Set());
+    setSearch("");
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Add Contacts to List</DialogTitle>
+        </DialogHeader>
+
+        <div className="flex gap-1.5 mt-1">
+          <Input
+            placeholder="Search contacts…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <Button size="icon" variant="outline" aria-label="Search">
+            <HugeiconsIcon icon={Search01Icon} size={15} />
+          </Button>
+        </div>
+
+        <div className="border border-border rounded-[var(--radius)] overflow-hidden">
+          {/* Select all header */}
+          {available.length > 0 && (
+            <div
+              className="flex items-center gap-3 px-3 py-2.5 bg-muted/40 border-b border-border cursor-pointer hover:bg-muted/60 transition-colors"
+              onClick={toggleAll}
+            >
+              <Checkbox
+                checked={selected.size === available.length && available.length > 0}
+                onCheckedChange={toggleAll}
+                onClick={(e) => e.stopPropagation()}
+              />
+              <span className="text-xs font-medium text-muted-foreground">
+                {selected.size > 0 ? `${selected.size} selected` : "Select all"}
+              </span>
+            </div>
+          )}
+
+          {/* Contact list */}
+          <div className="max-h-64 overflow-y-auto">
+            {isLoading ? (
+              <div className="flex items-center justify-center py-10">
+                <HugeiconsIcon icon={Loading03Icon} size={20} className="animate-spin text-muted-foreground" />
+              </div>
+            ) : available.length === 0 ? (
+              <p className="text-center text-sm text-muted-foreground py-10">
+                {search ? "No contacts match your search." : "All contacts are already in this list."}
+              </p>
+            ) : (
+              available.map((contact) => (
+                <div
+                  key={contact.id}
+                  className="flex items-center gap-3 px-3 py-2.5 border-b border-border/50 last:border-0 cursor-pointer hover:bg-muted/30 transition-colors"
+                  onClick={() => toggle(contact.id)}
+                >
+                  <Checkbox
+                    checked={selected.has(contact.id)}
+                    onCheckedChange={() => toggle(contact.id)}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium truncate">{contact.email}</p>
+                    {(contact.firstName || contact.lastName) && (
+                      <p className="text-xs text-muted-foreground truncate">
+                        {[contact.firstName, contact.lastName].filter(Boolean).join(" ")}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={handleClose}>Cancel</Button>
+          <Button
+            onClick={handleAdd}
+            disabled={selected.size === 0 || addContacts.isPending}
+          >
+            {addContacts.isPending ? "Adding…" : `Add ${selected.size > 0 ? selected.size : ""} Contact${selected.size !== 1 ? "s" : ""}`}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
