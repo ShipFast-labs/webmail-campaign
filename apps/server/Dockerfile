@@ -1,22 +1,16 @@
-FROM eclipse-temurin:21-jdk AS builder
-
+FROM eclipse-temurin:21 AS builder
 WORKDIR /app
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+RUN ./mvnw dependency:go-offline -q
+COPY src src
+RUN ./mvnw package -DskipTests -q
 
-COPY . .
-
-RUN chmod +x ./mvnw \
-    && ./mvnw -DskipTests package \
-    && mkdir -p /out \
-    && cp target/*.jar /out/app.jar
-
-FROM eclipse-temurin:21-jre AS app
-
+FROM eclipse-temurin:21-jre
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 WORKDIR /app
-
-COPY --from=builder /out/app.jar /app/app.jar
-
-ENV PORT=8080
-
+COPY --from=builder --chown=appuser:appgroup /app/target/*.jar app.jar
+USER appuser
 EXPOSE 8080
-
-CMD ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

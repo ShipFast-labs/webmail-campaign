@@ -1,19 +1,40 @@
 name: email-campaign-backend
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: email_campaign_app
+    ports:
+      - "${APP_PORT:-8085}:8080"
+    env_file:
+      - ${DOCKER_ENV_FILE:-.env}
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_INTERNAL_BOOTSTRAP_SERVERS}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      redpanda:
+        condition: service_healthy
+    restart: unless-stopped
+
   postgres:
     image: postgres:16-alpine
     container_name: email_campaign_postgres
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=email_campaign
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+      - POSTGRES_DB=${DB_NAME:-email_campaign}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d email_campaign"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-email_campaign}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -23,7 +44,7 @@ services:
     image: redis:7.2-alpine
     container_name: email_campaign_redis
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
@@ -34,82 +55,46 @@ services:
       retries: 5
     restart: unless-stopped
 
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.6.0
-    container_name: email_campaign_zookeeper
+  redpanda:
+    image: redpandadata/redpanda:latest
+    container_name: email_campaign_redpanda
+    command:
+      - redpanda
+      - start
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:${KAFKA_EXTERNAL_PORT:-29092}
+      - --advertise-kafka-addr internal://redpanda:9092,external://localhost:${KAFKA_EXTERNAL_PORT:-29092}
+      - --smp 1
+      - --memory 512M
+      - --overprovisioned
+      - --default-log-level=warn
     ports:
-      - "2181:2181"
-    environment:
-      - ZOOKEEPER_CLIENT_PORT=2181
-      - ZOOKEEPER_TICK_TIME=2000
+      - "${KAFKA_EXTERNAL_PORT:-29092}:${KAFKA_EXTERNAL_PORT:-29092}"
+    volumes:
+      - redpanda_data:/var/lib/redpanda/data
     healthcheck:
-      test: ["CMD-SHELL", "echo ruok | nc localhost 2181 || exit 1"]
+      test: ["CMD-SHELL", "rpk cluster health | grep -E 'Healthy:.+true' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
     restart: unless-stopped
 
-  kafka:
-    image: confluentinc/cp-kafka:7.6.0
-    container_name: email_campaign_kafka
-    ports:
-      - "9092:9092"
-      - "29092:29092"
-    depends_on:
-      zookeeper:
-        condition: service_healthy
-    environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
-    healthcheck:
-      test: ["CMD-SHELL", "kafka-topics --bootstrap-server kafka:9092 --list"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-    restart: unless-stopped
-
-  kafka-init:
-    image: confluentinc/cp-kafka:7.6.0
-    container_name: email_campaign_kafka_init
-    depends_on:
-      kafka:
-        condition: service_healthy
-    entrypoint: [ '/bin/sh', '-c' ]
-    command: |
-      "
-      echo -e 'Creating kafka topics'
-      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic contact.import.jobs --replication-factor 1 --partitions 4
-      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic email.campaign.scheduled --replication-factor 1 --partitions 4
-      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic email.send.batches --replication-factor 1 --partitions 12
-      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic email.send.batches.DLT --replication-factor 1 --partitions 4
-      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic email.tracking.events --replication-factor 1 --partitions 8
-      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic email.contact.events --replication-factor 1 --partitions 4
-      echo -e 'Successfully created the following topics:'
-      kafka-topics --bootstrap-server kafka:9092 --list
-      "
-
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: email_campaign_kafka_ui
     ports:
-      - "8090:8080"
-    depends_on:
-      - kafka
+      - "${KAFKA_UI_PORT:-8090}:8080"
     environment:
-      - KAFKA_CLUSTERS_0_NAME=local
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
-      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+      - KAFKA_CLUSTERS_0_NAME=${KAFKA_UI_CLUSTER_NAME:-redpanda}
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=${KAFKA_UI_BOOTSTRAP_SERVERS:-redpanda:9092}
+    depends_on:
+      - redpanda
     restart: unless-stopped
 
   prometheus:
     image: prom/prometheus:latest
     container_name: email_campaign_prometheus
     ports:
-      - "9090:9090"
+      - "${PROMETHEUS_PORT:-9090}:9090"
     volumes:
       - ../../docker/prometheus.yml:/etc/prometheus/prometheus.yml
     restart: unless-stopped
@@ -118,14 +103,15 @@ services:
     image: grafana/grafana:latest
     container_name: email_campaign_grafana
     ports:
-      - "3005:3000"
+      - "${GRAFANA_PORT:-3005}:3000"
     depends_on:
       - prometheus
     environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
     restart: unless-stopped
 
 volumes:
   postgres_data:
   redis_data:
+  redpanda_data:

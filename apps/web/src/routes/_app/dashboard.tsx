@@ -29,7 +29,9 @@ function DashboardPage() {
       <motion.div {...fadeUp(0)}>
         <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          {workspace ? `Viewing data for workspace: ${workspace}` : "Your campaign performance over the last 30 days."}
+          {workspace
+            ? `Viewing data for workspace: ${workspace}`
+            : "Your campaign performance over the last 30 days."}
         </p>
       </motion.div>
 
