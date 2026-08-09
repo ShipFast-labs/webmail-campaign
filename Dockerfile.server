@@ -4,6 +4,7 @@ COPY apps/server/pom.xml .
 COPY apps/server/mvnw .
 COPY apps/server/.mvn/ .mvn/
 RUN chmod +x mvnw && ./mvnw dependency:go-offline -q
+ARG CACHEBUST=1
 COPY apps/server/src/ src/
 RUN ./mvnw package -DskipTests -q
 
