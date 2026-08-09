@@ -11,6 +11,10 @@ spring:
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      data-source-properties:
+        sslmode: ${DB_SSL_MODE:disable}
+        sslfactory: org.postgresql.ssl.NonValidatingFactory
   security:
     oauth2:
       client:
