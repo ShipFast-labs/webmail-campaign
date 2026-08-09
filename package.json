@@ -28,12 +28,10 @@
     "test": "bun run --filter web test"
   },
   "dependencies": {
-    "@email-campaign/env": "workspace:*",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@email-campaign/config": "workspace:*",
     "@eslint/js": "^10.0.1",
     "@types/bun": "catalog:",
     "eslint": "^10.8.0",
