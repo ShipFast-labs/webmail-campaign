@@ -12,3 +12,7 @@ target
 build
 .gradle
 out
+
+# Exclude frontend and packages — only apps/server is needed
+apps/web
+packages
