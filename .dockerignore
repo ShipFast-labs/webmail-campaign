@@ -13,6 +13,5 @@ build
 .gradle
 out
 
-# Exclude frontend and packages — only apps/server is needed
-apps/web
-packages
+# Exclude server build artifacts
+apps/server/target
