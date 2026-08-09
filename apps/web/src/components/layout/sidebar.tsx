@@ -1,9 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import {
-  ArrowLeft01Icon,
-  Logout01Icon,
-  Settings01Icon,
-} from "@hugeicons/core-free-icons";
+import { ArrowLeft01Icon, Logout01Icon, Settings01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { motion } from "motion/react";
 
@@ -12,6 +8,7 @@ import { useUiStore } from "@/store/ui-store";
 import { cn } from "@/lib/utils";
 import { SidebarNav } from "./sidebar-nav";
 import { authService } from "@/lib/auth-service";
+import { NamiSendLogo } from "@/components/ui/namis-end-logo";
 
 export function Sidebar() {
   const navigate = useNavigate();
@@ -48,21 +45,7 @@ export function Sidebar() {
             to="/dashboard"
             className="flex items-center gap-2 min-w-0 flex-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md"
           >
-            <span
-              className="shrink-0 text-lg font-bold text-primary"
-              style={{ fontFamily: "var(--font-wordmark)" }}
-            >
-              C
-            </span>
-            <span
-              className={cn(
-                "font-semibold text-sm text-sidebar-foreground truncate",
-                sidebarCollapsed && "md:hidden",
-              )}
-              style={{ fontFamily: "var(--font-wordmark)" }}
-            >
-              Campaign
-            </span>
+            <NamiSendLogo size={28} />
           </Link>
         </div>
 
