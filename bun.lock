@@ -4,10 +4,6 @@
   "workspaces": {
     "": {
       "name": "email-campaign",
-      "dependencies": {
-        "dotenv": "catalog:",
-        "zod": "catalog:",
-      },
       "devDependencies": {
         "@eslint/js": "^10.0.1",
         "@types/bun": "catalog:",
