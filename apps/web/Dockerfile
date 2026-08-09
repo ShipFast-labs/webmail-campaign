@@ -1,7 +1,7 @@
-FROM oven/bun:1 AS builder
+FROM oven/bun:1.3.13 AS builder
 WORKDIR /app
 COPY . .
-RUN bun install
+RUN bun install --frozen-lockfile
 ARG VITE_API_URL=http://localhost:8085
 ENV VITE_API_URL=${VITE_API_URL}
 WORKDIR /app/apps/web
