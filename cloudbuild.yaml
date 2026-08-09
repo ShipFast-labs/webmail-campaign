@@ -11,7 +11,7 @@ steps:
       - .
 
 substitutions:
-  _VITE_API_URL: http://localhost:8085
+  _VITE_API_URL: https://api.namisend.com
   _IMAGE_NAME: gcr.io/$PROJECT_ID/namis-web
 
 images:
