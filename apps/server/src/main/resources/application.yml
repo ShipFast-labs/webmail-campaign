@@ -7,10 +7,14 @@ spring:
   application:
     name: email-campaign
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:email_campaign}
+    url: ${DATABASE_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:email_campaign}}
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      data-source-properties:
+        sslmode: ${DB_SSL_MODE:disable}
+        sslfactory: org.postgresql.ssl.NonValidatingFactory
   security:
     oauth2:
       client:
@@ -55,6 +59,8 @@ spring:
       "[org.quartz.jobStore.clusterCheckinInterval]": 20000
 
 app:
+  redis:
+    key-prefix: ${REDIS_KEY_PREFIX:namis:}
   frontend:
     oauth2-redirect-url: ${FRONTEND_OAUTH2_REDIRECT_URL}
   jwt:
