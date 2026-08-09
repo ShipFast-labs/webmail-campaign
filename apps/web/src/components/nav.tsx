@@ -1,26 +1,13 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "./mode-toggle";
 import { useAuthStore } from "@/store/auth-store";
-
-const APP_NAME = "Campaign"; // TODO: replace with product name
-
-const DEV_SEED = import.meta.env.DEV;
+import { NamiSendLogo } from "@/components/ui/namis-end-logo";
 
 export function Nav() {
-  const navigate = useNavigate();
-
-  function enterDevPreview() {
-    useAuthStore.getState().setAuth({
-      user: { id: "dev-user", email: "dev@campaign.app", fullName: "Dev User", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-      workspace: { id: "dev-ws", name: "Demo workspace", ownerId: "dev-user", role: "ADMIN", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-      accessToken: "dev-token",
-      refreshToken: "dev-refresh",
-    });
-    navigate({ to: "/dashboard" });
-  }
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated());
 
   return (
     <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
@@ -32,14 +19,9 @@ export function Nav() {
         <Link
           to="/"
           className="px-2 py-1 mr-2 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label={`${APP_NAME} home`}
+          aria-label="NamiSend home"
         >
-          <span
-            className="font-wordmark font-semibold text-base tracking-tight text-foreground select-none"
-            style={{ fontFamily: "var(--font-wordmark)" }}
-          >
-            {APP_NAME}
-          </span>
+          <NamiSendLogo size={26} />
         </Link>
 
         <div className="hidden md:flex items-center gap-1" role="list">
@@ -75,25 +57,23 @@ export function Nav() {
         <div className="hidden md:block w-px h-4 bg-border mx-1" aria-hidden />
 
         <div className="flex items-center gap-1">
-          {DEV_SEED && (
-            <Button
-              size="sm"
-              variant="ghost"
-              className="hidden md:flex rounded-full text-xs text-muted-foreground border border-dashed border-border"
-              onClick={enterDevPreview}
-            >
-              Dev preview
+          {isAuthenticated ? (
+            <Button asChild size="sm" className="rounded-full">
+              <Link to="/dashboard">Dashboard</Link>
             </Button>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="hidden md:block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-full"
+              >
+                Sign in
+              </Link>
+              <Button asChild size="sm" className="rounded-full">
+                <Link to="/register">Start free</Link>
+              </Button>
+            </>
           )}
-          <Link
-            to="/login"
-            className="hidden md:block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-full"
-          >
-            Sign in
-          </Link>
-          <Button asChild size="sm" className="rounded-full">
-            <Link to="/register">Start free</Link>
-          </Button>
         </div>
 
         <ModeToggle />

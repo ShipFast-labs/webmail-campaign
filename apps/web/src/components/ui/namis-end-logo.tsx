@@ -4,12 +4,14 @@ import { SentIcon } from "@hugeicons/core-free-icons";
 
 interface NamiSendLogoProps {
   size?: number;
+  wordmarkSize?: number;
   showWordmark?: boolean;
   className?: string;
 }
 
-export function NamiSendLogo({ size = 32, showWordmark = true, className }: NamiSendLogoProps) {
+export function NamiSendLogo({ size = 32, wordmarkSize, showWordmark = true, className }: NamiSendLogoProps) {
   const iconSize = Math.round(size * 0.55);
+  const textSize = wordmarkSize ?? Math.max(Math.round(size * 0.56), 14);
 
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
@@ -23,7 +25,7 @@ export function NamiSendLogo({ size = 32, showWordmark = true, className }: Nami
       {showWordmark && (
         <span
           className="font-semibold leading-none text-foreground"
-          style={{ fontFamily: "var(--font-sans)", fontSize: size * 0.44 }}
+          style={{ fontFamily: "var(--font-sans)", fontSize: textSize }}
         >
           NamiSend
         </span>
