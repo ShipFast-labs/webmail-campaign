@@ -1,17 +1,13 @@
 FROM eclipse-temurin:21 AS builder
-WORKDIR /app
-COPY apps/server/pom.xml .
-COPY apps/server/mvnw .
-COPY apps/server/.mvn/ .mvn/
+COPY . /repo
+WORKDIR /repo/apps/server
 RUN chmod +x mvnw && ./mvnw dependency:go-offline -q
-ARG CACHEBUST=1
-COPY apps/server/src/ src/
 RUN ./mvnw package -DskipTests -q
 
 FROM eclipse-temurin:21-jre
 RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 WORKDIR /app
-COPY --from=builder --chown=appuser:appgroup /app/target/*.jar app.jar
+COPY --from=builder --chown=appuser:appgroup /repo/apps/server/target/*.jar app.jar
 USER appuser
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
