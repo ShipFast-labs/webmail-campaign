@@ -11,6 +11,7 @@ import com.example.emailcampaign.workspace.repository.WorkspaceRepository;
 import com.opencsv.CSVReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +27,10 @@ import java.util.stream.Collectors;
 public class ContactImportService {
 
     private static final int CHUNK_SIZE = 500;
-    private static final String REDIS_KEY_PREFIX = "import:";
     private static final long REDIS_TTL_HOURS = 24;
+
+    @Value("${app.redis.key-prefix}")
+    private String redisKeyPrefix;
 
     private final ContactRepository contactRepository;
     private final ImportJobRepository importJobRepository;
@@ -164,7 +167,7 @@ public class ContactImportService {
     }
 
     private void pushToRedis(UUID jobId, ImportJob job) {
-        String key = REDIS_KEY_PREFIX + jobId + ":progress";
+        String key = redisKeyPrefix + "import:" + jobId + ":progress";
         Map<String, String> progress = new HashMap<>();
         progress.put("status", job.getStatus().name());
         progress.put("totalRows", String.valueOf(job.getTotalRows()));

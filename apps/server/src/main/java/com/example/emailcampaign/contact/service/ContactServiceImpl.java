@@ -13,6 +13,7 @@ import com.example.emailcampaign.common.service.S3Service;
 import com.example.emailcampaign.kafka.producer.ContactImportProducer;
 import com.example.emailcampaign.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -38,6 +39,9 @@ public class ContactServiceImpl implements ContactService {
     private final ContactImportProducer contactImportProducer;
     private final S3Service s3Service;
     private final StringRedisTemplate redisTemplate;
+
+    @Value("${app.redis.key-prefix}")
+    private String redisKeyPrefix;
 
     @Override
     @Transactional(readOnly = true)
@@ -141,7 +145,7 @@ public class ContactServiceImpl implements ContactService {
     @Override
     @Transactional(readOnly = true)
     public ImportProgressResponse getImportProgress(UUID workspaceId, UUID jobId) {
-        String key = "import:" + jobId + ":progress";
+        String key = redisKeyPrefix + "import:" + jobId + ":progress";
         Map<Object, Object> redisData = redisTemplate.opsForHash().entries(key);
 
         if (!redisData.isEmpty()) {
