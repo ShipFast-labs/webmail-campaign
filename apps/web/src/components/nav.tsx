@@ -66,7 +66,7 @@ export function Nav() {
                 <Link to="/login">Sign in</Link>
               </Button>
               <Button asChild size="sm" className="rounded-md">
-                <Link to="/register">→ Start free</Link>
+                <Link to="/register">Start free</Link>
               </Button>
             </>
           )}

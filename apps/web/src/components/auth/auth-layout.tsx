@@ -7,14 +7,14 @@ type Props = { children: React.ReactNode };
 export function AuthLayout({ children }: Props) {
   return (
     <div className="relative min-h-svh flex items-center justify-center px-4 py-12 overflow-hidden bg-background">
-      {/* Warm grid texture */}
+      {/* Top Fade Grid Background */}
       <div
         aria-hidden
         className="fixed inset-0 pointer-events-none"
         style={{
           backgroundImage: `
-            linear-gradient(to right, var(--pattern-line) 1px, transparent 1px),
-            linear-gradient(to bottom, var(--pattern-line) 1px, transparent 1px)
+            linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+            linear-gradient(to bottom, #e2e8f0 1px, transparent 1px)
           `,
           backgroundSize: "20px 30px",
           WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
@@ -28,14 +28,7 @@ export function AuthLayout({ children }: Props) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       >
-        <Card
-          className="overflow-hidden pb-0"
-          style={{
-            border: "1px solid var(--color-pencil-gray)",
-            backgroundColor: "var(--color-cream-paper)",
-            boxShadow: "var(--shadow-md)",
-          }}
-        >
+        <Card className="overflow-hidden pb-0 border-2">
           {children}
           <CardGlowEdge />
         </Card>
