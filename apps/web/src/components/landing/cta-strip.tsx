@@ -21,16 +21,6 @@ export function CtaStrip() {
       />
 
       <div className="relative max-w-3xl mx-auto text-center">
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="text-xs mb-6 tracking-widest uppercase"
-          style={{ color: "rgba(252,250,245,0.45)", fontFamily: "var(--font-mono)" }}
-        >
-          ✦ Get started today
-        </motion.p>
 
         <motion.h2
           id="cta-heading"
@@ -84,7 +74,7 @@ export function CtaStrip() {
               border: "none",
             }}
           >
-            <Link to="/register">→ Start free</Link>
+            <Link to="/register">Start</Link>
           </Button>
         </motion.div>
       </div>

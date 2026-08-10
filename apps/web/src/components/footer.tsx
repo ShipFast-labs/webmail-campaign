@@ -1,3 +1,4 @@
+import { NamiSendLogo } from "./ui/namis-end-logo";
 
 
 const APP_NAME = "Campaign";
@@ -10,21 +11,7 @@ export function Footer() {
     >
       <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-foreground/50">
         <div className="flex items-center gap-3">
-          <span className="flex items-center gap-2">
-            <span
-              className="inline-flex items-center justify-center w-6 h-6 rounded text-xs font-extrabold"
-              style={{
-                backgroundColor: "var(--color-highlighter-yellow)",
-                color: "var(--color-forest-ink)",
-                fontFamily: "var(--font-display)",
-              }}
-            >
-              C
-            </span>
-            <span className="font-semibold text-foreground">{APP_NAME}</span>
-          </span>
-          <span className="hidden sm:block" aria-hidden>·</span>
-          <span className="hidden sm:block">Send campaigns that matter.</span>
+          <NamiSendLogo />
         </div>
 
         <div className="flex items-center gap-6">

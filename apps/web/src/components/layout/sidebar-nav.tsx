@@ -44,10 +44,10 @@ function NavItem({ to, label, icon, active, collapsed, workspaceId }: NavItemPro
         onClick={() => setMobileSidebarOpen(false)}
         className={cn(
           "flex items-center gap-3 h-9 px-2.5 rounded-md text-sm font-medium transition-colors",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "focus-visible:outline-none",
           active
-            ? "bg-accent/25 text-foreground font-semibold border-l-2 border-foreground"
-            : "text-foreground/55 hover:text-foreground hover:bg-accent/15 border-l-2 border-transparent",
+            ? "bg-accent/25 text-foreground font-semibold"
+            : "text-foreground/55 hover:text-foreground hover:bg-accent/15",
           collapsed && "md:justify-center md:px-0",
         )}
         title={collapsed ? label : undefined}

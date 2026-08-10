@@ -16,6 +16,7 @@ import { getApiError } from "@/lib/api-error";
 import { useAuthStore } from "@/store/auth-store";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { GoogleIcon } from "@hugeicons/core-free-icons";
+import { NamiSendLogo } from "@/components/ui/namis-end-logo";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -55,19 +56,7 @@ function LoginPage() {
     <AuthLayout>
       <CardHeader className="pb-2">
         <div className="flex items-center gap-2 mb-3">
-          <span
-            className="inline-flex items-center justify-center w-7 h-7 rounded text-sm font-extrabold"
-            style={{
-              backgroundColor: "var(--color-highlighter-yellow)",
-              color: "var(--color-forest-ink)",
-              fontFamily: "var(--font-display)",
-            }}
-          >
-            C
-          </span>
-          <span className="font-bold text-base text-foreground" style={{ fontFamily: "var(--font-wordmark)" }}>
-            Campaign
-          </span>
+          <NamiSendLogo />
         </div>
         <h1 className="text-xl font-semibold text-foreground">Welcome back</h1>
         <p className="text-sm text-muted-foreground mt-0.5">Sign in to your workspace.</p>

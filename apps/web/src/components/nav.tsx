@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/auth-store";
+import { NamiSendLogo } from "@/components/ui/namis-end-logo";
 
 export function Nav() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated());
@@ -24,23 +25,7 @@ export function Nav() {
           className="flex items-center gap-2 px-1 py-1 mr-3 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Campaign home"
         >
-          <span
-            className="flex items-center justify-center w-8 h-8 rounded-md text-sm font-extrabold"
-            style={{
-              backgroundColor: "var(--color-highlighter-yellow)",
-              color: "var(--color-forest-ink)",
-              fontFamily: "var(--font-display)",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            C
-          </span>
-          <span
-            className="hidden sm:block text-sm font-bold text-foreground"
-            style={{ fontFamily: "var(--font-wordmark)" }}
-          >
-            Campaign
-          </span>
+          <NamiSendLogo size={28} />
         </Link>
 
         {/* Nav links */}

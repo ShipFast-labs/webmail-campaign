@@ -1,9 +1,16 @@
 import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
-
+import { RoughNotation } from "react-rough-notation";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 
 export function Hero() {
+  const [showHighlight, setShowHighlight] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowHighlight(true), 900);
+    return () => clearTimeout(t);
+  }, []);
   return (
     <section
       className="relative min-h-svh flex items-center justify-center px-6 pt-24 pb-20 overflow-x-clip"
@@ -25,21 +32,8 @@ export function Hero() {
       />
 
       <div className="relative z-10 max-w-3xl mx-auto text-center">
-        {/* Eyebrow badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="inline-flex items-center gap-1.5 px-3 py-1 mb-8 rounded-full text-xs font-medium"
-          style={{
-            backgroundColor: "var(--color-highlighter-yellow)",
-            color: "var(--color-forest-ink)",
-            fontFamily: "var(--font-mono)",
-          }}
-        >
-          <span>✦</span>
-          <span>Email campaigns that work</span>
-        </motion.div>
+
+
 
         {/* Display headline */}
         <motion.h1
@@ -59,15 +53,15 @@ export function Hero() {
           Email campaigns{" "}
           <br className="hidden sm:block" />
           that{" "}
-          <span
-            style={{
-              backgroundColor: "var(--color-highlighter-yellow)",
-              padding: "0 0.12em",
-              display: "inline",
-            }}
+          <RoughNotation
+            type="highlight"
+            show={showHighlight}
+            color="var(--color-highlighter-yellow)"
+            animationDuration={700}
+            strokeWidth={2}
           >
-            deliver.
-          </span>
+            Deliver
+          </RoughNotation>
         </motion.h1>
 
         {/* Subhead */}
@@ -105,17 +99,6 @@ export function Hero() {
             </Button>
           </motion.div>
         </motion.div>
-
-        {/* Reassurance */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-4 text-xs"
-          style={{ color: "var(--color-pencil-gray)", fontFamily: "var(--font-mono)" }}
-        >
-          no credit card required.
-        </motion.p>
       </div>
     </section>
   );

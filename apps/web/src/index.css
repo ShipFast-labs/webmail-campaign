@@ -150,15 +150,16 @@
 
 @theme inline {
   /* ── Brand color utilities ──────────────────────── */
-  --color-forest-ink: #1a3300;
-  --color-highlighter-yellow: #ffe95c;
-  --color-cream-paper: #fcfaf5;
-  --color-pencil-gray: #b6b6b6;
-  --color-whisper-gray: #f1f1f1;
-  --color-sticky-note-teal: #a8e5e5;
-  --color-sticky-note-mint: #d5f5c2;
-  --color-sticky-note-blush: #f6d0ff;
-  --color-terracotta: #cb5521;
+  /* Reusing the CSS variables from :root/.dark so they adapt to theme */
+  --color-forest-ink: var(--color-forest-ink);
+  --color-highlighter-yellow: var(--color-highlighter-yellow);
+  --color-cream-paper: var(--color-cream-paper);
+  --color-pencil-gray: var(--color-pencil-gray);
+  --color-whisper-gray: var(--color-whisper-gray);
+  --color-sticky-note-teal: var(--color-sticky-note-teal);
+  --color-sticky-note-mint: var(--color-sticky-note-mint);
+  --color-sticky-note-blush: var(--color-sticky-note-blush);
+  --color-terracotta: var(--color-terracotta);
 
   /* ── Fonts ──────────────────────────────────────── */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -267,6 +268,15 @@
   ::-webkit-scrollbar-thumb:hover { background: #8a8a8a; }
   ::-webkit-scrollbar-corner { background: transparent; }
   * { scrollbar-width: thin; scrollbar-color: #b6b6b6 transparent; }
+  
+  .dark {
+    /* Slim dark scrollbar */
+    ::-webkit-scrollbar-thumb {
+      background: #3a4030;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: #5a6050; }
+    * { scrollbar-color: #3a4030 transparent; }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
