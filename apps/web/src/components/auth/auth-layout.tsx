@@ -1,5 +1,4 @@
 import { motion } from "motion/react";
-
 import { Card } from "@/components/ui/card";
 import { CardGlowEdge } from "./card-glow-edge";
 
@@ -8,7 +7,7 @@ type Props = { children: React.ReactNode };
 export function AuthLayout({ children }: Props) {
   return (
     <div className="relative min-h-svh flex items-center justify-center px-4 py-12 overflow-hidden bg-background">
-      {/* Geometric grid — matches landing page pattern */}
+      {/* Warm grid texture */}
       <div
         aria-hidden
         className="fixed inset-0 pointer-events-none"
@@ -30,11 +29,11 @@ export function AuthLayout({ children }: Props) {
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       >
         <Card
-          className="border-border/60 shadow-2xl overflow-hidden pb-0"
+          className="overflow-hidden pb-0"
           style={{
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
-            backgroundColor: "oklch(from var(--background) l c h / 0.88)",
+            border: "1px solid var(--color-pencil-gray)",
+            backgroundColor: "var(--color-cream-paper)",
+            boxShadow: "var(--shadow-md)",
           }}
         >
           {children}

@@ -39,15 +39,15 @@ function NavItem({ to, label, icon, active, collapsed, workspaceId }: NavItemPro
   return (
     <motion.div whileHover={{ x: 3 }} transition={{ duration: 0.15, ease: "easeOut" }}>
       <Link
-        to={to as any}
-        search={{ workspace: workspaceId } as any}
+        to={to as string}
+        search={{ workspace: workspaceId } as Record<string, string | undefined>}
         onClick={() => setMobileSidebarOpen(false)}
         className={cn(
           "flex items-center gap-3 h-9 px-2.5 rounded-md text-sm font-medium transition-colors",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "focus-visible:outline-none",
           active
-            ? "bg-sidebar-primary/10 text-sidebar-primary"
-            : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent",
+            ? "bg-accent/25 text-foreground font-semibold"
+            : "text-foreground/55 hover:text-foreground hover:bg-accent/15",
           collapsed && "md:justify-center md:px-0",
         )}
         title={collapsed ? label : undefined}
@@ -55,7 +55,7 @@ function NavItem({ to, label, icon, active, collapsed, workspaceId }: NavItemPro
         <HugeiconsIcon
           icon={icon}
           size={18}
-          className={cn("shrink-0", active ? "text-sidebar-primary" : "text-sidebar-foreground/60")}
+          className={cn("shrink-0", active ? "text-foreground" : "text-foreground/50")}
         />
         <span className={cn("truncate", collapsed && "md:hidden")}>{label}</span>
       </Link>

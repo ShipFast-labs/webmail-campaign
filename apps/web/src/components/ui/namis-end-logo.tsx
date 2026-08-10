@@ -21,7 +21,7 @@ export function NamiSendLogo({
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
       <span
-        className="shrink-0 inline-flex items-center justify-center bg-primary/90 rounded-[var(--radius)]"
+        className="shrink-0 inline-flex items-center justify-center bg-primary/90 rounded-(--radius)"
         style={{ width: size, height: size }}
       >
         <HugeiconsIcon icon={AiMail02Icon} size={iconSize} color="white" strokeWidth={1.8} />

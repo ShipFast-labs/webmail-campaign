@@ -1,11 +1,11 @@
 import axios from "axios";
 
-import { queryClient } from "@/lib/query-client";
+
 import { useAuthStore } from "@/store/auth-store";
 import { authService } from "@/lib/auth-service";
 
 export const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL ?? "http://localhost:8085"}/api/v1`,
+  baseURL: `${import.meta.env.VITE_API_URL ?? "http://localhost:8080"}/api/v1`,
   headers: { "Content-Type": "application/json" },
   timeout: 15_000,
 });

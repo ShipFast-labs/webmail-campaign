@@ -108,7 +108,8 @@ export const analyticsApi = {
     return { ...mockCampaignAnalytics, campaignId };
   },
 
-  getCampaignTimeSeries: async (campaignId: string): Promise<TimeSeriesData[]> => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getCampaignTimeSeries: async (_campaignId: string): Promise<TimeSeriesData[]> => {
     await delay(700);
     // Return last 7 days for campaign specific
     return mockTimeSeries.slice(-7);
