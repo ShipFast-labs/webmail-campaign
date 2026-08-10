@@ -64,25 +64,25 @@ function ListsPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.18, ease: "easeInOut" }}
       >
-        <Card className="overflow-hidden">
+        <div className="border rounded-md bg-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-muted/40">
-                <tr className="border-b border-border/60">
-                  <th className="text-left font-medium px-4 py-3 text-muted-foreground">Name</th>
-                  <th className="text-left font-medium px-4 py-3 text-muted-foreground">Contacts</th>
-                  <th className="text-left font-medium px-4 py-3 text-muted-foreground">Created</th>
-                  <th className="px-4 py-3" />
+              <thead>
+                <tr className="border-b transition-colors">
+                  <th className="h-10 px-4 py-3 text-left align-middle font-medium whitespace-nowrap text-foreground">Name</th>
+                  <th className="h-10 px-4 py-3 text-left align-middle font-medium whitespace-nowrap text-foreground">Contacts</th>
+                  <th className="h-10 px-4 py-3 text-left align-middle font-medium whitespace-nowrap text-foreground">Created</th>
+                  <th className="h-10 px-4 py-3" />
                 </tr>
               </thead>
               <tbody>
                 {isLoading ? (
                   Array.from({ length: 5 }).map((_, i) => (
-                    <tr key={i} className="border-b border-border/40">
-                      <td className="px-4 py-3.5"><Skeleton className="h-4 w-[140px]" /></td>
-                      <td className="px-4 py-3.5"><Skeleton className="h-4 w-[60px]" /></td>
-                      <td className="px-4 py-3.5"><Skeleton className="h-4 w-[90px]" /></td>
-                      <td className="px-4 py-3.5">
+                    <tr key={i} className="border-b transition-colors">
+                      <td className="p-4 align-middle whitespace-nowrap"><Skeleton className="h-4 w-[140px]" /></td>
+                      <td className="p-4 align-middle whitespace-nowrap"><Skeleton className="h-4 w-[60px]" /></td>
+                      <td className="p-4 align-middle whitespace-nowrap"><Skeleton className="h-4 w-[90px]" /></td>
+                      <td className="p-4 align-middle whitespace-nowrap">
                         <div className="flex justify-end gap-1">
                           <Skeleton className="h-7 w-7 rounded-md" />
                           <Skeleton className="h-7 w-7 rounded-md" />
@@ -110,7 +110,7 @@ function ListsPage() {
               </tbody>
             </table>
           </div>
-        </Card>
+        </div>
       </motion.div>
 
       <CreateListModal open={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
@@ -128,20 +128,20 @@ function ListRow({ list, index, onRename }: { list: AudienceList; index: number;
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.12, delay: index * 0.02 }}
-      className="border-b border-border/40 last:border-0 hover:bg-muted/30 transition-colors cursor-pointer"
+      className="border-b transition-colors hover:bg-muted/50 last:border-0 cursor-pointer"
       onClick={() => navigate({ to: "/lists/$listId", params: { listId: list.id } })}
     >
-      <td className="px-4 py-3.5 font-medium whitespace-nowrap">{list.name}</td>
-      <td className="px-4 py-3.5 whitespace-nowrap">
+      <td className="p-4 align-middle whitespace-nowrap font-medium">{list.name}</td>
+      <td className="p-4 align-middle whitespace-nowrap">
         <span className="flex items-center gap-1.5 text-muted-foreground">
           <HugeiconsIcon icon={UserMultiple02Icon} size={14} />
           {list.contactCount.toLocaleString()}
         </span>
       </td>
-      <td className="px-4 py-3.5 text-muted-foreground whitespace-nowrap">
+      <td className="p-4 align-middle whitespace-nowrap text-muted-foreground">
         {new Date(list.createdAt).toLocaleDateString()}
       </td>
-      <td className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
+      <td className="p-4 align-middle whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-1 justify-end">
           <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.15 }}>
             <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" onClick={onRename}>

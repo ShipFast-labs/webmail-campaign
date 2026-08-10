@@ -22,26 +22,50 @@
   --color-sticky-note-blush: #f6d0ff;
   --color-terracotta: #cb5521;
 
-  /* ── shadcn semantic tokens → SayBriefly ────────── */
-  --background: #fcfaf5;
-  --foreground: #1a3300;
-  --card: #fcfaf5;
-  --card-foreground: #1a3300;
-  --popover: #fcfaf5;
-  --popover-foreground: #1a3300;
-  --primary: #1a3300;
-  --primary-foreground: #fcfaf5;
-  --secondary: #d5f5c2;
-  --secondary-foreground: #1a3300;
-  --muted: #f1f1f1;
-  --muted-foreground: #7a7a7a;
-  --accent: #ffe95c;
-  --accent-foreground: #1a3300;
-  --destructive: #cb5521;
-  --destructive-foreground: #fcfaf5;
-  --border: #d4cfc7;
-  --input: #c8c3bb;
-  --ring: #1a3300;
+  /* ── MindMarket Landing Tokens ──────────────────── */
+  --mm-fresh-grass: #8ed462;
+  --mm-cream-paper: #f5f1e4;
+  --mm-ink-black: #2c2e2a;
+  --mm-pure-white: #ffffff;
+  --mm-sandstone: #e0dbce;
+  --mm-stone-gray: #80827f;
+  --mm-hairline-mist: #d5d5d4;
+  --mm-sky-pop: #2ba0ff;
+  --mm-coral-pop: #ff705d;
+  --mm-sunshine-pop: #f5e211;
+  
+  --mm-radius-pill: 50px;
+  --mm-radius-small: 10px;
+  --mm-radius-illus: 63.75px;
+
+  --mm-text-display: clamp(72px, 10vw + 1rem, 140px);
+  --mm-tracking-display: -0.06em;
+  --mm-leading-display: 0.95;
+  --mm-text-heading-lg: 81px;
+  --mm-tracking-heading-lg: -0.04em;
+  --mm-text-heading-sm: 53px;
+  --mm-tracking-heading: -0.04em;
+
+  /* ── shadcn semantic tokens → MindMarket ────────── */
+  --background: var(--mm-cream-paper);
+  --foreground: var(--mm-ink-black);
+  --card: var(--mm-pure-white);
+  --card-foreground: var(--mm-ink-black);
+  --popover: var(--mm-pure-white);
+  --popover-foreground: var(--mm-ink-black);
+  --primary: var(--mm-sunshine-pop);
+  --primary-foreground: var(--mm-ink-black);
+  --secondary: var(--mm-sandstone);
+  --secondary-foreground: var(--mm-ink-black);
+  --muted: var(--mm-sandstone);
+  --muted-foreground: var(--mm-stone-gray);
+  --accent: var(--mm-sunshine-pop);
+  --accent-foreground: var(--mm-ink-black);
+  --destructive: var(--mm-coral-pop);
+  --destructive-foreground: var(--mm-ink-black);
+  --border: var(--mm-ink-black);
+  --input: var(--mm-hairline-mist);
+  --ring: var(--mm-ink-black);
 
   /* charts */
   --chart-1: #1a3300;
@@ -51,20 +75,20 @@
   --chart-5: #f6d0ff;
 
   /* sidebar */
-  --sidebar: #fcfaf5;
-  --sidebar-foreground: #1a3300;
-  --sidebar-primary: #1a3300;
-  --sidebar-primary-foreground: #fcfaf5;
-  --sidebar-accent: #ffe95c;
-  --sidebar-accent-foreground: #1a3300;
-  --sidebar-border: #e0dcd4;
-  --sidebar-ring: #1a3300;
+  --sidebar: var(--mm-cream-paper);
+  --sidebar-foreground: var(--mm-ink-black);
+  --sidebar-primary: var(--mm-sunshine-pop);
+  --sidebar-primary-foreground: var(--mm-ink-black);
+  --sidebar-accent: var(--mm-sunshine-pop);
+  --sidebar-accent-foreground: var(--mm-ink-black);
+  --sidebar-border: var(--mm-ink-black);
+  --sidebar-ring: var(--mm-ink-black);
 
-  /* app shell content area — slightly deeper cream */
-  --app-shell-bg: #f0ece2;
+  /* app shell content area */
+  --app-shell-bg: var(--mm-cream-paper);
 
-  /* base radius — 8px; scales: -2px=6px(buttons), +4px=12px(cards), +8px=16px(nav) */
-  --radius: 0.5rem;
+  /* base radius — reduced for better usability across app */
+  --radius: 0.75rem;
 
   /* fonts */
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -98,40 +122,40 @@
 
 /* SayBriefly is light-only — dark class mirrors light so no visual change */
 .dark {
-  --background: #fcfaf5;
-  --foreground: #1a3300;
-  --card: #fcfaf5;
-  --card-foreground: #1a3300;
-  --popover: #fcfaf5;
-  --popover-foreground: #1a3300;
-  --primary: #1a3300;
-  --primary-foreground: #fcfaf5;
-  --secondary: #d5f5c2;
-  --secondary-foreground: #1a3300;
-  --muted: #f1f1f1;
-  --muted-foreground: #7a7a7a;
-  --accent: #ffe95c;
-  --accent-foreground: #1a3300;
-  --destructive: #cb5521;
-  --destructive-foreground: #fcfaf5;
-  --border: #d4cfc7;
-  --input: #c8c3bb;
-  --ring: #1a3300;
+  --background: var(--mm-cream-paper);
+  --foreground: var(--mm-ink-black);
+  --card: var(--mm-pure-white);
+  --card-foreground: var(--mm-ink-black);
+  --popover: var(--mm-pure-white);
+  --popover-foreground: var(--mm-ink-black);
+  --primary: var(--mm-sunshine-pop);
+  --primary-foreground: var(--mm-ink-black);
+  --secondary: var(--mm-sandstone);
+  --secondary-foreground: var(--mm-ink-black);
+  --muted: var(--mm-sandstone);
+  --muted-foreground: var(--mm-stone-gray);
+  --accent: var(--mm-sunshine-pop);
+  --accent-foreground: var(--mm-ink-black);
+  --destructive: var(--mm-coral-pop);
+  --destructive-foreground: var(--mm-ink-black);
+  --border: var(--mm-ink-black);
+  --input: var(--mm-hairline-mist);
+  --ring: var(--mm-ink-black);
   --chart-1: #1a3300;
   --chart-2: #ffe95c;
   --chart-3: #a8e5e5;
   --chart-4: #d5f5c2;
   --chart-5: #f6d0ff;
-  --sidebar: #fcfaf5;
-  --sidebar-foreground: #1a3300;
-  --sidebar-primary: #1a3300;
-  --sidebar-primary-foreground: #fcfaf5;
-  --sidebar-accent: #ffe95c;
-  --sidebar-accent-foreground: #1a3300;
-  --sidebar-border: #e0dcd4;
-  --sidebar-ring: #1a3300;
-  --app-shell-bg: #f0ece2;
-  --radius: 0.5rem;
+  --sidebar: var(--mm-cream-paper);
+  --sidebar-foreground: var(--mm-ink-black);
+  --sidebar-primary: var(--mm-sunshine-pop);
+  --sidebar-primary-foreground: var(--mm-ink-black);
+  --sidebar-accent: var(--mm-sunshine-pop);
+  --sidebar-accent-foreground: var(--mm-ink-black);
+  --sidebar-border: var(--mm-ink-black);
+  --sidebar-ring: var(--mm-ink-black);
+  --app-shell-bg: var(--mm-cream-paper);
+  --radius: 0.75rem;
   --pattern-line: #e8e3d9;
   --band-violet: #f0ece2;
   --band-dark: #1a3300;
@@ -185,6 +209,25 @@
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
+  --color-band-violet: var(--band-violet);
+  --color-band-dark: var(--band-dark);
+
+  /* MindMarket */
+  --color-mm-fresh-grass: var(--mm-fresh-grass);
+  --color-mm-cream-paper: var(--mm-cream-paper);
+  --color-mm-ink-black: var(--mm-ink-black);
+  --color-mm-pure-white: var(--mm-pure-white);
+  --color-mm-sandstone: var(--mm-sandstone);
+  --color-mm-stone-gray: var(--mm-stone-gray);
+  --color-mm-hairline-mist: var(--mm-hairline-mist);
+  --color-mm-sky-pop: var(--mm-sky-pop);
+  --color-mm-coral-pop: var(--mm-coral-pop);
+  --color-mm-sunshine-pop: var(--mm-sunshine-pop);
+  --radius-mm-pill: var(--mm-radius-pill);
+  --radius-mm-small: var(--mm-radius-small);
+  --radius-mm-illus: var(--mm-radius-illus);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
