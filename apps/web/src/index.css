@@ -1,11 +1,9 @@
-/* Hallmark · genre: modern-minimal · macrostructure: Marquee Hero · theme: studied-DNA (source: image)
- * paper: white · accent: coral (existing) · bands: violet + dark-teal
- * display: Bebas Neue (heavy black sans) · body: Space Grotesk (existing)
- * studied: yes · DNA-source: image (user reference)
- * pre-emit critique: P5 H5 E5 S5 R4 V5
+/* SayBriefly — creative studio sketchbook on cream paper
+ * Palette: Forest Ink · Highlighter Yellow · Cream Paper
+ * Type: Bricolage Grotesque (display) · Inter (UI) · Roboto Mono (micro)
  */
 
-@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Mono:wght@400&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -13,128 +11,165 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.9674 0.0013 286.3752);
-  --foreground: oklch(0.1408 0.0044 285.8229);
-  --card: oklch(1.0000 0 0);
-  --card-foreground: oklch(0.1408 0.0044 285.8229);
-  --popover: oklch(1.0000 0 0);
-  --popover-foreground: oklch(0.1408 0.0044 285.8229);
-  --primary: oklch(0.6368 0.2078 25.3313);
-  --primary-foreground: oklch(0.9842 0.0034 247.8575);
-  --secondary: oklch(0.9581 0 0);
-  --secondary-foreground: oklch(0.2103 0.0059 285.8852);
-  --muted: oklch(0.9683 0.0069 247.8956);
-  --muted-foreground: oklch(0.5544 0.0407 257.4166);
-  --app-shell-bg: #f5f5f5;
-  --accent: oklch(0.9356 0.0309 17.7172);
-  --accent-foreground: oklch(0.4437 0.1613 26.8994);
-  --destructive: oklch(0.5771 0.2152 27.3250);
-  --border: oklch(0.9288 0.0126 255.5078);
-  --input: oklch(0.9288 0.0126 255.5078);
-  --ring: oklch(0.6368 0.2078 25.3313);
-  --chart-1: oklch(0.6368 0.2078 25.3313);
-  --chart-2: oklch(0.2103 0.0059 285.8852);
-  --chart-3: oklch(0.7107 0.0351 256.7878);
-  --chart-4: oklch(0.8077 0.1035 19.5706);
-  --chart-5: oklch(0.9356 0.0309 17.7172);
-  --sidebar: oklch(1.0000 0 0);
-  --sidebar-foreground: oklch(0.3703 0.0119 285.8054);
-  --sidebar-primary: oklch(0.6368 0.2078 25.3313);
-  --sidebar-primary-foreground: oklch(1.0000 0 0);
-  --sidebar-accent: oklch(0.9674 0.0013 286.3752);
-  --sidebar-accent-foreground: oklch(0.1408 0.0044 285.8229);
-  --sidebar-border: oklch(0.9288 0.0126 255.5078);
-  --sidebar-ring: oklch(0.6368 0.2078 25.3313);
-  --radius: 0.25rem;
-  --destructive-foreground: oklch(0.9842 0.0034 247.8575);
-  --font-sans: Inter, system-ui, sans-serif;
+  /* ── Brand tokens ───────────────────────────────── */
+  --color-forest-ink: #1a3300;
+  --color-highlighter-yellow: #ffe95c;
+  --color-cream-paper: #fcfaf5;
+  --color-pencil-gray: #b6b6b6;
+  --color-whisper-gray: #f1f1f1;
+  --color-sticky-note-teal: #a8e5e5;
+  --color-sticky-note-mint: #d5f5c2;
+  --color-sticky-note-blush: #f6d0ff;
+  --color-terracotta: #cb5521;
+
+  /* ── shadcn semantic tokens → SayBriefly ────────── */
+  --background: #fcfaf5;
+  --foreground: #1a3300;
+  --card: #fcfaf5;
+  --card-foreground: #1a3300;
+  --popover: #fcfaf5;
+  --popover-foreground: #1a3300;
+  --primary: #1a3300;
+  --primary-foreground: #fcfaf5;
+  --secondary: #d5f5c2;
+  --secondary-foreground: #1a3300;
+  --muted: #f1f1f1;
+  --muted-foreground: #7a7a7a;
+  --accent: #ffe95c;
+  --accent-foreground: #1a3300;
+  --destructive: #cb5521;
+  --destructive-foreground: #fcfaf5;
+  --border: #d4cfc7;
+  --input: #c8c3bb;
+  --ring: #1a3300;
+
+  /* charts */
+  --chart-1: #1a3300;
+  --chart-2: #ffe95c;
+  --chart-3: #a8e5e5;
+  --chart-4: #d5f5c2;
+  --chart-5: #f6d0ff;
+
+  /* sidebar */
+  --sidebar: #fcfaf5;
+  --sidebar-foreground: #1a3300;
+  --sidebar-primary: #1a3300;
+  --sidebar-primary-foreground: #fcfaf5;
+  --sidebar-accent: #ffe95c;
+  --sidebar-accent-foreground: #1a3300;
+  --sidebar-border: #e0dcd4;
+  --sidebar-ring: #1a3300;
+
+  /* app shell content area — slightly deeper cream */
+  --app-shell-bg: #f0ece2;
+
+  /* base radius — 8px; scales: -2px=6px(buttons), +4px=12px(cards), +8px=16px(nav) */
+  --radius: 0.5rem;
+
+  /* fonts */
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-serif: Georgia, serif;
-  --font-mono: JetBrains Mono, monospace;
+  --font-mono: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* shadows — flat system, color + 1px borders do hierarchy work */
   --shadow-color: #000000;
-  --shadow-opacity: 0.1;
-  --shadow-blur: 10px;
+  --shadow-opacity: 0.05;
+  --shadow-blur: 2px;
   --shadow-spread: 0px;
   --shadow-offset-x: 0px;
-  --shadow-offset-y: 2px;
-  --letter-spacing: 0.025em;
+  --shadow-offset-y: 1px;
+  --letter-spacing: 0em;
   --spacing: 0.25rem;
-  --shadow-2xs: 0px 2px 10px 0px hsl(0 0% 0% / 0.05);
-  --shadow-xs: 0px 2px 10px 0px hsl(0 0% 0% / 0.05);
-  --shadow-sm: 0px 2px 10px 0px hsl(0 0% 0% / 0.10), 0px 1px 2px -1px hsl(0 0% 0% / 0.10);
-  --shadow: 0px 2px 10px 0px hsl(0 0% 0% / 0.10), 0px 1px 2px -1px hsl(0 0% 0% / 0.10);
-  --shadow-md: 0px 2px 10px 0px hsl(0 0% 0% / 0.10), 0px 2px 4px -1px hsl(0 0% 0% / 0.10);
-  --shadow-lg: 0px 2px 10px 0px hsl(0 0% 0% / 0.10), 0px 4px 6px -1px hsl(0 0% 0% / 0.10);
-  --shadow-xl: 0px 2px 10px 0px hsl(0 0% 0% / 0.10), 0px 8px 10px -1px hsl(0 0% 0% / 0.10);
-  --shadow-2xl: 0px 2px 10px 0px hsl(0 0% 0% / 0.25);
-  --tracking-normal: 0.1em;
+  --shadow-2xs: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+  --shadow-xs:  rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+  --shadow-sm:  rgba(0, 0, 0, 0.08) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px -1px;
+  --shadow:     rgba(0, 0, 0, 0.08) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px -1px;
+  --shadow-md:  rgba(0, 0, 0, 0.08) 0px 2px 6px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px -1px;
+  --shadow-lg:  rgba(0, 0, 0, 0.07) 0px 4px 12px 0px, rgba(0, 0, 0, 0.04) 0px 2px 4px -1px;
+  --shadow-xl:  rgba(255, 233, 92, 0.12) 0px 33px 72px 0px, rgba(255, 233, 92, 0.07) 0px 8px 24px 0px;
+  --shadow-2xl: rgba(0, 0, 0, 0.10) 0px 8px 24px 0px;
+  --tracking-normal: 0em;
+
+  /* landing page decoration */
+  --pattern-line: #e8e3d9;
+  --band-violet: #f0ece2;
+  --band-dark: #1a3300;
 }
 
+/* SayBriefly is light-only — dark class mirrors light so no visual change */
 .dark {
-  --background: oklch(0.1149 0 0);
-  --foreground: oklch(0.9851 0 0);
-  --card: oklch(0.1448 0 0);
-  --card-foreground: oklch(0.9851 0 0);
-  --popover: oklch(0.1448 0 0);
-  --popover-foreground: oklch(0.9851 0 0);
-  --primary: oklch(0.6346 0.2509 28.4341);
-  --primary-foreground: oklch(1.0000 0 0);
-  --secondary: oklch(0.2178 0 0);
-  --secondary-foreground: oklch(0.9851 0 0);
-  --muted: oklch(0.2178 0 0);
-  --muted-foreground: oklch(0.7118 0.0129 286.0665);
-  --app-shell-bg: oklch(0.1449 0 0);
-  --accent: oklch(0.1790 0.0734 29.2339);
-  --accent-foreground: oklch(0.6346 0.2509 28.4341);
-  --destructive: oklch(0.3958 0.1331 25.7230);
-  --border: oklch(0.2739 0.0055 286.0326);
-  --input: oklch(0.2739 0.0055 286.0326);
-  --ring: oklch(0.6346 0.2509 28.4341);
-  --chart-1: oklch(0.6346 0.2509 28.4341);
-  --chart-2: oklch(1.0000 0 0);
-  --chart-3: oklch(0.4419 0.0146 285.7864);
-  --chart-4: oklch(0.3958 0.1331 25.7230);
-  --chart-5: oklch(0.3703 0.0119 285.8054);
-  --sidebar: oklch(0.1149 0 0);
-  --sidebar-foreground: oklch(0.7118 0.0129 286.0665);
-  --sidebar-primary: oklch(0.6346 0.2509 28.4341);
-  --sidebar-primary-foreground: oklch(1.0000 0 0);
-  --sidebar-accent: oklch(0.2178 0 0);
-  --sidebar-accent-foreground: oklch(0.9851 0 0);
-  --sidebar-border: oklch(0.2739 0.0055 286.0326);
-  --sidebar-ring: oklch(0.6346 0.2509 28.4341);
-  --destructive-foreground: oklch(0.9851 0 0);
-  --radius: 0rem;
-  --font-sans: Space Grotesk, system-ui, sans-serif;
-  --font-serif: Times New Roman, serif;
-  --font-mono: IBM Plex Mono, monospace;
-  --shadow-color: #ff1a1a;
-  --shadow-opacity: 0.2;
-  --shadow-blur: 15px;
-  --shadow-spread: -5px;
-  --shadow-offset-x: 0px;
-  --shadow-offset-y: 0px;
-  --letter-spacing: 0.1em;
+  --background: #fcfaf5;
+  --foreground: #1a3300;
+  --card: #fcfaf5;
+  --card-foreground: #1a3300;
+  --popover: #fcfaf5;
+  --popover-foreground: #1a3300;
+  --primary: #1a3300;
+  --primary-foreground: #fcfaf5;
+  --secondary: #d5f5c2;
+  --secondary-foreground: #1a3300;
+  --muted: #f1f1f1;
+  --muted-foreground: #7a7a7a;
+  --accent: #ffe95c;
+  --accent-foreground: #1a3300;
+  --destructive: #cb5521;
+  --destructive-foreground: #fcfaf5;
+  --border: #d4cfc7;
+  --input: #c8c3bb;
+  --ring: #1a3300;
+  --chart-1: #1a3300;
+  --chart-2: #ffe95c;
+  --chart-3: #a8e5e5;
+  --chart-4: #d5f5c2;
+  --chart-5: #f6d0ff;
+  --sidebar: #fcfaf5;
+  --sidebar-foreground: #1a3300;
+  --sidebar-primary: #1a3300;
+  --sidebar-primary-foreground: #fcfaf5;
+  --sidebar-accent: #ffe95c;
+  --sidebar-accent-foreground: #1a3300;
+  --sidebar-border: #e0dcd4;
+  --sidebar-ring: #1a3300;
+  --app-shell-bg: #f0ece2;
+  --radius: 0.5rem;
+  --pattern-line: #e8e3d9;
+  --band-violet: #f0ece2;
+  --band-dark: #1a3300;
+  --shadow-2xs: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+  --shadow-xs:  rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+  --shadow-sm:  rgba(0, 0, 0, 0.08) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px -1px;
+  --shadow:     rgba(0, 0, 0, 0.08) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px -1px;
+  --shadow-md:  rgba(0, 0, 0, 0.08) 0px 2px 6px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px -1px;
+  --shadow-lg:  rgba(0, 0, 0, 0.07) 0px 4px 12px 0px, rgba(0, 0, 0, 0.04) 0px 2px 4px -1px;
+  --shadow-xl:  rgba(255, 233, 92, 0.12) 0px 33px 72px 0px, rgba(255, 233, 92, 0.07) 0px 8px 24px 0px;
+  --shadow-2xl: rgba(0, 0, 0, 0.10) 0px 8px 24px 0px;
+  --tracking-normal: 0em;
+  --letter-spacing: 0em;
   --spacing: 0.25rem;
-  --shadow-2xs: 0px 0px 15px -5px hsl(0 100.0000% 55.0980% / 0.10);
-  --shadow-xs: 0px 0px 15px -5px hsl(0 100.0000% 55.0980% / 0.10);
-  --shadow-sm: 0px 0px 15px -5px hsl(0 100.0000% 55.0980% / 0.20), 0px 1px 2px -6px hsl(0 100.0000% 55.0980% / 0.20);
-  --shadow: 0px 0px 15px -5px hsl(0 100.0000% 55.0980% / 0.20), 0px 1px 2px -6px hsl(0 100.0000% 55.0980% / 0.20);
-  --shadow-md: 0px 0px 15px -5px hsl(0 100.0000% 55.0980% / 0.20), 0px 2px 4px -6px hsl(0 100.0000% 55.0980% / 0.20);
-  --shadow-lg: 0px 0px 15px -5px hsl(0 100.0000% 55.0980% / 0.20), 0px 4px 6px -6px hsl(0 100.0000% 55.0980% / 0.20);
-  --shadow-xl: 0px 0px 15px -5px hsl(0 100.0000% 55.0980% / 0.20), 0px 8px 10px -6px hsl(0 100.0000% 55.0980% / 0.20);
-  --shadow-2xl: 0px 0px 15px -5px hsl(0 100.0000% 55.0980% / 0.50);
 }
 
 @theme inline {
-  --font-sans: Space Grotesk, system-ui, sans-serif;
-  --font-display: 'Geist', system-ui, sans-serif;
-  --font-heavy: 'Bebas Neue', system-ui, sans-serif;
-  --font-wordmark: 'Fraunces', Georgia, serif;
-  --font-mono: IBM Plex Mono, monospace;
+  /* ── Brand color utilities ──────────────────────── */
+  --color-forest-ink: #1a3300;
+  --color-highlighter-yellow: #ffe95c;
+  --color-cream-paper: #fcfaf5;
+  --color-pencil-gray: #b6b6b6;
+  --color-whisper-gray: #f1f1f1;
+  --color-sticky-note-teal: #a8e5e5;
+  --color-sticky-note-mint: #d5f5c2;
+  --color-sticky-note-blush: #f6d0ff;
+  --color-terracotta: #cb5521;
 
-  --text-display: clamp(2.75rem, 5vw + 1rem, 5.25rem);
-  --text-display-s: clamp(2rem, 3vw + 1rem, 3.5rem);
+  /* ── Fonts ──────────────────────────────────────── */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  /* display = Bricolage Grotesque — replaces both old font-heavy and font-display */
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-heavy: 'Bricolage Grotesque', system-ui, sans-serif;
+  /* wordmark = bold Inter (replaces Fraunces) */
+  --font-wordmark: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Roboto Mono', ui-monospace, monospace;
 
+  /* ── shadcn token passthrough ───────────────────── */
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -167,21 +202,19 @@
   --color-foreground: var(--foreground);
   --color-background: var(--background);
   --color-app-shell-bg: var(--app-shell-bg);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
-  --font-serif: Times New Roman, serif;
-  --radius: 0rem;
-  --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
-  --tracking-tight: calc(var(--tracking-normal) - 0.025em);
-  --tracking-wide: calc(var(--tracking-normal) + 0.025em);
-  --tracking-wider: calc(var(--tracking-normal) + 0.05em);
-  --tracking-widest: calc(var(--tracking-normal) + 0.1em);
-  --tracking-normal: var(--tracking-normal);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-shadow-color: var(--shadow-color);
+
+  /* ── Radius scale (base 8px) ────────────────────── */
+  --radius-sm: calc(var(--radius) - 2px);   /* 6px — buttons */
+  --radius-md: calc(var(--radius) - 2px);   /* 6px — inputs  */
+  --radius-lg: var(--radius);               /* 8px           */
+  --radius-xl: calc(var(--radius) + 4px);   /* 12px — cards  */
+  --radius-2xl: calc(var(--radius) + 8px);  /* 16px — nav    */
+  --radius-3xl: calc(var(--radius) + 16px);
+  --radius-4xl: calc(var(--radius) + 24px);
+
+  /* ── Shadows ────────────────────────────────────── */
   --shadow-2xl: var(--shadow-2xl);
   --shadow-xl: var(--shadow-xl);
   --shadow-lg: var(--shadow-lg);
@@ -190,6 +223,8 @@
   --shadow-sm: var(--shadow-sm);
   --shadow-xs: var(--shadow-xs);
   --shadow-2xs: var(--shadow-2xs);
+
+  /* ── Misc ───────────────────────────────────────── */
   --spacing: var(--spacing);
   --letter-spacing: var(--letter-spacing);
   --shadow-offset-y: var(--shadow-offset-y);
@@ -197,81 +232,48 @@
   --shadow-spread: var(--shadow-spread);
   --shadow-blur: var(--shadow-blur);
   --shadow-opacity: var(--shadow-opacity);
-  --color-shadow-color: var(--shadow-color);
-  --color-destructive-foreground: var(--destructive-foreground);
+  --tracking-normal: var(--tracking-normal);
+  --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
+  --tracking-tight: calc(var(--tracking-normal) - 0.025em);
+  --tracking-wide: calc(var(--tracking-normal) + 0.025em);
+  --tracking-wider: calc(var(--tracking-normal) + 0.05em);
+  --tracking-widest: calc(var(--tracking-normal) + 0.1em);
+  --font-serif: Georgia, serif;
+  --radius: 0.5rem;
 }
 
 @layer base {
   html {
     overflow-x: clip;
-    /* scroll-behavior handled by Lenis */
   }
   body {
     overflow-x: clip;
     @apply font-sans bg-background text-foreground;
-    letter-spacing: var(--tracking-normal);
-  }
-  /* CSS variable for the diagonal pattern line color — used in auth-layout.tsx */
-  :root {
-    --pattern-line: #e5e7eb;
-    --band-violet: oklch(0.28 0.14 285);
-    --band-dark: oklch(0.14 0.05 200);
-  }
-  .dark {
-    --pattern-line: rgba(255, 255, 255, 0.09);
-    --band-violet: oklch(0.32 0.16 285);
-    --band-dark: oklch(0.28 0.09 200);
+    letter-spacing: 0em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   * {
     @apply border-border outline-ring/50;
   }
 
-  /* Custom scrollbar — webkit */
-  ::-webkit-scrollbar {
-    width: 3px;
-    height: 3px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
+  /* Slim warm scrollbar */
+  ::-webkit-scrollbar { width: 3px; height: 3px; }
+  ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: oklch(0.75 0 0 / 0.35);
+    background: #b6b6b6;
     border-radius: 9999px;
   }
-  ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.60 0 0 / 0.55);
-  }
-  ::-webkit-scrollbar-corner {
-    background: transparent;
-  }
-
-  /* Dark mode scrollbar */
-  .dark ::-webkit-scrollbar-thumb {
-    background: oklch(0.45 0 0 / 0.5);
-  }
-  .dark ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.60 0 0 / 0.65);
-  }
-
-  /* Firefox */
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: oklch(0.75 0 0 / 0.35) transparent;
-  }
-  .dark * {
-    scrollbar-color: oklch(0.45 0 0 / 0.5) transparent;
-  }
+  ::-webkit-scrollbar-thumb:hover { background: #8a8a8a; }
+  ::-webkit-scrollbar-corner { background: transparent; }
+  * { scrollbar-width: thin; scrollbar-color: #b6b6b6 transparent; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  ::before,
-  ::after {
+  *, ::before, ::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  html {
-    scroll-behavior: auto;
-  }
+  html { scroll-behavior: auto; }
 }

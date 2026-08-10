@@ -45,11 +45,13 @@ function RegisterPage() {
     resolver: zodResolver(schema),
   });
 
-  function onSubmit({ confirmPassword: _omit, ...data }: FormValues) {
+  function onSubmit(values: FormValues) {
+    const { confirmPassword: _pw, ...data } = values;
+    void _pw;
     registerUser(data, {
       onSuccess: () => navigate({ 
         to: "/dashboard",
-        search: { workspace: useAuthStore.getState().workspace?.id } as any,
+        search: { workspace: useAuthStore.getState().workspace?.id } as Record<string, string | undefined>,
       }),
       onError: (err) => toast.error(getApiError(err)),
     });
@@ -58,12 +60,21 @@ function RegisterPage() {
   return (
     <AuthLayout>
         <CardHeader className="pb-2">
-          <span
-            className="text-xl font-bold text-primary mb-3 block"
-            style={{ fontFamily: "var(--font-wordmark)" }}
-          >
-            Campaign
-          </span>
+          <div className="flex items-center gap-2 mb-3">
+            <span
+              className="inline-flex items-center justify-center w-7 h-7 rounded text-sm font-extrabold"
+              style={{
+                backgroundColor: "var(--color-highlighter-yellow)",
+                color: "var(--color-forest-ink)",
+                fontFamily: "var(--font-display)",
+              }}
+            >
+              C
+            </span>
+            <span className="font-bold text-base text-foreground" style={{ fontFamily: "var(--font-wordmark)" }}>
+              Campaign
+            </span>
+          </div>
           <h1 className="text-xl font-semibold text-foreground">Create account</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Start your free trial today.</p>
         </CardHeader>

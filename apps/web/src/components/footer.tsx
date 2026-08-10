@@ -1,17 +1,27 @@
-import { Link } from "@tanstack/react-router"
 
-const APP_NAME = "Campaign" // TODO: replace with product name
+
+const APP_NAME = "Campaign";
 
 export function Footer() {
   return (
-    <footer className="border-t border-border px-6 py-8">
-      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+    <footer
+      className="px-6 py-8"
+      style={{ borderTop: "1px solid var(--color-pencil-gray)" }}
+    >
+      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-foreground/50">
         <div className="flex items-center gap-3">
-          <span
-            className="font-semibold text-foreground"
-            style={{ fontFamily: "var(--font-wordmark)" }}
-          >
-            {APP_NAME}
+          <span className="flex items-center gap-2">
+            <span
+              className="inline-flex items-center justify-center w-6 h-6 rounded text-xs font-extrabold"
+              style={{
+                backgroundColor: "var(--color-highlighter-yellow)",
+                color: "var(--color-forest-ink)",
+                fontFamily: "var(--font-display)",
+              }}
+            >
+              C
+            </span>
+            <span className="font-semibold text-foreground">{APP_NAME}</span>
           </span>
           <span className="hidden sm:block" aria-hidden>·</span>
           <span className="hidden sm:block">Send campaigns that matter.</span>
@@ -36,5 +46,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

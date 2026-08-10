@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { queryClient } from "@/lib/query-client";
+
 import { useAuthStore } from "@/store/auth-store";
 import { authService } from "@/lib/auth-service";
 

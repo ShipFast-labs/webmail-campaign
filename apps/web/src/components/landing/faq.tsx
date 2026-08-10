@@ -1,23 +1,21 @@
-import { useState } from "react"
-import { AnimatePresence, motion } from "motion/react"
+import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 interface FaqItem {
-  question: string
-  answer: string
+  question: string;
+  answer: string;
 }
 
 const FAQ_ITEMS: FaqItem[] = [
   {
     question: "Which email providers do you support?",
-    answer:
-      "Resend and AWS SES. Switch between them in settings without changing your templates.",
+    answer: "Resend and AWS SES. Switch between them in settings without changing your templates.",
   },
   {
     question: "Can I schedule campaigns in advance?",
-    answer:
-      "Yes. Set a date and time. The system sends automatically when the time arrives.",
+    answer: "Yes. Set a date and time. The system sends automatically when the time arrives.",
   },
   {
     question: "How does CSV import work?",
@@ -34,13 +32,13 @@ const FAQ_ITEMS: FaqItem[] = [
     answer:
       "Their contact status updates immediately. They will not receive future campaigns from your account.",
   },
-]
+];
 
 function FaqRow({ question, answer }: FaqItem) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   return (
-    <div className="border-b border-border">
+    <div style={{ borderBottom: "1px solid var(--color-pencil-gray)" }}>
       <motion.div whileTap={{ scale: 0.998 }}>
         <Button
           variant="ghost"
@@ -52,7 +50,8 @@ function FaqRow({ question, answer }: FaqItem) {
           <motion.span
             animate={{ rotate: open ? 45 : 0 }}
             transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
-            className="shrink-0 text-2xl leading-none text-muted-foreground select-none"
+            className="shrink-0 text-2xl leading-none select-none"
+            style={{ color: "var(--color-pencil-gray)" }}
             aria-hidden
           >
             +
@@ -69,12 +68,12 @@ function FaqRow({ question, answer }: FaqItem) {
             transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
             style={{ overflow: "hidden" }}
           >
-            <p className="pb-5 text-sm text-muted-foreground leading-relaxed">{answer}</p>
+            <p className="pb-5 text-sm text-foreground/60 leading-relaxed">{answer}</p>
           </motion.div>
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }
 
 export function Faq() {
@@ -88,15 +87,14 @@ export function Faq() {
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         className="text-foreground mb-12"
         style={{
-          fontFamily: "var(--font-heavy)",
-          fontSize: "clamp(2.5rem, 5vw + 1rem, 5.5rem)",
-          letterSpacing: "0.02em",
-          lineHeight: 0.95,
-          overflowWrap: "anywhere",
-          minWidth: 0,
+          fontFamily: "var(--font-display)",
+          fontWeight: 800,
+          fontSize: "clamp(2.5rem, 5vw + 1rem, 4.5rem)",
+          letterSpacing: "0.04em",
+          lineHeight: 1.05,
         }}
       >
-        QUESTIONS.
+        Questions.
       </motion.h2>
 
       <motion.div
@@ -105,6 +103,7 @@ export function Faq() {
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
         role="list"
+        style={{ borderTop: "1px solid var(--color-pencil-gray)" }}
       >
         {FAQ_ITEMS.map((item) => (
           <div key={item.question} role="listitem">
@@ -113,5 +112,5 @@ export function Faq() {
         ))}
       </motion.div>
     </section>
-  )
+  );
 }
