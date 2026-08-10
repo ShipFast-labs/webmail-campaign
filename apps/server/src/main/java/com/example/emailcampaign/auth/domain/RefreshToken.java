@@ -18,7 +18,7 @@ import java.util.UUID;
 @Table(name = "refresh_tokens")
 public class RefreshToken extends BaseEntity {
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 1024)
     private String tokenString;
 
     @Column(nullable = false)
