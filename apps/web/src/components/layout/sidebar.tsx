@@ -40,12 +40,15 @@ export function Sidebar() {
         )}
       >
         {/* Logo */}
-        <div className="flex items-center h-14 px-3 border-b border-sidebar-border shrink-0">
+        <div className={cn("flex items-center h-14 px-3 border-b border-sidebar-border shrink-0", sidebarCollapsed && "md:justify-center md:px-0")}>
           <Link
             to="/dashboard"
-            className="flex items-center gap-2 min-w-0 flex-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md"
+            className={cn(
+              "flex items-center gap-2 min-w-0 flex-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md",
+              sidebarCollapsed && "md:justify-center"
+            )}
           >
-            <NamiSendLogo size={28} />
+            <NamiSendLogo size={28} showWordmark={!sidebarCollapsed} />
           </Link>
         </div>
 
@@ -98,7 +101,7 @@ export function Sidebar() {
           <Button
             variant="outline"
             size="icon"
-            className="h-6 w-6 rounded-full bg-sidebar border-sidebar-border shadow-sm"
+            className="h-6 w-6 rounded-full bg-sidebar dark:bg-sidebar border-sidebar-border shadow-sm"
             onClick={toggleSidebarCollapsed}
             aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >

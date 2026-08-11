@@ -3,7 +3,7 @@
  * Type: Bricolage Grotesque (display) · Inter (UI) · Roboto Mono (micro)
  */
 
-@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Mono:wght@400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Roboto+Mono:wght@400&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -27,6 +27,7 @@
   --mm-cream-paper: #f5f1e4;
   --mm-ink-black: #2c2e2a;
   --mm-pure-white: #ffffff;
+  --mm-off-white: #f8f7f2;
   --mm-sandstone: #e0dbce;
   --mm-stone-gray: #80827f;
   --mm-hairline-mist: #d5d5d4;
@@ -49,9 +50,9 @@
   /* ── shadcn semantic tokens → MindMarket ────────── */
   --background: var(--mm-cream-paper);
   --foreground: var(--mm-ink-black);
-  --card: var(--mm-pure-white);
+  --card: var(--mm-off-white);
   --card-foreground: var(--mm-ink-black);
-  --popover: var(--mm-pure-white);
+  --popover: var(--mm-off-white);
   --popover-foreground: var(--mm-ink-black);
   --primary: var(--mm-sunshine-pop);
   --primary-foreground: var(--mm-ink-black);
@@ -91,7 +92,7 @@
   --radius: 0.75rem;
 
   /* fonts */
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
@@ -122,11 +123,12 @@
 
 /* SayBriefly is light-only — dark class mirrors light so no visual change */
 .dark {
+  --mm-off-white: #f8f7f2;
   --background: var(--mm-cream-paper);
   --foreground: var(--mm-ink-black);
-  --card: var(--mm-pure-white);
+  --card: var(--mm-off-white);
   --card-foreground: var(--mm-ink-black);
-  --popover: var(--mm-pure-white);
+  --popover: var(--mm-off-white);
   --popover-foreground: var(--mm-ink-black);
   --primary: var(--mm-sunshine-pop);
   --primary-foreground: var(--mm-ink-black);
@@ -186,12 +188,10 @@
   --color-terracotta: var(--color-terracotta);
 
   /* ── Fonts ──────────────────────────────────────── */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  /* display = Bricolage Grotesque — replaces both old font-heavy and font-display */
+  --font-sans: 'Bricolage Grotesque', system-ui, sans-serif;
   --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
   --font-heavy: 'Bricolage Grotesque', system-ui, sans-serif;
-  /* wordmark = bold Inter (replaces Fraunces) */
-  --font-wordmark: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-wordmark: 'Bricolage Grotesque', system-ui, sans-serif;
   --font-mono: 'Roboto Mono', ui-monospace, monospace;
 
   /* ── shadcn token passthrough ───────────────────── */

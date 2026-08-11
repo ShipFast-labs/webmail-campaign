@@ -50,7 +50,7 @@ function CampaignsIndexPage() {
   };
 
   return (
-    <div className="space-y-6 h-full flex flex-col max-w-6xl mx-auto w-full pb-10">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Campaigns</h1>
@@ -64,19 +64,18 @@ function CampaignsIndexPage() {
         </Button>
       </div>
 
-      <div className="flex-1 overflow-auto">
-        <div className="border rounded-md bg-card">
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead className="w-[30%]">Name</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Scheduled / Sent</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
+      <div className="border rounded-md bg-card">
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="w-[30%]">Name</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Scheduled / Sent</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <TableRow key={i}>
                     <TableCell>
@@ -165,10 +164,9 @@ function CampaignsIndexPage() {
                     </TableCell>
                   </TableRow>
                 ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );
