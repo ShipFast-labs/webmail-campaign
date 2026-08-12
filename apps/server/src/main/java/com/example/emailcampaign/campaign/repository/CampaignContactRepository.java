@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -16,6 +17,16 @@ public interface CampaignContactRepository extends JpaRepository<CampaignContact
 
     long countById_CampaignIdAndStatus(UUID campaignId, CampaignContactStatus status);
 
+    @Transactional
+    @Modifying
+    @Query("UPDATE CampaignContact c SET c.status = :status WHERE c.id.campaignId = :campaignId AND c.id.contactId = :contactId")
+    void updateStatus(
+            @Param("campaignId") UUID campaignId,
+            @Param("contactId") UUID contactId,
+            @Param("status") CampaignContactStatus status
+    );
+
+    @Transactional
     @Modifying
     @Query(value = """
             INSERT INTO campaign_contacts (campaign_id, contact_id, idempotency_key, status, created_at, updated_at)

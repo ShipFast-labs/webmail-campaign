@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "app")
 public class AppProperties {
 
+    private String baseUrl = "http://localhost:8080";
+
     private final Jwt jwt = new Jwt();
     private final Email email = new Email();
     private final Frontend frontend = new Frontend();

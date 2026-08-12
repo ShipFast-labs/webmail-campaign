@@ -59,6 +59,7 @@ spring:
       "[org.quartz.jobStore.clusterCheckinInterval]": 20000
 
 app:
+  base-url: ${APP_BASE_URL:http://localhost:8080}
   redis:
     key-prefix: ${REDIS_KEY_PREFIX:namis:}
   frontend:
