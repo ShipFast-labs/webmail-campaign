@@ -45,9 +45,12 @@ parts — Kafka pipeline, Quartz wiring, dual-provider webhook validation, state
 - [x] **Day 4 — Lists & Templates (Backend)**
   - [x] `ContactList` entity, repository, service, and controller
   - [x] `Template` entity, Freemarker `StringTemplateLoader` implementation, render preview endpoint
-- [ ] **Day 5 — Campaign Scheduling & Engine (Backend)**
-  - [ ] `Campaign` & `CampaignSendJob` entities, repository, service, and controller
-  - [ ] Quartz Scheduler integration (`CampaignQuartzJob`, trigger scheduling, immediate send)
+- [x] **Day 5 — Campaign Scheduling & Engine (Backend)**
+  - [x] `Campaign` entity + `CampaignStatus` enum + `CampaignStateMachine` (pure domain utility, final class, static transitions via `EnumMap`)
+  - [x] `CampaignRepository`, `CampaignMapper`, DTOs (`CreateCampaignRequest`, `ScheduleCampaignRequest`, `CampaignResponse`)
+  - [x] `CampaignService` (interface) + `CampaignServiceImpl` (delegates transitions to `CampaignStateMachine`, delegates scheduling to `CampaignSchedulerService`)
+  - [x] `CampaignSchedulerService` — registers/unregisters Quartz jobs; `MISFIRE_INSTRUCTION_FIRE_NOW`; `@DisallowConcurrentExecution` on `CampaignSendJob`
+  - [x] `CampaignController` — all 8 endpoints (list, create, get, send-now, schedule, pause, resume, cancel)
 - [ ] **Day 6 — Sending Pipeline & Providers (Backend)**
   - [ ] Kafka topics, producer (`EmailSendProducer`), and batch consumer (`EmailSendConsumer`)
   - [ ] Resend & SES email provider implementations (`EmailSender` strategy interface)
@@ -316,7 +319,10 @@ Lua script on Redis key `rate_limit:{workspace_id}` atomically checks and decrem
 | prometheus | prom/prometheus                    | 9090 |
 | grafana    | grafana/grafana                    | 3001 |
 
-Backend env vars: `SPRING_DATASOURCE_URL`, `SPRING_DATA_REDIS_*`, `SPRING_KAFKA_BOOTSTRAP_SERVERS`, `JWT_SECRET`, `APP_EMAIL_PROVIDER` (resend|ses), `RESEND_API_KEY`, `AWS_*`.
+Backend env vars: `SPRING_DATASOURCE_URL`, `SPRING_DATA_REDIS_*`, `SPRING_KAFKA_BOOTSTRAP_SERVERS`, `JWT_SECRET`
+Email provider (set one, the other can be omitted):
+- `APP_EMAIL_PROVIDER=resend` → `RESEND_API_KEY=re_...`
+- `APP_EMAIL_PROVIDER=ses` → `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `APP_SES_FROM_DOMAIN`
 
 ---
 
@@ -447,7 +453,10 @@ Backend env vars: `SPRING_DATASOURCE_URL`, `SPRING_DATA_REDIS_*`, `SPRING_KAFKA_
 
 **Person A (Backend):**
 
-- `EmailProvider` interface + `ResendEmailProvider` (`X-Entity-Ref-Id` idempotency) + `AwsSesEmailProvider` (`ClientToken`) + `EmailProviderFactory` (`@ConditionalOnProperty`)
+- **`EmailProvider` strategy interface** — single `send(EmailMessage)` method; both providers are drop-in replacements
+  - `ResendEmailProvider` — HTTP REST via Resend Java SDK; idempotency via `X-Entity-Ref-Id` header
+  - `AwsSesEmailProvider` — AWS SDK v2 `SesV2Client`; idempotency via `ClientToken`
+  - `EmailProviderConfig` — `@ConditionalOnProperty(name="app.email.provider", havingValue="resend|ses")`; reads `APP_EMAIL_PROVIDER` env var; registers the active provider as a Spring bean; no code change needed to switch providers
 - `RateLimiterService` — Redis Lua token bucket on `rate_limit:{workspace_id}`
 - `EmailSenderConsumer` — `@KafkaListener(email.send.batches, concurrency=12)`: idempotency check → rate limit → render template → send → update `campaign_contacts.status` → publish to `email.tracking.events`
 - `@RetryableTopic` (3 retries, exponential backoff) + DLT handler
