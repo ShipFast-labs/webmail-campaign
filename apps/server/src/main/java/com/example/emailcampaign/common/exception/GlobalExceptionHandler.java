@@ -2,6 +2,7 @@ package com.example.emailcampaign.common.exception;
 
 import com.example.emailcampaign.common.api.ApiErrorResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -54,6 +55,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(ApiErrorResponse.of("FORBIDDEN", "Access denied", traceId));
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ResponseEntity<ApiErrorResponse> handleOptimisticLock(OptimisticLockingFailureException ex) {
+        String traceId = UUID.randomUUID().toString();
+        log.warn("Concurrent modification rejected (traceId: {}): {}", traceId, ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ApiErrorResponse.of("CONCURRENT_MODIFICATION", "This resource was modified by another request. Please retry.", traceId));
     }
 
     @ExceptionHandler(Exception.class)

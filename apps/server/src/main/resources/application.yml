@@ -67,6 +67,9 @@ app:
     secret: ${JWT_SECRET}
     access-token-expiration-ms: 3600000
     refresh-token-expiration-ms: 604800000
+  rate-limit:
+    max-tokens: ${RATE_LIMIT_MAX_TOKENS:200}           # burst ceiling per workspace
+    refill-rate-per-second: ${RATE_LIMIT_REFILL_RPS:10} # sustained throughput (10 emails/s = 36k/hr)
   email:
     provider: ${APP_EMAIL_PROVIDER:resend}
     resend:

@@ -122,7 +122,8 @@ public class ContactImportService {
                 .collect(Collectors.toMap(c -> c.getEmail().toLowerCase(), c -> c));
 
         Workspace workspace = workspaceRepository.getReferenceById(workspaceId);
-        List<Contact> toSave = new ArrayList<>();
+        // LinkedHashMap keyed by email deduplicates within the chunk (last row wins)
+        Map<String, Contact> toSave = new LinkedHashMap<>();
         int successCount = 0;
         int errorCount = 0;
 
@@ -138,7 +139,7 @@ public class ContactImportService {
                 email = email.toLowerCase().trim();
                 Contact contact = existingByEmail.getOrDefault(
                         email,
-                        Contact.builder().workspace(workspace).email(email).build()
+                        toSave.getOrDefault(email, Contact.builder().workspace(workspace).email(email).build())
                 );
 
                 String firstName = extractField(headers, row, "first_name");
@@ -154,7 +155,7 @@ public class ContactImportService {
                             .toArray(String[]::new));
                 }
 
-                toSave.add(contact);
+                toSave.put(email, contact);
                 successCount++;
             } catch (Exception e) {
                 errors.add("Row error: " + e.getMessage());
@@ -162,7 +163,7 @@ public class ContactImportService {
             }
         }
 
-        contactRepository.saveAll(toSave);
+        contactRepository.saveAll(toSave.values());
         return new ChunkResult(successCount, errorCount);
     }
 

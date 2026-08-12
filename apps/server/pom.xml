@@ -124,7 +124,7 @@
 		</dependency>
 		<dependency>
 			<groupId>software.amazon.awssdk</groupId>
-			<artifactId>ses</artifactId>
+			<artifactId>sesv2</artifactId>
 			<version>${awssdk.version}</version>
 		</dependency>
 		<dependency>

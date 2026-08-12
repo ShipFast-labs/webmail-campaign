@@ -41,6 +41,9 @@ public class CampaignSchedulerService {
                 .build();
 
         try {
+            // Delete any existing job for this campaign first — makes this call idempotent
+            // (deleteJob is a no-op if the key doesn't exist)
+            scheduler.deleteJob(JobKey.jobKey(jobKey(campaignId), JOB_GROUP));
             scheduler.scheduleJob(job, trigger);
             log.info("Scheduled campaign={} at {}", campaignId, scheduledAt);
         } catch (SchedulerException e) {
