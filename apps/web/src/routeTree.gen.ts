@@ -19,6 +19,7 @@ import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as Oauth2RedirectRouteImport } from './routes/oauth2.redirect'
 import { Route as AppCampaignsIndexRouteImport } from './routes/_app/campaigns/index'
+import { Route as AppCampaignsCampaignIdRouteImport } from './routes/_app/campaigns/$campaignId'
 import { Route as AppCampaignsNewRouteImport } from './routes/_app/campaigns/new'
 import { Route as AppListsIndexRouteImport } from './routes/_app/lists/index'
 import { Route as AppListsListIdRouteImport } from './routes/_app/lists/$listId'
@@ -75,6 +76,11 @@ const AppCampaignsIndexRoute = AppCampaignsIndexRouteImport.update({
   path: '/campaigns/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCampaignsCampaignIdRoute = AppCampaignsCampaignIdRouteImport.update({
+  id: '/campaigns/$campaignId',
+  path: '/campaigns/$campaignId',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCampaignsNewRoute = AppCampaignsNewRouteImport.update({
   id: '/campaigns/new',
   path: '/campaigns/new',
@@ -102,9 +108,9 @@ const AppTemplatesTemplateIdRoute = AppTemplatesTemplateIdRouteImport.update({
 } as any)
 const AppCampaignsCampaignIdAnalyticsRoute =
   AppCampaignsCampaignIdAnalyticsRouteImport.update({
-    id: '/campaigns/$campaignId/analytics',
-    path: '/campaigns/$campaignId/analytics',
-    getParentRoute: () => AppRoute,
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => AppCampaignsCampaignIdRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AppDashboardRoute
   '/settings': typeof AppSettingsRoute
   '/oauth2/redirect': typeof Oauth2RedirectRoute
+  '/campaigns/$campaignId': typeof AppCampaignsCampaignIdRouteWithChildren
   '/campaigns/new': typeof AppCampaignsNewRoute
   '/lists/$listId': typeof AppListsListIdRoute
   '/templates/$templateId': typeof AppTemplatesTemplateIdRoute
@@ -133,6 +140,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AppDashboardRoute
   '/settings': typeof AppSettingsRoute
   '/oauth2/redirect': typeof Oauth2RedirectRoute
+  '/campaigns/$campaignId': typeof AppCampaignsCampaignIdRouteWithChildren
   '/campaigns/new': typeof AppCampaignsNewRoute
   '/lists/$listId': typeof AppListsListIdRoute
   '/templates/$templateId': typeof AppTemplatesTemplateIdRoute
@@ -152,6 +160,7 @@ export interface FileRoutesById {
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/settings': typeof AppSettingsRoute
   '/oauth2/redirect': typeof Oauth2RedirectRoute
+  '/_app/campaigns/$campaignId': typeof AppCampaignsCampaignIdRouteWithChildren
   '/_app/campaigns/new': typeof AppCampaignsNewRoute
   '/_app/lists/$listId': typeof AppListsListIdRoute
   '/_app/templates/$templateId': typeof AppTemplatesTemplateIdRoute
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/settings'
     | '/oauth2/redirect'
+    | '/campaigns/$campaignId'
     | '/campaigns/new'
     | '/lists/$listId'
     | '/templates/$templateId'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/settings'
     | '/oauth2/redirect'
+    | '/campaigns/$campaignId'
     | '/campaigns/new'
     | '/lists/$listId'
     | '/templates/$templateId'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/_app/dashboard'
     | '/_app/settings'
     | '/oauth2/redirect'
+    | '/_app/campaigns/$campaignId'
     | '/_app/campaigns/new'
     | '/_app/lists/$listId'
     | '/_app/templates/$templateId'
@@ -295,6 +307,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCampaignsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/campaigns/$campaignId': {
+      id: '/_app/campaigns/$campaignId'
+      path: '/campaigns/$campaignId'
+      fullPath: '/campaigns/$campaignId'
+      preLoaderRoute: typeof AppCampaignsCampaignIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/campaigns/new': {
       id: '/_app/campaigns/new'
       path: '/campaigns/new'
@@ -332,26 +351,40 @@ declare module '@tanstack/react-router' {
     }
     '/_app/campaigns/$campaignId/analytics': {
       id: '/_app/campaigns/$campaignId/analytics'
-      path: '/campaigns/$campaignId/analytics'
+      path: '/analytics'
       fullPath: '/campaigns/$campaignId/analytics'
       preLoaderRoute: typeof AppCampaignsCampaignIdAnalyticsRouteImport
-      parentRoute: typeof AppRoute
+      parentRoute: typeof AppCampaignsCampaignIdRoute
     }
   }
 }
+
+interface AppCampaignsCampaignIdRouteChildren {
+  AppCampaignsCampaignIdAnalyticsRoute: typeof AppCampaignsCampaignIdAnalyticsRoute
+}
+
+const AppCampaignsCampaignIdRouteChildren: AppCampaignsCampaignIdRouteChildren =
+  {
+    AppCampaignsCampaignIdAnalyticsRoute: AppCampaignsCampaignIdAnalyticsRoute,
+  }
+
+const AppCampaignsCampaignIdRouteWithChildren =
+  AppCampaignsCampaignIdRoute._addFileChildren(
+    AppCampaignsCampaignIdRouteChildren,
+  )
 
 interface AppRouteChildren {
   AppAnalyticsRoute: typeof AppAnalyticsRoute
   AppContactsRoute: typeof AppContactsRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppSettingsRoute: typeof AppSettingsRoute
+  AppCampaignsCampaignIdRoute: typeof AppCampaignsCampaignIdRouteWithChildren
   AppCampaignsNewRoute: typeof AppCampaignsNewRoute
   AppListsListIdRoute: typeof AppListsListIdRoute
   AppTemplatesTemplateIdRoute: typeof AppTemplatesTemplateIdRoute
   AppCampaignsIndexRoute: typeof AppCampaignsIndexRoute
   AppListsIndexRoute: typeof AppListsIndexRoute
   AppTemplatesIndexRoute: typeof AppTemplatesIndexRoute
-  AppCampaignsCampaignIdAnalyticsRoute: typeof AppCampaignsCampaignIdAnalyticsRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -359,13 +392,13 @@ const AppRouteChildren: AppRouteChildren = {
   AppContactsRoute: AppContactsRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppSettingsRoute: AppSettingsRoute,
+  AppCampaignsCampaignIdRoute: AppCampaignsCampaignIdRouteWithChildren,
   AppCampaignsNewRoute: AppCampaignsNewRoute,
   AppListsListIdRoute: AppListsListIdRoute,
   AppTemplatesTemplateIdRoute: AppTemplatesTemplateIdRoute,
   AppCampaignsIndexRoute: AppCampaignsIndexRoute,
   AppListsIndexRoute: AppListsIndexRoute,
   AppTemplatesIndexRoute: AppTemplatesIndexRoute,
-  AppCampaignsCampaignIdAnalyticsRoute: AppCampaignsCampaignIdAnalyticsRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

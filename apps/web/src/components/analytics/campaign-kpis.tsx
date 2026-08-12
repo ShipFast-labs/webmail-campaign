@@ -2,22 +2,23 @@ import { motion } from "motion/react";
 import { useCampaignAnalytics } from "@/hooks/use-analytics";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { fadeUp } from "@/lib/motion";
 
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] } as any,
-});
+function rate(num: number, denom: number): string {
+  return denom === 0 ? "—" : ((num / denom) * 100).toFixed(1) + "%";
+}
 
 export function CampaignKpis({ campaignId }: { campaignId: string }) {
   const { data: analytics, isLoading } = useCampaignAnalytics(campaignId);
 
-  const kpis = analytics ? [
-    { label: "Delivery Rate", value: ((analytics.totalDelivered / analytics.totalSent) * 100).toFixed(1) + "%" },
-    { label: "Open Rate", value: ((analytics.totalOpened / analytics.totalDelivered) * 100).toFixed(1) + "%" },
-    { label: "Click Rate", value: ((analytics.totalClicked / analytics.totalOpened) * 100).toFixed(1) + "%" },
-    { label: "Bounce Rate", value: ((analytics.totalBounced / analytics.totalSent) * 100).toFixed(1) + "%" },
-  ] : [];
+  const kpis = analytics
+    ? [
+        { label: "Delivery Rate", value: rate(analytics.totalDelivered, analytics.totalSent) },
+        { label: "Open Rate", value: rate(analytics.totalOpened, analytics.totalDelivered) },
+        { label: "Click Rate", value: rate(analytics.totalClicked, analytics.totalOpened) },
+        { label: "Bounce Rate", value: rate(analytics.totalBounced, analytics.totalSent) },
+      ]
+    : [];
 
   if (isLoading) {
     return (

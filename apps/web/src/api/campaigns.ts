@@ -10,6 +10,7 @@ export type CampaignStatus =
 
 export interface Campaign {
   id: string;
+  workspaceId: string;
   name: string;
   subject: string;
   fromName: string;
@@ -19,6 +20,7 @@ export interface Campaign {
   targetListId: string | null;
   scheduledAt: string | null;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateCampaignPayload {

@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { fadeUp } from "@/lib/motion";
 
 const STATUS_BADGE: Record<string, string> = {
   SENT: "bg-gray-500/10 text-gray-500",
@@ -20,12 +21,6 @@ const STATUS_BADGE: Record<string, string> = {
   UNSUBSCRIBED: "bg-red-500/10 text-red-600",
   FAILED: "bg-destructive/10 text-destructive",
 };
-
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] } as any,
-});
 
 export function CampaignRecipientTable({ campaignId }: { campaignId: string }) {
   const [page, setPage] = useState(0);

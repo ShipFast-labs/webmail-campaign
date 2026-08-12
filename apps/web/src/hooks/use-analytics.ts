@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { analyticsApi } from "@/api/analytics";
+import { analyticsApi, type PaginatedRecipients } from "@/api/analytics";
 
 export function useDashboardKpi() {
   return useQuery({
@@ -32,7 +32,7 @@ export function useCampaignTimeSeries(campaignId: string) {
 }
 
 export function useCampaignRecipients(campaignId: string, page = 0, size = 20) {
-  return useQuery({
+  return useQuery<PaginatedRecipients>({
     queryKey: ["analytics", "campaign", campaignId, "recipients", page, size],
     queryFn: () => analyticsApi.getCampaignRecipients(campaignId, page, size),
     enabled: !!campaignId,

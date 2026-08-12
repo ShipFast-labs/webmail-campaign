@@ -3,6 +3,7 @@ package com.example.emailcampaign.campaign.service;
 import com.example.emailcampaign.campaign.domain.Campaign;
 import com.example.emailcampaign.campaign.domain.CampaignStateMachine;
 import com.example.emailcampaign.campaign.domain.CampaignStatus;
+import com.example.emailcampaign.campaign.service.CampaignSendOrchestrator;
 import com.example.emailcampaign.campaign.dto.CampaignResponse;
 import com.example.emailcampaign.campaign.dto.CreateCampaignRequest;
 import com.example.emailcampaign.campaign.dto.ScheduleCampaignRequest;
@@ -32,6 +33,7 @@ public class CampaignServiceImpl implements CampaignService {
     private final AudienceListRepository listRepository;
     private final CampaignMapper campaignMapper;
     private final CampaignSchedulerService schedulerService;
+    private final CampaignSendOrchestrator orchestrator;
 
     @Override
     @Transactional(readOnly = true)
@@ -71,13 +73,11 @@ public class CampaignServiceImpl implements CampaignService {
     public CampaignResponse sendNow(UUID workspaceId, UUID campaignId) {
         Campaign campaign = findOrThrow(workspaceId, campaignId);
         boolean wasScheduled = campaign.getStatus() == SCHEDULED;
-        CampaignStateMachine.transition(campaign, SENDING);
-        campaign.setScheduledAt(null);
-        CampaignResponse response = campaignMapper.toResponse(campaignRepository.save(campaign));
+        orchestrator.initiateSend(campaign, workspaceId);
         if (wasScheduled) {
             schedulerService.unscheduleCampaign(campaignId);
         }
-        return response;
+        return campaignMapper.toResponse(campaign);
     }
 
     @Override

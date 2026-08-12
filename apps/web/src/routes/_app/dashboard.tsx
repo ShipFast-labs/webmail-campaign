@@ -5,16 +5,10 @@ import { DashboardKpiCards } from "@/components/dashboard/kpi-cards";
 import { DashboardPerformanceChart } from "@/components/dashboard/performance-chart";
 import { DashboardRecentCampaigns } from "@/components/dashboard/recent-campaigns";
 import { useAuthStore } from "@/store/auth-store";
+import { fadeUp } from "@/lib/motion";
 
 export const Route = createFileRoute("/_app/dashboard")({
   component: DashboardPage,
-});
-
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] } as any,
 });
 
 function DashboardPage() {
