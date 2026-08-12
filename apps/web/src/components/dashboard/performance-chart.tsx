@@ -6,13 +6,7 @@ import { useDashboardTimeSeries } from "@/hooks/use-analytics";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
-
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] } as any,
-});
+import { fadeUp } from "@/lib/motion";
 
 const chartConfig = {
   sends: {

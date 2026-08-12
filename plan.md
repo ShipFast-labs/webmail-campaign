@@ -42,12 +42,15 @@ parts — Kafka pipeline, Quartz wiring, dual-provider webhook validation, state
   - [x] `Contact` & `ImportJob` JPA entities and repositories
   - [x] `ContactService` & `ContactController` (CRUD, filtering, search)
   - [x] `ContactImportService` (`@Async` CSV chunked import with OpenCSV & progress tracking)
-- [ ] **Day 4 — Lists & Templates (Backend)**
-  - [ ] `ContactList` entity, repository, service, and controller
-  - [ ] `Template` entity, Freemarker `StringTemplateLoader` implementation, render preview endpoint
-- [ ] **Day 5 — Campaign Scheduling & Engine (Backend)**
-  - [ ] `Campaign` & `CampaignSendJob` entities, repository, service, and controller
-  - [ ] Quartz Scheduler integration (`CampaignQuartzJob`, trigger scheduling, immediate send)
+- [x] **Day 4 — Lists & Templates (Backend)**
+  - [x] `ContactList` entity, repository, service, and controller
+  - [x] `Template` entity, Freemarker `StringTemplateLoader` implementation, render preview endpoint
+- [x] **Day 5 — Campaign Scheduling & Engine (Backend)**
+  - [x] `Campaign` entity + `CampaignStatus` enum + `CampaignStateMachine` (pure domain utility, final class, static transitions via `EnumMap`)
+  - [x] `CampaignRepository`, `CampaignMapper`, DTOs (`CreateCampaignRequest`, `ScheduleCampaignRequest`, `CampaignResponse`)
+  - [x] `CampaignService` (interface) + `CampaignServiceImpl` (delegates transitions to `CampaignStateMachine`, delegates scheduling to `CampaignSchedulerService`)
+  - [x] `CampaignSchedulerService` — registers/unregisters Quartz jobs; `MISFIRE_INSTRUCTION_FIRE_NOW`; `@DisallowConcurrentExecution` on `CampaignSendJob`
+  - [x] `CampaignController` — all 8 endpoints (list, create, get, send-now, schedule, pause, resume, cancel)
 - [ ] **Day 6 — Sending Pipeline & Providers (Backend)**
   - [ ] Kafka topics, producer (`EmailSendProducer`), and batch consumer (`EmailSendConsumer`)
   - [ ] Resend & SES email provider implementations (`EmailSender` strategy interface)
@@ -140,19 +143,19 @@ All tables use UUIDs (`gen_random_uuid()`), `timestamptz`, composite indexes on 
 | Table                           | Key Columns                                                                                                                   |
 | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `workspaces`                    | workspace_id, name, slug, plan, daily_send_limit                                                                              |
-| `users`                         | user_id, workspace_id, email, password_hash, role (ADMIN                                                                      | MARKETER)                            |
+| `users`                         | user_id, workspace_id, email, password_hash, role (ADMIN                                                                      |
 | `refresh_tokens`                | token_id, user_id, token_hash, expires_at                                                                                     |
-| `contacts`                      | contact_id, workspace_id, email, first/last name, status (active                                                              | unsubscribed                         | bounced              | cleaned), custom_fields JSONB, tags text[] |
+| `contacts`                      | contact_id, workspace_id, email, first/last name, status (active                                                              |
 | `lists`                         | list_id, workspace_id, name, contact_count                                                                                    |
 | `list_contacts`                 | (list_id, contact_id) PK, added_at                                                                                            |
 | `templates`                     | template_id, workspace_id, name, subject, html_content (Freemarker), text_content, variables JSONB                            |
 | `campaigns`                     | campaign_id, workspace_id, name, status, template_id, from_name/email, target_list_id, scheduled_at, settings JSONB           |
-| `campaign_contacts`             | (campaign_id, contact_id) PK, idempotency_key UNIQUE, status (pending                                                         | sent                                 | delivered            | failed                                     | bounced), provider_message_id |
-| `tracking_tokens`               | token (PK, URL-safe base64), token_type (open                                                                                 | click), campaign_id, contact_id, url |
-| `tracking_events`               | event_id, workspace_id, campaign_id, contact_id, event_type (sent                                                             | delivered                            | opened               | clicked                                    | bounced                       | complained | unsubscribed), event_data JSONB, provider_event_id (dedup) |
+| `campaign_contacts`             | (campaign_id, contact_id) PK, idempotency_key UNIQUE, status (pending                                                         |
+| `tracking_tokens`               | token (PK, URL-safe base64), token_type (open                                                                                 |
+| `tracking_events`               | event_id, workspace_id, campaign_id, contact_id, event_type (sent                                                             |
 | `campaign_analytics`            | campaign_id (PK), total_sent/delivered/opened/clicked/bounced/unsubscribed, unique_opens/clicks, hard/soft_bounces            |
 | `campaign_analytics_timeseries` | (campaign_id, bucket, event_type) PK, count — hourly buckets via `date_trunc('hour', ...)`                                    |
-| `outbox_events`                 | event_id, aggregate_type/id, event_type, payload JSONB, topic, status (pending                                                | published                            | failed), retry_count |
+| `outbox_events`                 | event_id, aggregate_type/id, event_type, payload JSONB, topic, status (pending                                                |
 | `import_jobs`                   | import_job_id, workspace_id, list_id, file_name, status, total_rows, processed_rows, success/error_count, error_details JSONB |
 | `quartz_*`                      | Standard 11-table Quartz JDBC schema (V008 migration)                                                                         |
 
@@ -160,7 +163,7 @@ All tables use UUIDs (`gen_random_uuid()`), `timestamptz`, composite indexes on 
 
 ## API Design
 
-**Base:** `/api/v1` — all endpoints require `Authorization: Bearer <jwt>` except `/auth/`**, `/t/**`, `/webhooks/**`.
+**Base:** `/api/v1` — all endpoints require `Authorization: Bearer <jwt>` except `/auth/`**, `/t/`**, `/webhooks/**`.
 `workspace_id` is always derived from JWT claims, never from URL.
 
 ### Auth — `/api/v1/auth`
@@ -316,7 +319,10 @@ Lua script on Redis key `rate_limit:{workspace_id}` atomically checks and decrem
 | prometheus | prom/prometheus                    | 9090 |
 | grafana    | grafana/grafana                    | 3001 |
 
-Backend env vars: `SPRING_DATASOURCE_URL`, `SPRING_DATA_REDIS_*`, `SPRING_KAFKA_BOOTSTRAP_SERVERS`, `JWT_SECRET`, `APP_EMAIL_PROVIDER` (resend|ses), `RESEND_API_KEY`, `AWS_*`.
+Backend env vars: `SPRING_DATASOURCE_URL`, `SPRING_DATA_REDIS_*`, `SPRING_KAFKA_BOOTSTRAP_SERVERS`, `JWT_SECRET`
+Email provider (set one, the other can be omitted):
+- `APP_EMAIL_PROVIDER=resend` → `RESEND_API_KEY=re_...`
+- `APP_EMAIL_PROVIDER=ses` → `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `APP_SES_FROM_DOMAIN`
 
 ---
 
@@ -447,7 +453,10 @@ Backend env vars: `SPRING_DATASOURCE_URL`, `SPRING_DATA_REDIS_*`, `SPRING_KAFKA_
 
 **Person A (Backend):**
 
-- `EmailProvider` interface + `ResendEmailProvider` (`X-Entity-Ref-Id` idempotency) + `AwsSesEmailProvider` (`ClientToken`) + `EmailProviderFactory` (`@ConditionalOnProperty`)
+- **`EmailProvider` strategy interface** — single `send(EmailMessage)` method; both providers are drop-in replacements
+  - `ResendEmailProvider` — HTTP REST via Resend Java SDK; idempotency via `X-Entity-Ref-Id` header
+  - `AwsSesEmailProvider` — AWS SDK v2 `SesV2Client`; idempotency via `ClientToken`
+  - `EmailProviderConfig` — `@ConditionalOnProperty(name="app.email.provider", havingValue="resend|ses")`; reads `APP_EMAIL_PROVIDER` env var; registers the active provider as a Spring bean; no code change needed to switch providers
 - `RateLimiterService` — Redis Lua token bucket on `rate_limit:{workspace_id}`
 - `EmailSenderConsumer` — `@KafkaListener(email.send.batches, concurrency=12)`: idempotency check → rate limit → render template → send → update `campaign_contacts.status` → publish to `email.tracking.events`
 - `@RetryableTopic` (3 retries, exponential backoff) + DLT handler

@@ -24,7 +24,7 @@ export function NamiSendLogo({
         className="shrink-0 inline-flex items-center justify-center bg-primary/90 rounded-(--radius)"
         style={{ width: size, height: size }}
       >
-        <HugeiconsIcon icon={AiMail02Icon} size={iconSize} color="white" strokeWidth={1.8} />
+        <HugeiconsIcon icon={AiMail02Icon} size={iconSize} color="var(--color-forest-ink)" strokeWidth={1.8} />
       </span>
 
       {showWordmark && (

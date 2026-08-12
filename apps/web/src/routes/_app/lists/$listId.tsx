@@ -130,11 +130,15 @@ function ListDetailPage() {
             transition={{ duration: 0.18, ease: "easeInOut" }}
           >
             <Card className="overflow-hidden">
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto bg-card">
                 <table className="w-full text-sm">
-                  <thead className="bg-muted/40">
+                  <thead>
                     {table.getHeaderGroups().map((hg) => (
-                      <tr key={hg.id} className="border-b border-border/60">
+                      <tr
+                        key={hg.id}
+                        className="transition-colors"
+                        style={{ borderBottom: "1px solid var(--color-pencil-gray)" }}
+                      >
                         {hg.headers.map((h) => (
                           <th key={h.id} className="text-left font-medium px-4 py-3 text-muted-foreground whitespace-nowrap">
                             {flexRender(h.column.columnDef.header, h.getContext())}
@@ -158,7 +162,8 @@ function ListDetailPage() {
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ duration: 0.12, delay: i * 0.02 }}
-                          className="border-b border-border/40 last:border-0 hover:bg-muted/30 transition-colors"
+                          className="last:border-0 hover:bg-muted/30 transition-colors"
+                          style={{ borderBottom: "1px solid var(--color-whisper-gray)" }}
                         >
                           {row.getVisibleCells().map((cell) => (
                             <td key={cell.id} className="px-4 py-3.5 whitespace-nowrap">

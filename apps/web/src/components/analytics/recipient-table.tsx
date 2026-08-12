@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { fadeUp } from "@/lib/motion";
 
 const STATUS_BADGE: Record<string, string> = {
   SENT: "bg-gray-500/10 text-gray-500",
@@ -21,12 +22,6 @@ const STATUS_BADGE: Record<string, string> = {
   FAILED: "bg-destructive/10 text-destructive",
 };
 
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] } as any,
-});
-
 export function CampaignRecipientTable({ campaignId }: { campaignId: string }) {
   const [page, setPage] = useState(0);
   const pageSize = 10;
@@ -36,14 +31,20 @@ export function CampaignRecipientTable({ campaignId }: { campaignId: string }) {
   return (
     <motion.div {...fadeUp(0.5)}>
       <Card>
-        <CardHeader>
+        <CardHeader
+          className="pb-4"
+          style={{ borderBottom: "1px solid var(--color-pencil-gray)" }}
+        >
           <CardTitle>Recipient Activity</CardTitle>
           <CardDescription>Detailed logs for all recipients in this campaign</CardDescription>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
-              <TableRow className="hover:bg-transparent">
+              <TableRow
+                className="hover:bg-transparent"
+                style={{ borderBottom: "1px solid var(--color-pencil-gray)" }}
+              >
                 <TableHead className="w-[30%]">Subscriber</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Last Updated</TableHead>
@@ -52,7 +53,7 @@ export function CampaignRecipientTable({ campaignId }: { campaignId: string }) {
             <TableBody>
               {isLoading ? (
                 Array.from({ length: pageSize }).map((_, i) => (
-                  <TableRow key={i}>
+                  <TableRow key={i} style={{ borderBottom: "1px solid var(--color-whisper-gray)" }}>
                     <TableCell><Skeleton className="h-4 w-32" /></TableCell>
                     <TableCell><Skeleton className="h-4 w-16" /></TableCell>
                     <TableCell className="text-right"><Skeleton className="h-4 w-24 ml-auto" /></TableCell>
@@ -66,7 +67,7 @@ export function CampaignRecipientTable({ campaignId }: { campaignId: string }) {
                 </TableRow>
               ) : (
                 recipientsRes.data.map((recip) => (
-                  <TableRow key={recip.id}>
+                  <TableRow key={recip.id} style={{ borderBottom: "1px solid var(--color-whisper-gray)" }}>
                     <TableCell className="font-medium">
                       <div className="flex flex-col">
                         <span>{recip.firstName} {recip.lastName}</span>

@@ -64,11 +64,14 @@ function ListsPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.18, ease: "easeInOut" }}
       >
-        <div className="border rounded-md bg-card overflow-hidden">
-          <div className="overflow-x-auto">
+        <div className="rounded-3xl bg-card shadow-sm ring-1 ring-foreground/5 overflow-hidden">
+          <div className="overflow-x-auto bg-card">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b transition-colors">
+                <tr
+                  className="transition-colors"
+                  style={{ borderBottom: "1px solid var(--color-pencil-gray)" }}
+                >
                   <th className="h-10 px-4 py-3 text-left align-middle font-medium whitespace-nowrap text-foreground">Name</th>
                   <th className="h-10 px-4 py-3 text-left align-middle font-medium whitespace-nowrap text-foreground">Contacts</th>
                   <th className="h-10 px-4 py-3 text-left align-middle font-medium whitespace-nowrap text-foreground">Created</th>
@@ -78,7 +81,7 @@ function ListsPage() {
               <tbody>
                 {isLoading ? (
                   Array.from({ length: 5 }).map((_, i) => (
-                    <tr key={i} className="border-b transition-colors">
+                    <tr key={i} className="transition-colors" style={{ borderBottom: "1px solid var(--color-whisper-gray)" }}>
                       <td className="p-4 align-middle whitespace-nowrap"><Skeleton className="h-4 w-[140px]" /></td>
                       <td className="p-4 align-middle whitespace-nowrap"><Skeleton className="h-4 w-[60px]" /></td>
                       <td className="p-4 align-middle whitespace-nowrap"><Skeleton className="h-4 w-[90px]" /></td>
@@ -128,7 +131,8 @@ function ListRow({ list, index, onRename }: { list: AudienceList; index: number;
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.12, delay: index * 0.02 }}
-      className="border-b transition-colors hover:bg-muted/50 last:border-0 cursor-pointer"
+      className="transition-colors hover:bg-muted/50 last:border-0 cursor-pointer"
+      style={{ borderBottom: "1px solid var(--color-whisper-gray)" }}
       onClick={() => navigate({ to: "/lists/$listId", params: { listId: list.id } })}
     >
       <td className="p-4 align-middle whitespace-nowrap font-medium">{list.name}</td>

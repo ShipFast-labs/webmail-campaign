@@ -4,15 +4,8 @@ import { Cursor01Icon, MailBlock01Icon, MailOpen01Icon, MailSend01Icon } from "@
 
 import { useDashboardKpi } from "@/hooks/use-analytics";
 import { Skeleton } from "@/components/ui/skeleton";
+import { fadeUp } from "@/lib/motion";
 
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] } as any,
-});
-
-// Sticky-note pastel fills — each card gets its own character
 const CARD_FILLS = [
   "var(--color-sticky-note-mint)",
   "var(--color-sticky-note-teal)",

@@ -5,8 +5,8 @@ import { useCampaigns } from "@/hooks/use-campaigns";
 import type { CampaignStatus } from "@/api/campaigns";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { fadeUp } from "@/lib/motion";
 
-// Sticky-note palette for status — uses brand pastels, not blue/green/red
 const STATUS_PILL: Record<CampaignStatus, { bg: string; text: string; label: string }> = {
   COMPLETED: { bg: "var(--color-sticky-note-mint)", text: "var(--color-forest-ink)", label: "Completed" },
   SENDING:   { bg: "var(--color-highlighter-yellow)", text: "var(--color-forest-ink)", label: "Sending" },
@@ -16,12 +16,6 @@ const STATUS_PILL: Record<CampaignStatus, { bg: string; text: string; label: str
   PAUSED:    { bg: "var(--color-whisper-gray)", text: "var(--muted-foreground)", label: "Paused" },
 };
 
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] } as any,
-});
 
 export function DashboardRecentCampaigns() {
   const { data: campaigns, isLoading } = useCampaigns();

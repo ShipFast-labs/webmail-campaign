@@ -50,7 +50,7 @@ function CampaignsIndexPage() {
   };
 
   return (
-    <div className="space-y-6 h-full flex flex-col max-w-6xl mx-auto w-full pb-10">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Campaigns</h1>
@@ -64,28 +64,30 @@ function CampaignsIndexPage() {
         </Button>
       </div>
 
-      <div className="flex-1 overflow-auto">
-        <div className="border rounded-md bg-card">
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead className="w-[30%]">Name</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Scheduled / Sent</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
+      <div className="rounded-3xl bg-card shadow-sm ring-1 ring-foreground/5 overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow
+              className="hover:bg-transparent"
+              style={{ borderBottom: "1px solid var(--color-pencil-gray)" }}
+            >
+              <TableHead className="w-[30%] px-4">Name</TableHead>
+              <TableHead className="px-4">Status</TableHead>
+              <TableHead className="px-4">Scheduled / Sent</TableHead>
+              <TableHead className="px-4 text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <TableRow key={i}>
-                    <TableCell>
+                    <TableCell className="px-4 py-3">
                       <Skeleton className="h-4 w-[150px] mb-2" />
                       <Skeleton className="h-3 w-[250px]" />
                     </TableCell>
-                    <TableCell><Skeleton className="h-5 w-[80px] rounded-full" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-[120px]" /></TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="px-4 py-3"><Skeleton className="h-5 w-[80px] rounded-full" /></TableCell>
+                    <TableCell className="px-4 py-3"><Skeleton className="h-4 w-[120px]" /></TableCell>
+                    <TableCell className="px-4 py-3 text-right">
                       <div className="flex justify-end gap-2">
                         <Skeleton className="h-8 w-[80px]" />
                         <Skeleton className="h-8 w-[80px]" />
@@ -107,22 +109,25 @@ function CampaignsIndexPage() {
                 </TableRow>
               ) : (
                 campaigns.map((campaign) => (
-                  <TableRow key={campaign.id}>
-                    <TableCell className="font-medium">
+                  <TableRow
+                    key={campaign.id}
+                    style={{ borderBottom: "1px solid var(--color-whisper-gray)" }}
+                  >
+                    <TableCell className="font-medium px-4 py-3">
                       <div>{campaign.name}</div>
                       <div className="text-xs text-muted-foreground font-normal mt-0.5 truncate max-w-[250px]">
                         {campaign.subject}
                       </div>
                     </TableCell>
-                    <TableCell>{getStatusBadge(campaign.status)}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
+                    <TableCell className="px-4 py-3">{getStatusBadge(campaign.status)}</TableCell>
+                    <TableCell className="px-4 py-3 text-sm text-muted-foreground">
                       {campaign.status === "SCHEDULED" && campaign.scheduledAt
                         ? format(new Date(campaign.scheduledAt), "MMM d, yyyy h:mm a")
                         : campaign.status === "COMPLETED"
                           ? format(new Date(campaign.createdAt), "MMM d, yyyy") // Mock completed date
                           : "—"}
                     </TableCell>
-                    <TableCell className="text-right space-x-2">
+                    <TableCell className="px-4 py-3 text-right space-x-2">
                       {campaign.status === "DRAFT" && (
                         <Button
                           variant="outline"
@@ -165,10 +170,9 @@ function CampaignsIndexPage() {
                     </TableCell>
                   </TableRow>
                 ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

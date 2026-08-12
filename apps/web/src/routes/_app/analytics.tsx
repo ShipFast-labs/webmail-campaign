@@ -28,7 +28,7 @@ function GlobalAnalyticsPage() {
   ) || [];
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto w-full pb-10 pt-4 md:pt-6">
+    <div className="space-y-6">
       <motion.div {...fadeUp(0)}>
         <h1 className="text-3xl font-bold tracking-tight text-foreground">Campaign Analytics</h1>
         <p className="text-sm text-muted-foreground mt-1">
