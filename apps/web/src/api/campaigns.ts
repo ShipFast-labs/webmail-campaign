@@ -1,6 +1,12 @@
 import { api } from "@/lib/http-client";
 
-export type CampaignStatus = "DRAFT" | "SCHEDULED" | "SENDING" | "PAUSED" | "COMPLETED" | "CANCELLED";
+export type CampaignStatus =
+  | "DRAFT"
+  | "SCHEDULED"
+  | "SENDING"
+  | "PAUSED"
+  | "COMPLETED"
+  | "CANCELLED";
 
 export interface Campaign {
   id: string;
@@ -22,27 +28,36 @@ export interface CreateCampaignPayload {
   fromEmail: string;
   templateId: string;
   targetListId: string;
-  scheduledAt?: string | null;
 }
 
-interface BackendResponse<T> {
+interface ApiResponse<T> {
   data: T;
-  pagination: unknown;
 }
 
 export const campaignsApi = {
   listCampaigns: () =>
-    api.get<BackendResponse<Campaign[]>>("/campaigns").then((r) => r.data.data),
+    api.get<ApiResponse<Campaign[]>>("/campaigns").then((r) => r.data.data),
 
   getCampaign: (id: string) =>
-    api.get<BackendResponse<Campaign>>(`/campaigns/${id}`).then((r) => r.data.data),
+    api.get<ApiResponse<Campaign>>(`/campaigns/${id}`).then((r) => r.data.data),
 
   createCampaign: (payload: CreateCampaignPayload) =>
-    api.post<BackendResponse<Campaign>>("/campaigns", payload).then((r) => r.data.data),
+    api.post<ApiResponse<Campaign>>("/campaigns", payload).then((r) => r.data.data),
 
   sendNow: (id: string) =>
-    api.post<BackendResponse<Campaign>>(`/campaigns/${id}/send`).then((r) => r.data.data),
+    api.post<ApiResponse<Campaign>>(`/campaigns/${id}/send-now`).then((r) => r.data.data),
+
+  schedule: (id: string, scheduledAt: string) =>
+    api
+      .post<ApiResponse<Campaign>>(`/campaigns/${id}/schedule`, { scheduledAt })
+      .then((r) => r.data.data),
 
   cancelCampaign: (id: string) =>
-    api.post<BackendResponse<Campaign>>(`/campaigns/${id}/cancel`).then((r) => r.data.data),
+    api.post<ApiResponse<Campaign>>(`/campaigns/${id}/cancel`).then((r) => r.data.data),
+
+  pauseCampaign: (id: string) =>
+    api.post<ApiResponse<Campaign>>(`/campaigns/${id}/pause`).then((r) => r.data.data),
+
+  resumeCampaign: (id: string) =>
+    api.post<ApiResponse<Campaign>>(`/campaigns/${id}/resume`).then((r) => r.data.data),
 };

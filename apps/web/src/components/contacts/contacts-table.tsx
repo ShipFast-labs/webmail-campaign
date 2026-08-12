@@ -87,12 +87,16 @@ export function ContactsTable({ contacts, isLoading, isFetching, page = 0, onEdi
   });
 
   return (
-    <div className={`border rounded-md bg-card overflow-hidden transition-opacity duration-200 ${isFetching && !isLoading ? "opacity-60" : "opacity-100"}`}>
-      <div className="overflow-x-auto">
+    <div className={`rounded-3xl bg-card shadow-sm ring-1 ring-foreground/5 overflow-hidden transition-opacity duration-200 ${isFetching && !isLoading ? "opacity-60" : "opacity-100"}`}>
+      <div className="overflow-x-auto bg-card">
         <table className="w-full text-sm">
           <thead>
             {table.getHeaderGroups().map((hg) => (
-              <tr key={hg.id} className="border-b transition-colors">
+              <tr
+                key={hg.id}
+                className="transition-colors"
+                style={{ borderBottom: "1px solid var(--color-pencil-gray)" }}
+              >
                 {hg.headers.map((h) => (
                   <th
                     key={h.id}
@@ -114,7 +118,7 @@ export function ContactsTable({ contacts, isLoading, isFetching, page = 0, onEdi
             >
               {isLoading ? (
                 Array.from({ length: 8 }).map((_, i) => (
-                  <tr key={i} className="border-b transition-colors">
+                  <tr key={i} className="transition-colors" style={{ borderBottom: "1px solid var(--color-whisper-gray)" }}>
                     {columns.map((_, j) => (
                       <td key={j} className="p-4 align-middle whitespace-nowrap">
                         <Skeleton className="h-4 w-full" />
@@ -135,7 +139,8 @@ export function ContactsTable({ contacts, isLoading, isFetching, page = 0, onEdi
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.12, delay: i * 0.02 }}
-                    className="border-b transition-colors hover:bg-muted/50 last:border-0"
+                    className="transition-colors hover:bg-muted/50 last:border-0"
+                    style={{ borderBottom: "1px solid var(--color-whisper-gray)" }}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className="p-4 align-middle whitespace-nowrap">

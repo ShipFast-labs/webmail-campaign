@@ -42,9 +42,9 @@ parts — Kafka pipeline, Quartz wiring, dual-provider webhook validation, state
   - [x] `Contact` & `ImportJob` JPA entities and repositories
   - [x] `ContactService` & `ContactController` (CRUD, filtering, search)
   - [x] `ContactImportService` (`@Async` CSV chunked import with OpenCSV & progress tracking)
-- [ ] **Day 4 — Lists & Templates (Backend)**
-  - [ ] `ContactList` entity, repository, service, and controller
-  - [ ] `Template` entity, Freemarker `StringTemplateLoader` implementation, render preview endpoint
+- [x] **Day 4 — Lists & Templates (Backend)**
+  - [x] `ContactList` entity, repository, service, and controller
+  - [x] `Template` entity, Freemarker `StringTemplateLoader` implementation, render preview endpoint
 - [ ] **Day 5 — Campaign Scheduling & Engine (Backend)**
   - [ ] `Campaign` & `CampaignSendJob` entities, repository, service, and controller
   - [ ] Quartz Scheduler integration (`CampaignQuartzJob`, trigger scheduling, immediate send)
@@ -140,19 +140,19 @@ All tables use UUIDs (`gen_random_uuid()`), `timestamptz`, composite indexes on 
 | Table                           | Key Columns                                                                                                                   |
 | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `workspaces`                    | workspace_id, name, slug, plan, daily_send_limit                                                                              |
-| `users`                         | user_id, workspace_id, email, password_hash, role (ADMIN                                                                      | MARKETER)                            |
+| `users`                         | user_id, workspace_id, email, password_hash, role (ADMIN                                                                      |
 | `refresh_tokens`                | token_id, user_id, token_hash, expires_at                                                                                     |
-| `contacts`                      | contact_id, workspace_id, email, first/last name, status (active                                                              | unsubscribed                         | bounced              | cleaned), custom_fields JSONB, tags text[] |
+| `contacts`                      | contact_id, workspace_id, email, first/last name, status (active                                                              |
 | `lists`                         | list_id, workspace_id, name, contact_count                                                                                    |
 | `list_contacts`                 | (list_id, contact_id) PK, added_at                                                                                            |
 | `templates`                     | template_id, workspace_id, name, subject, html_content (Freemarker), text_content, variables JSONB                            |
 | `campaigns`                     | campaign_id, workspace_id, name, status, template_id, from_name/email, target_list_id, scheduled_at, settings JSONB           |
-| `campaign_contacts`             | (campaign_id, contact_id) PK, idempotency_key UNIQUE, status (pending                                                         | sent                                 | delivered            | failed                                     | bounced), provider_message_id |
-| `tracking_tokens`               | token (PK, URL-safe base64), token_type (open                                                                                 | click), campaign_id, contact_id, url |
-| `tracking_events`               | event_id, workspace_id, campaign_id, contact_id, event_type (sent                                                             | delivered                            | opened               | clicked                                    | bounced                       | complained | unsubscribed), event_data JSONB, provider_event_id (dedup) |
+| `campaign_contacts`             | (campaign_id, contact_id) PK, idempotency_key UNIQUE, status (pending                                                         |
+| `tracking_tokens`               | token (PK, URL-safe base64), token_type (open                                                                                 |
+| `tracking_events`               | event_id, workspace_id, campaign_id, contact_id, event_type (sent                                                             |
 | `campaign_analytics`            | campaign_id (PK), total_sent/delivered/opened/clicked/bounced/unsubscribed, unique_opens/clicks, hard/soft_bounces            |
 | `campaign_analytics_timeseries` | (campaign_id, bucket, event_type) PK, count — hourly buckets via `date_trunc('hour', ...)`                                    |
-| `outbox_events`                 | event_id, aggregate_type/id, event_type, payload JSONB, topic, status (pending                                                | published                            | failed), retry_count |
+| `outbox_events`                 | event_id, aggregate_type/id, event_type, payload JSONB, topic, status (pending                                                |
 | `import_jobs`                   | import_job_id, workspace_id, list_id, file_name, status, total_rows, processed_rows, success/error_count, error_details JSONB |
 | `quartz_*`                      | Standard 11-table Quartz JDBC schema (V008 migration)                                                                         |
 
@@ -160,7 +160,7 @@ All tables use UUIDs (`gen_random_uuid()`), `timestamptz`, composite indexes on 
 
 ## API Design
 
-**Base:** `/api/v1` — all endpoints require `Authorization: Bearer <jwt>` except `/auth/`**, `/t/**`, `/webhooks/**`.
+**Base:** `/api/v1` — all endpoints require `Authorization: Bearer <jwt>` except `/auth/`**, `/t/`**, `/webhooks/**`.
 `workspace_id` is always derived from JWT claims, never from URL.
 
 ### Auth — `/api/v1/auth`
