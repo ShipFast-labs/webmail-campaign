@@ -1,9 +1,7 @@
 import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
-import { Player } from "@remotion/player";
 
 import { Button } from "@/components/ui/button";
-import { CtaBackground } from "@/remotion/CtaBackground";
 import { TIMING } from "@/remotion/constants";
 
 export function CtaStrip() {

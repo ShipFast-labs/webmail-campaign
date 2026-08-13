@@ -1,17 +1,73 @@
 import { motion } from "motion/react";
-import { Player } from "@remotion/player";
-import type { ComponentType } from "react";
+import { Suspense, lazy } from "react";
 import { TIMING } from "@/remotion/constants";
-import { Step1Import } from "@/remotion/how-it-works/Step1Import";
-import { Step2Build } from "@/remotion/how-it-works/Step2Build";
-import { Step3Send } from "@/remotion/how-it-works/Step3Send";
+
+const LazyStep1 = lazy(() => 
+  Promise.all([
+    import("@remotion/player"),
+    import("@/remotion/how-it-works/Step1Import")
+  ]).then(([playerModule, demoModule]) => ({
+    default: () => (
+      <playerModule.Player
+        component={demoModule.Step1Import}
+        durationInFrames={90}
+        compositionWidth={320}
+        compositionHeight={140}
+        fps={TIMING.fps}
+        autoPlay
+        loop
+        style={{ width: "100%", height: "100%" }}
+      />
+    )
+  }))
+);
+
+const LazyStep2 = lazy(() => 
+  Promise.all([
+    import("@remotion/player"),
+    import("@/remotion/how-it-works/Step2Build")
+  ]).then(([playerModule, demoModule]) => ({
+    default: () => (
+      <playerModule.Player
+        component={demoModule.Step2Build}
+        durationInFrames={90}
+        compositionWidth={320}
+        compositionHeight={140}
+        fps={TIMING.fps}
+        autoPlay
+        loop
+        style={{ width: "100%", height: "100%" }}
+      />
+    )
+  }))
+);
+
+const LazyStep3 = lazy(() => 
+  Promise.all([
+    import("@remotion/player"),
+    import("@/remotion/how-it-works/Step3Send")
+  ]).then(([playerModule, demoModule]) => ({
+    default: () => (
+      <playerModule.Player
+        component={demoModule.Step3Send}
+        durationInFrames={90}
+        compositionWidth={320}
+        compositionHeight={140}
+        fps={TIMING.fps}
+        autoPlay
+        loop
+        style={{ width: "100%", height: "100%" }}
+      />
+    )
+  }))
+);
 
 interface Step {
   number: string;
   title: string;
   description: string;
   cardBg: string;
-  demo: ComponentType;
+  DemoComponent: React.ComponentType;
 }
 
 const STEPS: Step[] = [
@@ -21,7 +77,7 @@ const STEPS: Step[] = [
     description:
       "Upload a CSV file. Map your column headers to contact fields. We process in batches and show progress as it runs.",
     cardBg: "var(--color-sticky-note-mint)",
-    demo: Step1Import,
+    DemoComponent: LazyStep1,
   },
   {
     number: "02",
@@ -29,7 +85,7 @@ const STEPS: Step[] = [
     description:
       "Write your email in the template editor. Preview it with real contact data before you commit.",
     cardBg: "var(--color-sticky-note-teal)",
-    demo: Step2Build,
+    DemoComponent: LazyStep2,
   },
   {
     number: "03",
@@ -37,7 +93,7 @@ const STEPS: Step[] = [
     description:
       "Schedule a campaign or send now. Analytics update as your audience opens and clicks.",
     cardBg: "var(--color-sticky-note-blush)",
-    demo: Step3Send,
+    DemoComponent: LazyStep3,
   },
 ];
 
@@ -106,7 +162,7 @@ export function HowItWorks() {
             }}
           />
 
-          {STEPS.map(({ number, title, description, cardBg, demo }, i) => (
+          {STEPS.map(({ number, title, description, cardBg, DemoComponent }, i) => (
             <motion.div
               key={number}
               initial={{ opacity: 0, y: 36 }}
@@ -131,19 +187,9 @@ export function HowItWorks() {
                   height: 140,
                 }}
               >
-                <Player
-                  component={demo}
-                  durationInFrames={90}
-                  compositionWidth={320}
-                  compositionHeight={140}
-                  fps={TIMING.fps}
-                  autoPlay
-                  loop
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                  }}
-                />
+                <Suspense fallback={<div style={{ width: "100%", height: "100%", backgroundColor: cardBg }} />}>
+                  <DemoComponent />
+                </Suspense>
               </div>
 
               {/* Step badge */}
