@@ -1,9 +1,32 @@
 import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
-import { Player } from "@remotion/player";
+import { Suspense, lazy } from "react";
 import { Button } from "@/components/ui/button";
-import { HeroDemo } from "@/remotion/HeroDemo";
 import { TIMING } from "@/remotion/constants";
+
+const LazyHeroPlayer = lazy(() => 
+  Promise.all([
+    import("@remotion/player"),
+    import("@/remotion/HeroDemo")
+  ]).then(([playerModule, demoModule]) => ({
+    default: () => (
+      <playerModule.Player
+        component={demoModule.HeroDemo}
+        durationInFrames={TIMING.heroDuration}
+        compositionWidth={1280}
+        compositionHeight={720}
+        fps={TIMING.fps}
+        autoPlay
+        loop
+        style={{
+          width: "100%",
+          aspectRatio: "16 / 9",
+          display: "block"
+        }}
+      />
+    )
+  }))
+);
 
 export function Hero() {
   return (
@@ -151,20 +174,22 @@ export function Hero() {
                   "0 25px 50px -12px rgba(0,0,0,0.15), 0 8px 24px -8px rgba(0,0,0,0.1)",
               }}
             >
-              <Player
-                component={HeroDemo}
-                durationInFrames={TIMING.heroDuration}
-                compositionWidth={1280}
-                compositionHeight={720}
-                fps={TIMING.fps}
-                autoPlay
-                loop
-                style={{
-                  width: "100%",
-                  aspectRatio: "16 / 9",
-                  display: "block"
-                }}
-              />
+              <Suspense 
+                fallback={
+                  <div 
+                    style={{ 
+                      width: "100%", 
+                      aspectRatio: "16 / 9", 
+                      backgroundColor: "var(--color-mm-cream-paper)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center"
+                    }}
+                  />
+                }
+              >
+                <LazyHeroPlayer />
+              </Suspense>
             </div>
           </motion.div>
         </div>

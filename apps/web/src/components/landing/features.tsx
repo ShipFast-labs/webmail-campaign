@@ -2,19 +2,75 @@ import { ChartAnalysisIcon, Mail01Icon, UserListIcon } from "@hugeicons/core-fre
 import { HugeiconsIcon } from "@hugeicons/react";
 import type { IconSvgElement } from "@hugeicons/react";
 import { motion } from "motion/react";
-import { Player } from "@remotion/player";
-import type { ComponentType } from "react";
+import { Suspense, lazy } from "react";
 import { TIMING } from "@/remotion/constants";
-import { SendAtScaleDemo } from "@/remotion/features/SendAtScaleDemo";
-import { ManageContactsDemo } from "@/remotion/features/ManageContactsDemo";
-import { TrackResultsDemo } from "@/remotion/features/TrackResultsDemo";
+
+const LazySendAtScale = lazy(() => 
+  Promise.all([
+    import("@remotion/player"),
+    import("@/remotion/features/SendAtScaleDemo")
+  ]).then(([playerModule, demoModule]) => ({
+    default: () => (
+      <playerModule.Player
+        component={demoModule.SendAtScaleDemo}
+        durationInFrames={TIMING.features.duration}
+        compositionWidth={TIMING.features.width}
+        compositionHeight={TIMING.features.height}
+        fps={TIMING.fps}
+        autoPlay
+        loop
+        style={{ width: "100%", height: "100%" }}
+      />
+    )
+  }))
+);
+
+const LazyManageContacts = lazy(() => 
+  Promise.all([
+    import("@remotion/player"),
+    import("@/remotion/features/ManageContactsDemo")
+  ]).then(([playerModule, demoModule]) => ({
+    default: () => (
+      <playerModule.Player
+        component={demoModule.ManageContactsDemo}
+        durationInFrames={TIMING.features.duration}
+        compositionWidth={TIMING.features.width}
+        compositionHeight={TIMING.features.height}
+        fps={TIMING.fps}
+        autoPlay
+        loop
+        style={{ width: "100%", height: "100%" }}
+      />
+    )
+  }))
+);
+
+const LazyTrackResults = lazy(() => 
+  Promise.all([
+    import("@remotion/player"),
+    import("@/remotion/features/TrackResultsDemo")
+  ]).then(([playerModule, demoModule]) => ({
+    default: () => (
+      <playerModule.Player
+        component={demoModule.TrackResultsDemo}
+        durationInFrames={TIMING.features.duration}
+        compositionWidth={TIMING.features.width}
+        compositionHeight={TIMING.features.height}
+        fps={TIMING.fps}
+        autoPlay
+        loop
+        style={{ width: "100%", height: "100%" }}
+      />
+    )
+  }))
+);
 
 interface Feature {
   icon: IconSvgElement;
   title: string;
   description: string;
   cardBg: string;
-  demo: ComponentType;
+  DemoComponent: React.ComponentType;
 }
 
 const FEATURES: Feature[] = [
@@ -24,7 +80,7 @@ const FEATURES: Feature[] = [
     description:
       "Queue thousands of emails through a Kafka-powered pipeline. Rate limiting and retry logic come standard.",
     cardBg: "var(--color-sticky-note-mint)",
-    demo: SendAtScaleDemo,
+    DemoComponent: LazySendAtScale,
   },
   {
     icon: UserListIcon,
@@ -32,7 +88,7 @@ const FEATURES: Feature[] = [
     description:
       "Import contacts via CSV, organize into lists, and track status as bounces and unsubscribes arrive.",
     cardBg: "var(--color-sticky-note-teal)",
-    demo: ManageContactsDemo,
+    DemoComponent: LazyManageContacts,
   },
   {
     icon: ChartAnalysisIcon,
@@ -40,7 +96,7 @@ const FEATURES: Feature[] = [
     description:
       "Open rates, click rates, and bounce data update in real time. No waiting for next-day reports.",
     cardBg: "var(--color-sticky-note-blush)",
-    demo: TrackResultsDemo,
+    DemoComponent: LazyTrackResults,
   },
 ];
 
@@ -66,7 +122,7 @@ export function Features() {
       </motion.h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {FEATURES.map(({ icon, title, description, cardBg, demo }, i) => (
+        {FEATURES.map(({ icon, title, description, cardBg, DemoComponent }, i) => (
           <motion.div
             key={title}
             initial={{ opacity: 0, y: 36 }}
@@ -90,19 +146,9 @@ export function Features() {
                 height: 160,
               }}
             >
-              <Player
-                component={demo}
-                durationInFrames={TIMING.features.duration}
-                compositionWidth={TIMING.features.width}
-                compositionHeight={TIMING.features.height}
-                fps={TIMING.fps}
-                autoPlay
-                loop
-                style={{
-                  width: "100%",
-                  height: "100%",
-                }}
-              />
+              <Suspense fallback={<div style={{ width: "100%", height: "100%", backgroundColor: cardBg }} />}>
+                <DemoComponent />
+              </Suspense>
             </div>
 
             {/* Icon + text */}
