@@ -14,7 +14,7 @@ export function CtaStrip() {
       style={{ backgroundColor: "var(--color-forest-ink)" }}
     >
       {/* Animated background — replaces static dot texture */}
-      <div
+      {/* <div
         className="absolute inset-0 pointer-events-none"
         aria-hidden
       >
@@ -31,7 +31,7 @@ export function CtaStrip() {
             height: "100%",
           }}
         />
-      </div>
+      </div> */}
 
       <div className="relative max-w-3xl mx-auto text-center">
 
