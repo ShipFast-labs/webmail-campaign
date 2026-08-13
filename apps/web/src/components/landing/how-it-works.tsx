@@ -1,10 +1,17 @@
 import { motion } from "motion/react";
+import { Player } from "@remotion/player";
+import type { ComponentType } from "react";
+import { TIMING } from "@/remotion/constants";
+import { Step1Import } from "@/remotion/how-it-works/Step1Import";
+import { Step2Build } from "@/remotion/how-it-works/Step2Build";
+import { Step3Send } from "@/remotion/how-it-works/Step3Send";
 
 interface Step {
   number: string;
   title: string;
   description: string;
   cardBg: string;
+  demo: ComponentType;
 }
 
 const STEPS: Step[] = [
@@ -14,6 +21,7 @@ const STEPS: Step[] = [
     description:
       "Upload a CSV file. Map your column headers to contact fields. We process in batches and show progress as it runs.",
     cardBg: "var(--color-sticky-note-mint)",
+    demo: Step1Import,
   },
   {
     number: "02",
@@ -21,6 +29,7 @@ const STEPS: Step[] = [
     description:
       "Write your email in the template editor. Preview it with real contact data before you commit.",
     cardBg: "var(--color-sticky-note-teal)",
+    demo: Step2Build,
   },
   {
     number: "03",
@@ -28,6 +37,7 @@ const STEPS: Step[] = [
     description:
       "Schedule a campaign or send now. Analytics update as your audience opens and clicks.",
     cardBg: "var(--color-sticky-note-blush)",
+    demo: Step3Send,
   },
 ];
 
@@ -96,7 +106,7 @@ export function HowItWorks() {
             }}
           />
 
-          {STEPS.map(({ number, title, description, cardBg }, i) => (
+          {STEPS.map(({ number, title, description, cardBg, demo }, i) => (
             <motion.div
               key={number}
               initial={{ opacity: 0, y: 36 }}
@@ -111,6 +121,31 @@ export function HowItWorks() {
                 zIndex: 1,
               }}
             >
+              {/* Remotion micro-demo */}
+              <div
+                className="w-full overflow-hidden"
+                style={{
+                  borderRadius: 8,
+                  border: "1px solid var(--color-forest-ink)",
+                  backgroundColor: "var(--color-cream-paper)",
+                  height: 140,
+                }}
+              >
+                <Player
+                  component={demo}
+                  durationInFrames={90}
+                  compositionWidth={320}
+                  compositionHeight={140}
+                  fps={TIMING.fps}
+                  autoPlay
+                  loop
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
+              </div>
+
               {/* Step badge */}
               <div className="flex items-center gap-3">
                 <span
