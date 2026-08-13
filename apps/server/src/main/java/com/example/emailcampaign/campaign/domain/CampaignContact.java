@@ -1,11 +1,15 @@
 package com.example.emailcampaign.campaign.domain;
 
+import com.example.emailcampaign.contact.domain.Contact;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +34,11 @@ public class CampaignContact {
 
     @EmbeddedId
     private CampaignContactId id;
+
+    // Read-only navigation — contact_id column is owned by the embedded ID
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contact_id", insertable = false, updatable = false)
+    private Contact contact;
 
     @Column(name = "idempotency_key", unique = true, nullable = false, updatable = false)
     private String idempotencyKey;

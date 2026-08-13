@@ -3,6 +3,8 @@ package com.example.emailcampaign.campaign.repository;
 import com.example.emailcampaign.campaign.domain.CampaignContact;
 import com.example.emailcampaign.campaign.domain.CampaignContactId;
 import com.example.emailcampaign.campaign.domain.CampaignContactStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 public interface CampaignContactRepository extends JpaRepository<CampaignContact, CampaignContactId> {
+
+    @Query(value = "SELECT cc FROM CampaignContact cc JOIN FETCH cc.contact WHERE cc.id.campaignId = :campaignId",
+           countQuery = "SELECT COUNT(cc) FROM CampaignContact cc WHERE cc.id.campaignId = :campaignId")
+    Page<CampaignContact> findByCampaignIdWithContact(@Param("campaignId") UUID campaignId, Pageable pageable);
 
     long countById_CampaignId(UUID campaignId);
 

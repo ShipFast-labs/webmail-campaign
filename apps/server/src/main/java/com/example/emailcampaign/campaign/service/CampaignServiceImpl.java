@@ -1,20 +1,28 @@
 package com.example.emailcampaign.campaign.service;
 
 import com.example.emailcampaign.campaign.domain.Campaign;
+import com.example.emailcampaign.campaign.domain.CampaignContact;
 import com.example.emailcampaign.campaign.domain.CampaignStateMachine;
 import com.example.emailcampaign.campaign.domain.CampaignStatus;
 import com.example.emailcampaign.campaign.service.CampaignSendOrchestrator;
+import com.example.emailcampaign.campaign.dto.CampaignContactResponse;
 import com.example.emailcampaign.campaign.dto.CampaignResponse;
 import com.example.emailcampaign.campaign.dto.CreateCampaignRequest;
 import com.example.emailcampaign.campaign.dto.ScheduleCampaignRequest;
 import com.example.emailcampaign.campaign.mapper.CampaignMapper;
+import com.example.emailcampaign.campaign.repository.CampaignContactRepository;
 import com.example.emailcampaign.campaign.repository.CampaignRepository;
 import com.example.emailcampaign.campaign.scheduler.CampaignSchedulerService;
+import com.example.emailcampaign.common.api.ApiResponse;
+import com.example.emailcampaign.common.api.PageResponse;
 import com.example.emailcampaign.common.exception.ApiException;
 import com.example.emailcampaign.list.repository.AudienceListRepository;
 import com.example.emailcampaign.template.repository.TemplateRepository;
 import com.example.emailcampaign.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +36,7 @@ import static com.example.emailcampaign.campaign.domain.CampaignStatus.*;
 public class CampaignServiceImpl implements CampaignService {
 
     private final CampaignRepository campaignRepository;
+    private final CampaignContactRepository campaignContactRepository;
     private final WorkspaceRepository workspaceRepository;
     private final TemplateRepository templateRepository;
     private final AudienceListRepository listRepository;
@@ -118,6 +127,27 @@ public class CampaignServiceImpl implements CampaignService {
             schedulerService.unscheduleCampaign(campaignId);
         }
         return response;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ApiResponse<List<CampaignContactResponse>> getCampaignContacts(UUID workspaceId, UUID campaignId, int page, int size) {
+        findOrThrow(workspaceId, campaignId);  // ownership check
+        Page<CampaignContact> result = campaignContactRepository.findByCampaignIdWithContact(
+                campaignId,
+                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"))
+        );
+        List<CampaignContactResponse> items = result.getContent().stream()
+                .map(cc -> new CampaignContactResponse(
+                        cc.getId().getContactId(),
+                        cc.getContact().getEmail(),
+                        cc.getContact().getFirstName(),
+                        cc.getContact().getLastName(),
+                        cc.getStatus().name(),
+                        cc.getUpdatedAt()
+                ))
+                .toList();
+        return ApiResponse.ok(items, PageResponse.from(result));
     }
 
     private Campaign findOrThrow(UUID workspaceId, UUID campaignId) {

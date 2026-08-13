@@ -1,5 +1,6 @@
 package com.example.emailcampaign.campaign.controller;
 
+import com.example.emailcampaign.campaign.dto.CampaignContactResponse;
 import com.example.emailcampaign.campaign.dto.CampaignResponse;
 import com.example.emailcampaign.campaign.dto.CreateCampaignRequest;
 import com.example.emailcampaign.campaign.dto.ScheduleCampaignRequest;
@@ -79,6 +80,16 @@ public class CampaignController {
     @Operation(summary = "Cancel campaign", description = "Cancels a campaign from any non-terminal status")
     public ResponseEntity<ApiResponse<CampaignResponse>> cancel(@PathVariable UUID campaignId) {
         return ResponseEntity.ok(ApiResponse.ok(campaignService.cancel(workspaceId(), campaignId)));
+    }
+
+    @GetMapping("/{campaignId}/contacts")
+    @Operation(summary = "List campaign recipients", description = "Paginated list of contacts for this campaign with their send status")
+    public ResponseEntity<ApiResponse<List<CampaignContactResponse>>> getCampaignContacts(
+            @PathVariable UUID campaignId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        return ResponseEntity.ok(campaignService.getCampaignContacts(workspaceId(), campaignId, page, size));
     }
 
     private UUID workspaceId() {
