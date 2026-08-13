@@ -1,10 +1,3 @@
-/**
- * Remotion Animation Configuration
- * Following the remotion-animation skill pattern.
- * All spring configs, interpolation mappings, timing constants, and easing
- * functions live here so every composition shares a consistent motion vocabulary.
- */
-
 // ── Spring Configurations ────────────────────────────────────────────────────
 
 export const SPRING_CONFIGS = {

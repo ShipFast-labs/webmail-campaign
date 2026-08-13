@@ -1,7 +1,3 @@
-/**
- * CampaignScene — Animated recreation of the campaigns list page.
- * Campaign table rows stagger in, status badges animate, "Send Now" button pulses.
- */
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORS, FONTS, SPRING_CONFIGS, TIMING } from "../constants";
 import { AppFrame } from "./AppFrame";

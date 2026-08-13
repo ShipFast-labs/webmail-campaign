@@ -1,7 +1,3 @@
-/**
- * SendAtScaleDemo — Micro-animation for the "Send at scale" feature card.
- * Envelope icons spring in with bouncy config, flying into a queue.
- */
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORS, SPRING_CONFIGS, TIMING, FONTS } from "../constants";
 

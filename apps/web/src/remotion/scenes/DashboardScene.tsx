@@ -1,7 +1,3 @@
-/**
- * DashboardScene — Animated recreation of the dashboard KPI cards.
- * 4 KPI cards spring in with staggered delay, numbers count up.
- */
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Cursor01Icon, MailBlock01Icon, MailOpen01Icon, MailSend01Icon } from "@hugeicons/core-free-icons";

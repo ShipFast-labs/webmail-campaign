@@ -1,7 +1,3 @@
-/**
- * AnalyticsScene — Animated analytics view with self-drawing chart,
- * animated KPI counters, and a delivery rate highlight.
- */
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import {
   COLORS,

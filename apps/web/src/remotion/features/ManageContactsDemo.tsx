@@ -1,7 +1,3 @@
-/**
- * ManageContactsDemo — Micro-animation for the "Manage contacts" feature card.
- * CSV rows transform into contact cards with smooth entrance animation.
- */
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORS, SPRING_CONFIGS, TIMING, FONTS } from "../constants";
 

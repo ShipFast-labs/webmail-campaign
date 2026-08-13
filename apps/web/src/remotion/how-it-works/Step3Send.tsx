@@ -1,7 +1,3 @@
-/**
- * Step3Send — How it works Step 3 (Send & Watch)
- * Shows a "Send Now" button press, followed by an analytics graph ticking up.
- */
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORS, SPRING_CONFIGS, FONTS } from "../constants";
 

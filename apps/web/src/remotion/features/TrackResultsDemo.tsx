@@ -1,7 +1,3 @@
-/**
- * TrackResultsDemo — Micro-animation for the "Track results" feature card.
- * Bar chart bars grow upward with gentle spring, numbers count up.
- */
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import {
   COLORS,

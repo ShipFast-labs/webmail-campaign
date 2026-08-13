@@ -1,7 +1,3 @@
-/**
- * Step1Import — How it works Step 1 (Import Contacts)
- * Shows a CSV icon uploading, followed by mapping columns.
- */
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORS, SPRING_CONFIGS, FONTS } from "../constants";
 
