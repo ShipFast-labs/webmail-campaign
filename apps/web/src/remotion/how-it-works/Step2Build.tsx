@@ -1,7 +1,3 @@
-/**
- * Step2Build — How it works Step 2 (Build Template)
- * Shows a typing animation in a simple editor UI.
- */
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORS, SPRING_CONFIGS, FONTS } from "../constants";
 

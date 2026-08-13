@@ -1,8 +1,3 @@
-/**
- * AppFrame — shared wrapper that renders a simplified app shell
- * (sidebar silhouette + top bar) around each demo scene.
- * Provides the "looking at a real app" framing.
- */
 import type { ReactNode } from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORS, FONTS } from "../constants";

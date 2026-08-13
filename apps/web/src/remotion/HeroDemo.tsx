@@ -1,8 +1,3 @@
-/**
- * HeroDemo — Main hero composition that cycles through 3 product screens.
- * Dashboard → Campaigns → Analytics, with cross-fade transitions.
- * 10 seconds total (300 frames at 30fps), loops.
- */
 import { AbsoluteFill, Sequence } from "remotion";
 import { TIMING } from "./constants";
 import { DashboardScene } from "./scenes/DashboardScene";

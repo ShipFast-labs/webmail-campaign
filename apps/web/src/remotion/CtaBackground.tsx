@@ -1,7 +1,3 @@
-/**
- * CtaBackground — Looping ambient animation for the CTA strip background.
- * Floating geometric shapes drift slowly using sinusoidal motion.
- */
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORS, TIMING } from "./constants";
 
