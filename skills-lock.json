@@ -7,11 +7,29 @@
       "skillPath": "skills/frontend-design/SKILL.md",
       "computedHash": "4eabc66183767153e404b39d1b839b1c37f2d82d86f0a0d7e880a579d8d62336"
     },
+    "hallmark": {
+      "source": "nutlope/hallmark",
+      "sourceType": "github",
+      "skillPath": "skills/hallmark/SKILL.md",
+      "computedHash": "4866949139ac28036e8ef30edb879cb7b76d2623d88a019ec73df5d781bb6927"
+    },
     "improve-codebase-architecture": {
       "source": "mattpocock/skills",
       "sourceType": "github",
       "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
       "computedHash": "66e8a50c83c3c724fcfe0769701b665c56cec220cc4f49cc1aee8bdfc07de94a"
+    },
+    "remotion-animation": {
+      "source": "ncklrs/startup-os-skills",
+      "sourceType": "github",
+      "skillPath": "skills/remotion-animation/SKILL.md",
+      "computedHash": "1348001d658c103f660a1743e90450a6c27e1b058f2423aaba84773a27039bfa"
+    },
+    "remotion-best-practices": {
+      "source": "remotion-dev/skills",
+      "sourceType": "github",
+      "skillPath": "skills/remotion-best-practices/SKILL.md",
+      "computedHash": "82524589f43f93be5a1bc088f202c305d6568ed919370cfbaa84f261fe0881a8"
     },
     "tanstack-query-best-practices": {
       "source": "deckardger/tanstack-agent-skills",
@@ -24,12 +42,6 @@
       "sourceType": "github",
       "skillPath": "skills/tanstack-router/SKILL.md",
       "computedHash": "65764bc7b90e47f6023cb7f89b3af93eaaafc517754f10b9382e184d4646a77d"
-    },
-    "hallmark": {
-      "source": "nutlope/hallmark",
-      "sourceType": "github",
-      "skillPath": "skills/hallmark/SKILL.md",
-      "computedHash": "4866949139ac28036e8ef30edb879cb7b76d2623d88a019ec73df5d781bb6927"
     },
     "turborepo": {
       "source": "vercel/turborepo",
