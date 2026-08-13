@@ -35,7 +35,6 @@ public class CampaignContact {
     @EmbeddedId
     private CampaignContactId id;
 
-    // Read-only navigation — contact_id column is owned by the embedded ID
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contact_id", insertable = false, updatable = false)
     private Contact contact;

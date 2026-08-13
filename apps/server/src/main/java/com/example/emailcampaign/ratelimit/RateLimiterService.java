@@ -46,12 +46,6 @@ public class RateLimiterService {
         this.keyPrefix = keyPrefix;
     }
 
-    /**
-     * Atomically attempts to consume {@code tokens} from this workspace's distributed token bucket.
-     *
-     * @return true  — tokens available, proceed with send
-     *         false — bucket exhausted, caller should back off and retry
-     */
     public boolean tryConsume(UUID workspaceId, int tokens) {
         String key = keyPrefix + "rate_limit:" + workspaceId;
         boolean allowed = proxyManager

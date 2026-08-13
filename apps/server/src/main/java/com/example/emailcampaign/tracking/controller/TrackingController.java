@@ -28,7 +28,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TrackingController {
 
-    // Smallest valid transparent GIF (1×1 pixel)
     private static final byte[] TRANSPARENT_GIF = Base64.getDecoder().decode(
             "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
     );
@@ -37,11 +36,6 @@ public class TrackingController {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
 
-    /**
-     * Open pixel endpoint — called when the email is rendered in the recipient's email client.
-     * Always returns the GIF regardless of whether the token is valid (prevents broken images).
-     * Multiple hits from the same token are expected (image pre-fetching) and recorded.
-     */
     @GetMapping("/o/{token}")
     public ResponseEntity<byte[]> trackOpen(@PathVariable UUID token) {
         trackingTokenRepository.findById(token).ifPresentOrElse(
@@ -56,11 +50,6 @@ public class TrackingController {
                 .body(TRANSPARENT_GIF);
     }
 
-    /**
-     * Click redirect endpoint — called when the recipient clicks a tracked link.
-     * Marks the token consumed (guards against infinite redirect loops),
-     * publishes a CLICKED event, then 302s to the original URL.
-     */
     @GetMapping("/c/{token}")
     public ResponseEntity<Void> trackClick(@PathVariable UUID token) {
         TrackingToken tt = trackingTokenRepository.findById(token).orElse(null);
@@ -70,7 +59,6 @@ public class TrackingController {
             return ResponseEntity.notFound().build();
         }
 
-        // Mark consumed to prevent infinite redirect loops (client retrying on network error)
         trackingTokenRepository.markConsumed(token);
         publishEvent(tt, "CLICKED");
 

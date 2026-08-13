@@ -41,12 +41,11 @@ public class AwsSesEmailProvider implements EmailProvider {
                                         .build())
                                 .build())
                         .build())
-                // SES v2 SendEmail has no native clientToken — DB-level status check is the idempotency guard
                 .build();
 
         try {
             sesClient.sendEmail(request);
-            log.debug("SES: delivered to={} clientToken={}", message.toEmail(), message.idempotencyKey());
+            log.debug("SES: delivered to={} key={}", message.toEmail(), message.idempotencyKey());
         } catch (SdkException e) {
             throw new RuntimeException(
                     "SES send failed for " + message.toEmail() + ": " + e.getMessage(), e);

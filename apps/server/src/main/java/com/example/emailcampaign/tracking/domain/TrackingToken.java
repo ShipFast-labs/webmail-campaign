@@ -25,8 +25,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class TrackingToken {
 
-    // Deterministic UUID: UUID.nameUUIDFromBytes(campaignId + "::" + contactId + "::" + discriminator)
-    // Same input always produces the same token → retry-safe, ON CONFLICT DO NOTHING handles duplicates
     @Id
     @Column(updatable = false, nullable = false)
     private UUID token;
@@ -44,11 +42,9 @@ public class TrackingToken {
     @Column(name = "token_type", nullable = false, length = 10)
     private TrackingTokenType tokenType;
 
-    // Non-null for CLICK tokens; null for OPEN tokens
     @Column(name = "original_url", columnDefinition = "text")
     private String originalUrl;
 
-    // Set to true after the first click redirect fires — prevents infinite redirect loops
     @Column(nullable = false)
     @Builder.Default
     private boolean consumed = false;

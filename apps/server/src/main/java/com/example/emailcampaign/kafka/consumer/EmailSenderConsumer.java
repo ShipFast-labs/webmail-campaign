@@ -70,8 +70,6 @@ public class EmailSenderConsumer {
             try {
                 processContact(campaign, contact, batch.workspaceId());
             } catch (RateLimitExceededException e) {
-                // Re-throw so @RetryableTopic retries the whole batch after backoff.
-                // Contacts already SENT will be skipped on retry (idempotency check below).
                 throw e;
             } catch (Exception e) {
                 log.error("Send failed: campaign={} contact={} error={}",
@@ -85,7 +83,6 @@ public class EmailSenderConsumer {
         UUID campaignId = campaign.getId();
         UUID contactId = contact.contactId();
 
-        // 1. Idempotency check — skip if already processed in a previous attempt
         CampaignContact cc = campaignContactRepository
                 .findById(new CampaignContactId(campaignId, contactId))
                 .orElse(null);
@@ -94,19 +91,15 @@ public class EmailSenderConsumer {
             return;
         }
 
-        // 2. Rate limit — throw to trigger @RetryableTopic backoff if exhausted
         if (!rateLimiterService.tryConsume(workspaceId, 1)) {
             throw new RateLimitExceededException("Rate limit exhausted for workspace=" + workspaceId);
         }
 
-        // 3. Build template variables from contact fields
         Map<String, String> vars = buildVars(contact, campaign);
 
-        // 4. Create tracking tokens (deterministic — safe on retry, ON CONFLICT DO NOTHING)
         UUID openTokenId = deterministicToken(campaignId, contactId, "OPEN");
         trackingTokenRepository.insertIfAbsent(openTokenId, campaignId, contactId, workspaceId, "OPEN", null);
 
-        // 5. Render HTML — linkTransformer creates a CLICK token per unique URL
         String renderedHtml = templateRenderer.renderForSend(
                 campaign.getTemplate().getHtmlContent(),
                 vars,
@@ -119,7 +112,6 @@ public class EmailSenderConsumer {
                 appProperties.getBaseUrl() + "/t/o/" + openTokenId
         );
 
-        // 6. Send via whichever provider is active (Resend or SES — swapped by env var, no code change)
         emailProvider.send(new EmailMessage(
                 contact.email(),
                 contact.firstName(),
@@ -127,10 +119,9 @@ public class EmailSenderConsumer {
                 campaign.getFromName(),
                 campaign.getTemplate().getSubject(),
                 renderedHtml,
-                campaignId + "::" + contactId  // idempotency key for provider-level dedup
+                campaignId + "::" + contactId
         ));
 
-        // 7. Mark sent + publish tracking event
         campaignContactRepository.updateStatus(campaignId, contactId, CampaignContactStatus.SENT);
         publishTrackingEvent(campaignId, contactId, workspaceId, "SENT");
 
@@ -142,12 +133,6 @@ public class EmailSenderConsumer {
         log.error("Email batch permanently failed after all retries. topic={} payload={}", topic, payload);
     }
 
-    // ── helpers ──────────────────────────────────────────────────────────────
-
-    /**
-     * Produces the same UUID for the same (campaign, contact, discriminator) triple every time.
-     * Guarantees token rows are identical on consumer retry → ON CONFLICT DO NOTHING is the guard.
-     */
     private UUID deterministicToken(UUID campaignId, UUID contactId, String discriminator) {
         String seed = campaignId + "::" + contactId + "::" + discriminator;
         return UUID.nameUUIDFromBytes(seed.getBytes(StandardCharsets.UTF_8));
@@ -155,7 +140,6 @@ public class EmailSenderConsumer {
 
     private Map<String, String> buildVars(EmailContactInfo contact, Campaign campaign) {
         Map<String, String> vars = new HashMap<>();
-        // Template-level defaults first, contact fields override
         if (campaign.getTemplate().getVariables() != null) {
             campaign.getTemplate().getVariables().forEach((k, v) -> vars.put(k, String.valueOf(v)));
         }
