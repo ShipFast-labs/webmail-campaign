@@ -43,11 +43,7 @@ function OAuth2RedirectPage() {
       try {
         const { workspace } = await authService.handleOAuthLogin(accessToken, refreshToken);
         toast.success("Successfully logged in with Google");
-        navigate({ 
-          to: "/dashboard", 
-          search: { workspace: workspace.id } as any,
-          replace: true 
-        });
+        navigate({ to: "/dashboard", replace: true });
       } catch (err) {
         toast.error(getApiError(err));
         useAuthStore.getState().clearAuth();
