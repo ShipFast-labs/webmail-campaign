@@ -6,7 +6,9 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import Editor from "@monaco-editor/react";
+import CodeMirror from "@uiw/react-codemirror";
+import { html } from "@codemirror/lang-html";
+import { oneDark } from "@codemirror/theme-one-dark";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { useUiStore } from "@/store/ui-store";
 import { cn } from "@/lib/utils";
@@ -121,20 +123,19 @@ function TemplateEditorPage() {
                 HTML
               </span>
             </div>
-            <div className="flex-1 overflow-hidden">
-              <Editor
-                height="100%"
-                language="html"
-                theme="vs-dark"
+            <div className="flex-1 overflow-auto">
+              <CodeMirror
                 value={htmlContent}
-                onChange={(val) => setHtmlContent(val || "")}
-                options={{
-                  minimap: { enabled: false },
-                  fontSize: 13,
-                  lineHeight: 22,
-                  wordWrap: "on",
-                  padding: { top: 12 },
-                  scrollBeyondLastLine: false,
+                height="100%"
+                minHeight="100%"
+                theme={oneDark}
+                extensions={[html()]}
+                onChange={(val) => setHtmlContent(val)}
+                basicSetup={{
+                  lineNumbers: true,
+                  foldGutter: false,
+                  highlightActiveLine: true,
+                  autocompletion: true,
                 }}
               />
             </div>
