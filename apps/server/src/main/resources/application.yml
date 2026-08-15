@@ -59,6 +59,7 @@ spring:
       "[org.quartz.jobStore.clusterCheckinInterval]": 20000
 
 app:
+  base-url: ${APP_BASE_URL:http://localhost:8080}
   redis:
     key-prefix: ${REDIS_KEY_PREFIX:namis:}
   frontend:
@@ -67,10 +68,16 @@ app:
     secret: ${JWT_SECRET}
     access-token-expiration-ms: 3600000
     refresh-token-expiration-ms: 604800000
+  rate-limit:
+    max-tokens: ${RATE_LIMIT_MAX_TOKENS:200}           # burst ceiling per workspace
+    refill-rate-per-second: ${RATE_LIMIT_REFILL_RPS:10} # sustained throughput (10 emails/s = 36k/hr)
+  webhook:
+    resend-signing-secret: ${RESEND_WEBHOOK_SECRET:}
   email:
     provider: ${APP_EMAIL_PROVIDER:resend}
     resend:
       api-key: ${RESEND_API_KEY}
+      platform-from-email: ${RESEND_FROM_EMAIL:noreply@namisend.com}
     ses:
       region: ${AWS_REGION:us-east-1}
   aws:

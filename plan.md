@@ -247,7 +247,20 @@ Campaign status DB update + outbox event write happen in one `@Transactional` ca
 
 ### 2. Idempotency
 
-`campaign_contacts.idempotency_key = campaign_id::contact_id` with UNIQUE constraint. `EmailSenderConsumer` checks this before calling provider. Resend uses `X-Entity-Ref-Id`; SES uses `ClientToken`.
+Every layer has an explicit guard — no single layer is relied on alone:
+
+| Layer | Mechanism |
+|---|---|
+| `campaign_contacts` insert (Day 6) | `ON CONFLICT (idempotency_key) DO NOTHING` — `BatchGeneratorConsumer` retries never duplicate rows |
+| `OutboxRelayService` (Day 6) | `FOR UPDATE SKIP LOCKED` — multi-instance safe; publish + mark-published in one transaction |
+| `CampaignStateMachine` (Day 5) | Invalid transitions rejected — `sendNow()` twice returns `400` |
+| `EmailSenderConsumer` DB check (Day 7) | Skip send if `campaign_contacts.status != PENDING` — primary guard against Kafka retries |
+| Provider-level (Day 7) | `X-Entity-Ref-Id: campaignId::contactId` (Resend) / `ClientToken` (SES) — dedup at provider if DB check races |
+| `TrackingToken` insert (Day 7) | `ON CONFLICT DO NOTHING` — `TemplateRenderer` retries never duplicate token rows |
+| Webhook `campaign_contacts` update (Day 8) | `UPDATE WHERE status NOT IN ('BOUNCED', 'UNSUBSCRIBED')` — overwriting terminal states is blocked |
+| Webhook `tracking_events` insert (Day 8) | `ON CONFLICT (campaign_id, contact_id, event_type, provider_event_id) DO NOTHING` — duplicate webhook deliveries ignored |
+| `AnalyticsConsumer` (Day 8) | Analytics increment gated on `tracking_events` insert success (affected rows = 1) — Kafka retry never double-counts |
+| `unique_opens`/`unique_clicks` (Day 8) | Increment only on first OPENED/CLICKED per `(campaign_id, contact_id)` — pixel hits multiple times = 1 unique open |
 
 ### 3. Redis Token Bucket Rate Limiter
 
@@ -458,9 +471,16 @@ Email provider (set one, the other can be omitted):
   - `AwsSesEmailProvider` — AWS SDK v2 `SesV2Client`; idempotency via `ClientToken`
   - `EmailProviderConfig` — `@ConditionalOnProperty(name="app.email.provider", havingValue="resend|ses")`; reads `APP_EMAIL_PROVIDER` env var; registers the active provider as a Spring bean; no code change needed to switch providers
 - `RateLimiterService` — Redis Lua token bucket on `rate_limit:{workspace_id}`
-- `EmailSenderConsumer` — `@KafkaListener(email.send.batches, concurrency=12)`: idempotency check → rate limit → render template → send → update `campaign_contacts.status` → publish to `email.tracking.events`
+- `EmailSenderConsumer` — `@KafkaListener(email.send.batches, concurrency=12)`:
+  1. **Idempotency check (DB-level):** load `campaign_contacts` row; if `status != PENDING`, skip entirely — handles Kafka retries that replay already-sent batches
+  2. **Rate limit:** `RateLimiterService.tryConsume(workspaceId, 1)` — `false` → throw retryable exception; `@RetryableTopic` backoff handles rescheduling
+  3. **Render template:** `TemplateRenderer.render(template, contact)` — rewrites `<a href>` to `/t/c/{token}`, injects open pixel `<img src="/t/o/{token}">`, writes `TrackingToken` rows with `ON CONFLICT DO NOTHING` (retry-safe)
+  4. **Send:** call `EmailProvider.send()` with `X-Entity-Ref-Id: {campaignId}::{contactId}` (Resend) or `ClientToken: {campaignId}::{contactId}` (SES) — **provider-level dedup guard** if DB check above races
+  5. **Persist:** update `campaign_contacts.status` → SENT/FAILED; publish to `email.tracking.events`
 - `@RetryableTopic` (3 retries, exponential backoff) + DLT handler
-- `TrackingController` — open pixel (returns 1×1 transparent GIF) + click redirect (302)
+- `TrackingController`:
+  - `GET /t/o/{token}` — return 1×1 transparent GIF + publish OPENED event to `email.tracking.events` (always, even if opened before — total vs. unique resolved downstream in `AnalyticsConsumer`)
+  - `GET /t/c/{token}` — mark `tracking_tokens.consumed = true` (prevents infinite redirect if client loops), publish CLICKED event, 302 to original URL
 
 **Person B (Frontend):**
 
@@ -480,8 +500,14 @@ Email provider (set one, the other can be omitted):
 - `WebhookProcessorService`:
   - Resend: validate `Resend-Signature` HMAC-SHA256; parse delivered/bounced/complained events
   - SES: validate SNS signature; parse Bounce/Complaint/Delivery notifications
-- `AnalyticsConsumer` — `@KafkaListener(email.tracking.events)`: `INSERT ... ON CONFLICT DO UPDATE` on `campaign_analytics` + `campaign_analytics_timeseries` (hourly buckets)
-- `ContactEventConsumer` — hard bounce/unsubscribe → update `contacts.status`
+  - **Idempotency:** webhook endpoints return `200 OK` immediately (providers retry on non-2xx for 24–72 h)
+  - **`campaign_contacts` status update:** `UPDATE ... SET status=? WHERE campaign_id=? AND contact_id=? AND status NOT IN ('BOUNCED', 'UNSUBSCRIBED')` — prevents overwriting terminal states on duplicate delivery
+  - **`tracking_events` insert:** `ON CONFLICT (campaign_id, contact_id, event_type, provider_event_id) DO NOTHING` — prevents duplicate rows when the same webhook fires multiple times
+- `AnalyticsConsumer` — `@KafkaListener(email.tracking.events)`:
+  - **Dedup gate:** attempt `INSERT INTO tracking_events ... ON CONFLICT DO NOTHING`; only proceed to analytics increment if affected rows = 1 — prevents double-counting when Kafka retries the same event
+  - **`unique_opens` / `unique_clicks`:** increment only if no prior OPENED/CLICKED row exists for `(campaign_id, contact_id)` in `tracking_events` (check before insert, or use a secondary UNIQUE constraint on `(campaign_id, contact_id, event_type)` for first-occurrence tracking)
+  - `INSERT ... ON CONFLICT DO UPDATE` on `campaign_analytics` + `campaign_analytics_timeseries` (hourly buckets)
+- `ContactEventConsumer` — hard bounce/unsubscribe → `UPDATE contacts SET status=? WHERE status != 'BOUNCED'` (idempotent — won't downgrade an already-bounced contact)
 - `AnalyticsController` — campaign analytics + timeseries + workspace 30-day summary
 
 **Person B (Frontend):**
@@ -498,6 +524,11 @@ Email provider (set one, the other can be omitted):
 **Both:**
 
 - End-to-end test: register → import CSV → create list → create template → build campaign → schedule → Quartz fires → emails deliver → open pixel fires → webhook updates status → analytics dashboard updates
+- **Idempotency smoke tests:**
+  - Re-trigger `BatchGeneratorConsumer` (replay Kafka message) → verify `campaign_contacts` row count unchanged, no duplicates
+  - Re-send same webhook payload twice → verify `campaign_contacts.status` unchanged on second delivery, `tracking_events` count unchanged
+  - Open the tracking pixel 3× from same contact → verify `campaign_analytics.unique_opens = 1`, `total_opened = 3`
+  - Restart `OutboxRelayService` mid-relay → verify no duplicate Kafka messages published
 - Docker Compose full stack validation (`docker compose up -d`, all services healthy)
 - `docs/api.http` — JetBrains HTTP client file covering all endpoints
 - `.env.example` with all required env vars documented

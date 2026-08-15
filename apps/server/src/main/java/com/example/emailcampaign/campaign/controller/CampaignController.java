@@ -1,5 +1,9 @@
 package com.example.emailcampaign.campaign.controller;
 
+import com.example.emailcampaign.analytics.dto.CampaignAnalyticsResponse;
+import com.example.emailcampaign.analytics.dto.TimeSeriesDataPoint;
+import com.example.emailcampaign.analytics.service.AnalyticsService;
+import com.example.emailcampaign.campaign.dto.CampaignContactResponse;
 import com.example.emailcampaign.campaign.dto.CampaignResponse;
 import com.example.emailcampaign.campaign.dto.CreateCampaignRequest;
 import com.example.emailcampaign.campaign.dto.ScheduleCampaignRequest;
@@ -26,6 +30,7 @@ import java.util.UUID;
 public class CampaignController {
 
     private final CampaignService campaignService;
+    private final AnalyticsService analyticsService;
 
     @GetMapping
     @Operation(summary = "List campaigns", description = "Returns all campaigns in the current workspace, newest first")
@@ -79,6 +84,30 @@ public class CampaignController {
     @Operation(summary = "Cancel campaign", description = "Cancels a campaign from any non-terminal status")
     public ResponseEntity<ApiResponse<CampaignResponse>> cancel(@PathVariable UUID campaignId) {
         return ResponseEntity.ok(ApiResponse.ok(campaignService.cancel(workspaceId(), campaignId)));
+    }
+
+    @GetMapping("/{campaignId}/contacts")
+    @Operation(summary = "List campaign recipients", description = "Paginated list of contacts for this campaign with their send status")
+    public ResponseEntity<ApiResponse<List<CampaignContactResponse>>> getCampaignContacts(
+            @PathVariable UUID campaignId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        return ResponseEntity.ok(campaignService.getCampaignContacts(workspaceId(), campaignId, page, size));
+    }
+
+    @GetMapping("/{campaignId}/analytics")
+    @Operation(summary = "Campaign analytics", description = "Sent, delivered, opened, clicked, bounced counts for a campaign")
+    public ResponseEntity<ApiResponse<CampaignAnalyticsResponse>> getCampaignAnalytics(
+            @PathVariable UUID campaignId) {
+        return ResponseEntity.ok(ApiResponse.ok(analyticsService.getCampaignAnalytics(campaignId)));
+    }
+
+    @GetMapping("/{campaignId}/analytics/timeseries")
+    @Operation(summary = "Campaign timeseries", description = "Daily opens, clicks, sends for a campaign")
+    public ResponseEntity<ApiResponse<List<TimeSeriesDataPoint>>> getCampaignTimeSeries(
+            @PathVariable UUID campaignId) {
+        return ResponseEntity.ok(ApiResponse.ok(analyticsService.getCampaignTimeSeries(campaignId)));
     }
 
     private UUID workspaceId() {

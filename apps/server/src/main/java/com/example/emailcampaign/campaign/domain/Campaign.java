@@ -49,4 +49,8 @@ public class Campaign extends BaseEntity {
 
     @Column(name = "scheduled_at")
     private Instant scheduledAt;
+
+    @Version
+    @Column(nullable = false)
+    private Long version;
 }

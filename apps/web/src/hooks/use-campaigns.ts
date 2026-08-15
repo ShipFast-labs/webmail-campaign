@@ -14,6 +14,8 @@ export function useCampaign(id: string) {
     queryKey: ["campaigns", id],
     queryFn: () => campaignsApi.getCampaign(id),
     enabled: !!id,
+    refetchInterval: (query) =>
+      query.state.data?.status === "SENDING" ? 5000 : false,
   });
 }
 

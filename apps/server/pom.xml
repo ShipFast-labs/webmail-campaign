@@ -23,6 +23,7 @@
 		<jsoup.version>1.18.3</jsoup.version>
 		<awssdk.version>2.29.50</awssdk.version>
 		<resend.version>3.1.0</resend.version>
+		<bucket4j.version>8.14.0</bucket4j.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -124,7 +125,7 @@
 		</dependency>
 		<dependency>
 			<groupId>software.amazon.awssdk</groupId>
-			<artifactId>ses</artifactId>
+			<artifactId>sesv2</artifactId>
 			<version>${awssdk.version}</version>
 		</dependency>
 		<dependency>
@@ -136,6 +137,16 @@
 			<groupId>com.resend</groupId>
 			<artifactId>resend-java</artifactId>
 			<version>${resend.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.bucket4j</groupId>
+			<artifactId>bucket4j_jdk11-core</artifactId>
+			<version>${bucket4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.bucket4j</groupId>
+			<artifactId>bucket4j_jdk11-lettuce</artifactId>
+			<version>${bucket4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.micrometer</groupId>
