@@ -1,29 +1,29 @@
 name: email-campaign-backend
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: email_campaign_app
-    ports:
-      - "${APP_PORT:-8085}:8080"
-    env_file:
-      - ${DOCKER_ENV_FILE:-.env}
-    environment:
-      - DB_HOST=${DB_HOST:-postgres}
-      - DB_PORT=${DB_PORT:-5432}
-      - REDIS_HOST=${REDIS_HOST:-redis}
-      - REDIS_PORT=${REDIS_PORT:-6379}
-      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_INTERNAL_BOOTSTRAP_SERVERS}
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      redpanda:
-        condition: service_healthy
-    restart: unless-stopped
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: email_campaign_app
+#    ports:
+#      - "${APP_PORT:-8085}:8080"
+#    env_file:
+#      - ${DOCKER_ENV_FILE:-.env}
+#    environment:
+#      - DB_HOST=${DB_HOST:-postgres}
+#      - DB_PORT=${DB_PORT:-5432}
+#      - REDIS_HOST=${REDIS_HOST:-redis}
+#      - REDIS_PORT=${REDIS_PORT:-6379}
+#      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_INTERNAL_BOOTSTRAP_SERVERS}
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#      redis:
+#        condition: service_healthy
+#      redpanda:
+#        condition: service_healthy
+#    restart: unless-stopped
 
   postgres:
     image: postgres:16-alpine
