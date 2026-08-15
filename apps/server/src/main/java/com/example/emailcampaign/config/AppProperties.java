@@ -14,6 +14,12 @@ public class AppProperties {
     private final Jwt jwt = new Jwt();
     private final Email email = new Email();
     private final Frontend frontend = new Frontend();
+    private final Webhook webhook = new Webhook();
+
+    @Data
+    public static class Webhook {
+        private String resendSigningSecret = "";
+    }
 
     @Data
     public static class Frontend {
@@ -29,13 +35,14 @@ public class AppProperties {
 
     @Data
     public static class Email {
-        private String provider = "resend";
+        private String provider;
         private final Resend resend = new Resend();
         private final Ses ses = new Ses();
 
         @Data
         public static class Resend {
             private String apiKey;
+            private String platformFromEmail = "noreply@namisend.com";
         }
 
         @Data

@@ -13,15 +13,17 @@ import java.util.List;
 public class ResendEmailProvider implements EmailProvider {
 
     private final Resend resend;
+    private final String platformFromEmail;
 
-    public ResendEmailProvider(String apiKey) {
+    public ResendEmailProvider(String apiKey, String platformFromEmail) {
         this.resend = new Resend(apiKey);
+        this.platformFromEmail = platformFromEmail;
     }
 
     @Override
     public void send(EmailMessage message) {
         CreateEmailOptions options = CreateEmailOptions.builder()
-                .from(formatAddress(message.fromName(), message.fromEmail()))
+                .from(formatAddress(message.fromName(), platformFromEmail))
                 .to(List.of(message.toEmail()))
                 .subject(message.subject())
                 .html(message.htmlBody())

@@ -13,7 +13,10 @@ public class EmailProviderConfig {
     @Bean
     @ConditionalOnProperty(name = "app.email.provider", havingValue = "resend", matchIfMissing = true)
     public EmailProvider resendEmailProvider(AppProperties properties) {
-        return new ResendEmailProvider(properties.getEmail().getResend().getApiKey());
+        return new ResendEmailProvider(
+                properties.getEmail().getResend().getApiKey(),
+                properties.getEmail().getResend().getPlatformFromEmail()
+        );
     }
 
     @Bean

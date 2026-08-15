@@ -23,6 +23,21 @@ public interface CampaignContactRepository extends JpaRepository<CampaignContact
 
     long countById_CampaignIdAndStatus(UUID campaignId, CampaignContactStatus status);
 
+    long countById_CampaignIdAndStatusNot(UUID campaignId, CampaignContactStatus status);
+
+    @Transactional
+    @Modifying
+    @Query(value = """
+            UPDATE campaign_contacts SET status = :status
+            WHERE campaign_id = :campaignId AND contact_id = :contactId
+            AND status NOT IN ('BOUNCED', 'UNSUBSCRIBED')
+            """, nativeQuery = true)
+    void updateStatusIfNotTerminal(
+            @Param("campaignId") UUID campaignId,
+            @Param("contactId") UUID contactId,
+            @Param("status") String status
+    );
+
     @Transactional
     @Modifying
     @Query("UPDATE CampaignContact c SET c.status = :status WHERE c.id.campaignId = :campaignId AND c.id.contactId = :contactId")
