@@ -13,7 +13,6 @@ import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useLogin } from "@/hooks/use-auth";
 import { getApiError } from "@/lib/api-error";
-import { useAuthStore } from "@/store/auth-store";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { GoogleIcon } from "@hugeicons/core-free-icons";
 import { NamiSendLogo } from "@/components/ui/namis-end-logo";
@@ -43,11 +42,7 @@ function LoginPage() {
 
   function onSubmit(data: FormValues) {
     login(data, {
-      onSuccess: () =>
-        navigate({
-          to: "/dashboard",
-          search: { workspace: useAuthStore.getState().workspace?.id } as Record<string, string | undefined>,
-        }),
+      onSuccess: () => navigate({ to: "/dashboard" }),
       onError: (err) => toast.error(getApiError(err)),
     });
   }

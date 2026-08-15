@@ -11,10 +11,10 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const STATUS_STYLES: Record<string, string> = {
-  ACTIVE: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  UNSUBSCRIBED: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-  BOUNCED: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-  CLEANED: "bg-muted text-muted-foreground",
+  ACTIVE: "bg-[#a8e5e5]/40 text-[#1a3300] border border-[#a8e5e5]",
+  UNSUBSCRIBED: "bg-[#ffe95c]/30 text-[#1a3300] border border-[#ffe95c]",
+  BOUNCED: "bg-[#ff705d]/15 text-[#cb5521] border border-[#ff705d]/40",
+  CLEANED: "bg-muted text-muted-foreground border border-border",
 };
 
 const col = legacyCreateColumnHelper<Contact>();
