@@ -6,10 +6,10 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import Editor from "@monaco-editor/react";
+import CodeMirror from "@uiw/react-codemirror";
+import { html } from "@codemirror/lang-html";
+import { oneDark } from "@codemirror/theme-one-dark";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { useUiStore } from "@/store/ui-store";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_app/templates/$templateId")({
   component: TemplateEditorPage,
@@ -18,7 +18,6 @@ export const Route = createFileRoute("/_app/templates/$templateId")({
 function TemplateEditorPage() {
   const { templateId } = Route.useParams();
   const { data: template, isLoading } = useTemplate(templateId);
-  const sidebarCollapsed = useUiStore((s) => s.sidebarCollapsed);
   const updateTemplate = useUpdateTemplate();
 
   const [name, setName] = useState("");
@@ -51,48 +50,40 @@ function TemplateEditorPage() {
   );
 
   return (
-    <div className={cn(
-      "fixed top-14 right-0 bottom-0 z-30 flex flex-col bg-background overflow-hidden",
-      sidebarCollapsed ? "left-[60px]" : "left-60",
-      "max-md:left-0"
-    )}>
-      {/* Topbar */}
-      <div className="h-14 border-b flex items-center gap-3 px-4 bg-card shrink-0">
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" asChild className="shrink-0 text-muted-foreground">
           <Link to="/templates">
             <HugeiconsIcon icon={ArrowLeft01Icon} size={18} />
           </Link>
         </Button>
 
-        <div className="h-5 w-px bg-border" />
-
         {isLoading ? (
-          <Skeleton className="h-6 w-36" />
+          <Skeleton className="h-7 w-40" />
         ) : (
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="h-8 w-44 border-transparent hover:border-input focus-visible:border-input bg-transparent px-2 font-medium"
+            className="h-8 w-44 font-semibold bg-transparent border-transparent hover:border-input focus-visible:border-input px-2"
           />
         )}
 
         <div className="h-5 w-px bg-border" />
 
-        <div className="flex items-center gap-2 flex-1">
-          <span className="text-xs text-muted-foreground whitespace-nowrap">Subject</span>
-          {isLoading ? (
-            <Skeleton className="h-7 w-64" />
-          ) : (
-            <Input
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              placeholder="e.g. Hello {{firstName}}, here's your update"
-              className="h-8 max-w-sm text-sm"
-            />
-          )}
-        </div>
+        <span className="text-xs text-muted-foreground whitespace-nowrap">Subject</span>
+        {isLoading ? (
+          <Skeleton className="h-7 w-64" />
+        ) : (
+          <Input
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            placeholder="e.g. Hello {{firstName}}, here's your update"
+            className="h-8 max-w-xs text-sm"
+          />
+        )}
 
-        <div className="flex items-center gap-2 ml-auto">
+        <div className="ml-auto flex items-center gap-2">
           {updateTemplate.isSuccess && !isDirty && (
             <span className="text-xs text-muted-foreground flex items-center gap-1">
               <HugeiconsIcon icon={CheckmarkCircle01Icon} size={14} />
@@ -111,30 +102,29 @@ function TemplateEditorPage() {
       </div>
 
       {/* Editor + Preview */}
-      <div className="flex-1 overflow-hidden">
-        <ResizablePanelGroup direction="horizontal" className="h-full w-full">
-          {/* Left — Monaco */}
-          <ResizablePanel defaultSize={50} minSize={25} className="bg-[#1e1e1e] flex flex-col">
-            <div className="h-9 bg-[#252526] border-b border-[#333] flex items-center px-4 shrink-0">
-              <span className="flex items-center gap-1.5 text-xs text-[#858585] font-medium">
+      <div className="rounded-xl border overflow-hidden" style={{ height: "calc(100vh - 180px)" }}>
+        <ResizablePanelGroup direction="horizontal" className="h-full">
+          {/* Left — Code editor */}
+          <ResizablePanel defaultSize={50} minSize={25} className="flex flex-col min-h-0">
+            <div className="h-9 bg-[#282c34] border-b border-[#3e4451] flex items-center px-4 shrink-0">
+              <span className="flex items-center gap-1.5 text-xs text-[#abb2bf] font-medium">
                 <HugeiconsIcon icon={CodeIcon} size={13} />
                 HTML
               </span>
             </div>
-            <div className="flex-1 overflow-hidden">
-              <Editor
-                height="100%"
-                language="html"
-                theme="vs-dark"
+            <div className="flex-1 min-h-0 overflow-hidden">
+              <CodeMirror
                 value={htmlContent}
-                onChange={(val) => setHtmlContent(val || "")}
-                options={{
-                  minimap: { enabled: false },
-                  fontSize: 13,
-                  lineHeight: 22,
-                  wordWrap: "on",
-                  padding: { top: 12 },
-                  scrollBeyondLastLine: false,
+                height="100%"
+                theme={oneDark}
+                extensions={[html()]}
+                onChange={(val) => setHtmlContent(val)}
+                style={{ height: "100%" }}
+                basicSetup={{
+                  lineNumbers: true,
+                  foldGutter: false,
+                  highlightActiveLine: true,
+                  autocompletion: true,
                 }}
               />
             </div>
@@ -143,18 +133,18 @@ function TemplateEditorPage() {
           <ResizableHandle withHandle />
 
           {/* Right — Preview */}
-          <ResizablePanel defaultSize={50} minSize={25} className="flex flex-col bg-muted/30">
+          <ResizablePanel defaultSize={50} minSize={25} className="flex flex-col bg-muted/40">
             <div className="h-9 border-b flex items-center px-4 shrink-0 bg-card">
               <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
                 <HugeiconsIcon icon={ViewIcon} size={13} />
                 Preview
               </span>
             </div>
-            <div className="flex-1 overflow-auto p-6 flex items-start justify-center">
-              <div className="bg-white w-full max-w-[600px] shadow-lg rounded border overflow-hidden min-h-[500px] flex flex-col">
+            <div className="flex-1 overflow-auto p-6 flex justify-center">
+              <div className="bg-white w-full max-w-[600px] shadow-md rounded-lg border overflow-hidden min-h-[400px] flex flex-col">
                 <iframe
                   srcDoc={previewHtml}
-                  className="w-full flex-1 border-0 min-h-[500px]"
+                  className="w-full flex-1 border-0 min-h-[400px]"
                   title="Email Preview"
                   sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin"
                 />

@@ -330,3 +330,10 @@
   }
   html { scroll-behavior: auto; }
 }
+
+.cm-editor {
+  height: 100% !important;
+}
+.cm-scroller {
+  overflow: auto !important;
+}
