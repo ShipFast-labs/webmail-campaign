@@ -163,7 +163,7 @@ function TemplateEditorPage() {
   const applyPreset = (preset: typeof PRESETS[number]) => {
     setHtmlContent(preset.html);
     setPreviewHtml(preset.html);
-    if (!subject) setSubject(preset.subject);
+    setSubject(preset.subject);
   };
 
   const isDirty = template && (
