@@ -25,6 +25,7 @@ import { Route as AppListsIndexRouteImport } from './routes/_app/lists/index'
 import { Route as AppListsListIdRouteImport } from './routes/_app/lists/$listId'
 import { Route as AppTemplatesIndexRouteImport } from './routes/_app/templates/index'
 import { Route as AppTemplatesTemplateIdRouteImport } from './routes/_app/templates/$templateId'
+import { Route as AppCampaignsCampaignIdIndexRouteImport } from './routes/_app/campaigns/$campaignId.index'
 import { Route as AppCampaignsCampaignIdAnalyticsRouteImport } from './routes/_app/campaigns/$campaignId.analytics'
 
 const IndexRoute = IndexRouteImport.update({
@@ -106,6 +107,12 @@ const AppTemplatesTemplateIdRoute = AppTemplatesTemplateIdRouteImport.update({
   path: '/templates/$templateId',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCampaignsCampaignIdIndexRoute =
+  AppCampaignsCampaignIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppCampaignsCampaignIdRoute,
+  } as any)
 const AppCampaignsCampaignIdAnalyticsRoute =
   AppCampaignsCampaignIdAnalyticsRouteImport.update({
     id: '/analytics',
@@ -130,6 +137,7 @@ export interface FileRoutesByFullPath {
   '/lists/': typeof AppListsIndexRoute
   '/templates/': typeof AppTemplatesIndexRoute
   '/campaigns/$campaignId/analytics': typeof AppCampaignsCampaignIdAnalyticsRoute
+  '/campaigns/$campaignId/': typeof AppCampaignsCampaignIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -140,7 +148,6 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AppDashboardRoute
   '/settings': typeof AppSettingsRoute
   '/oauth2/redirect': typeof Oauth2RedirectRoute
-  '/campaigns/$campaignId': typeof AppCampaignsCampaignIdRouteWithChildren
   '/campaigns/new': typeof AppCampaignsNewRoute
   '/lists/$listId': typeof AppListsListIdRoute
   '/templates/$templateId': typeof AppTemplatesTemplateIdRoute
@@ -148,6 +155,7 @@ export interface FileRoutesByTo {
   '/lists': typeof AppListsIndexRoute
   '/templates': typeof AppTemplatesIndexRoute
   '/campaigns/$campaignId/analytics': typeof AppCampaignsCampaignIdAnalyticsRoute
+  '/campaigns/$campaignId': typeof AppCampaignsCampaignIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -168,6 +176,7 @@ export interface FileRoutesById {
   '/_app/lists/': typeof AppListsIndexRoute
   '/_app/templates/': typeof AppTemplatesIndexRoute
   '/_app/campaigns/$campaignId/analytics': typeof AppCampaignsCampaignIdAnalyticsRoute
+  '/_app/campaigns/$campaignId/': typeof AppCampaignsCampaignIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | '/lists/'
     | '/templates/'
     | '/campaigns/$campaignId/analytics'
+    | '/campaigns/$campaignId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -198,7 +208,6 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/settings'
     | '/oauth2/redirect'
-    | '/campaigns/$campaignId'
     | '/campaigns/new'
     | '/lists/$listId'
     | '/templates/$templateId'
@@ -206,6 +215,7 @@ export interface FileRouteTypes {
     | '/lists'
     | '/templates'
     | '/campaigns/$campaignId/analytics'
+    | '/campaigns/$campaignId'
   id:
     | '__root__'
     | '/'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
     | '/_app/lists/'
     | '/_app/templates/'
     | '/_app/campaigns/$campaignId/analytics'
+    | '/_app/campaigns/$campaignId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -349,6 +360,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTemplatesTemplateIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/campaigns/$campaignId/': {
+      id: '/_app/campaigns/$campaignId/'
+      path: '/'
+      fullPath: '/campaigns/$campaignId/'
+      preLoaderRoute: typeof AppCampaignsCampaignIdIndexRouteImport
+      parentRoute: typeof AppCampaignsCampaignIdRoute
+    }
     '/_app/campaigns/$campaignId/analytics': {
       id: '/_app/campaigns/$campaignId/analytics'
       path: '/analytics'
@@ -361,11 +379,13 @@ declare module '@tanstack/react-router' {
 
 interface AppCampaignsCampaignIdRouteChildren {
   AppCampaignsCampaignIdAnalyticsRoute: typeof AppCampaignsCampaignIdAnalyticsRoute
+  AppCampaignsCampaignIdIndexRoute: typeof AppCampaignsCampaignIdIndexRoute
 }
 
 const AppCampaignsCampaignIdRouteChildren: AppCampaignsCampaignIdRouteChildren =
   {
     AppCampaignsCampaignIdAnalyticsRoute: AppCampaignsCampaignIdAnalyticsRoute,
+    AppCampaignsCampaignIdIndexRoute: AppCampaignsCampaignIdIndexRoute,
   }
 
 const AppCampaignsCampaignIdRouteWithChildren =

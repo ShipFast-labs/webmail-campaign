@@ -63,7 +63,7 @@ function GlobalAnalyticsPage() {
           {analyticsReadyCampaigns.map((camp, i) => (
             <motion.div key={camp.id} {...fadeUp(0.1 + i * 0.05)}>
               <Link to="/campaigns/$campaignId/analytics" params={{ campaignId: camp.id }}>
-                <Card className="h-full hover:border-primary/50 hover:bg-muted/30 transition-colors cursor-pointer group">
+                <Card className="h-full hover:border-primary/50 transition-colors cursor-pointer group">
                   <CardHeader className="pb-3">
                     <CardTitle className="line-clamp-1 group-hover:text-primary transition-colors">
                       {camp.name}
