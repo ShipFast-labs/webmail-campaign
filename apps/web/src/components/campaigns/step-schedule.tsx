@@ -5,12 +5,14 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Calendar01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useLists } from "@/hooks/use-lists";
 import { useTemplates } from "@/hooks/use-templates";
 import type { WizardValues } from "@/hooks/use-campaign-wizard";
+import { useState } from "react";
 
 export function StepSchedule() {
   const {
@@ -21,6 +23,21 @@ export function StepSchedule() {
   const values = watch();
   const { data: lists } = useLists();
   const { data: templates } = useTemplates();
+
+  const defaultTime = () => {
+    const d = new Date();
+    d.setHours(d.getHours() + 1, 0, 0, 0);
+    return `${String(d.getHours()).padStart(2, "0")}:00`;
+  };
+  const [time, setTime] = useState(defaultTime);
+
+  const applyDateTime = (date: Date | undefined, t: string) => {
+    if (!date) return;
+    const [h, m] = t.split(":").map(Number);
+    const combined = new Date(date);
+    combined.setHours(h, m, 0, 0);
+    setValue("scheduledAt", combined, { shouldValidate: true });
+  };
 
   const summary: Record<string, string> = {
     Name: values.name,
@@ -73,33 +90,54 @@ export function StepSchedule() {
         <motion.div
           initial={{ opacity: 0, y: -4 }}
           animate={{ opacity: 1, y: 0 }}
-          className="space-y-2 p-4 border rounded-lg"
+          className="space-y-3 p-4 border rounded-lg"
         >
-          <Label>Select Date</Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn(
-                  "w-[240px] justify-start text-left font-normal",
-                  !values.scheduledAt && "text-muted-foreground"
-                )}
-              >
-                <HugeiconsIcon icon={Calendar01Icon} size={16} />
-                {values.scheduledAt ? format(values.scheduledAt, "PPP") : "Pick a date"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={values.scheduledAt ?? undefined}
-                onSelect={(date) =>
-                  setValue("scheduledAt", date ?? null, { shouldValidate: true })
-                }
-                disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+          <div className="flex items-end gap-3 flex-wrap">
+            <div className="space-y-1.5">
+              <Label>Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-[180px] justify-start text-left font-normal",
+                      !values.scheduledAt && "text-muted-foreground"
+                    )}
+                  >
+                    <HugeiconsIcon icon={Calendar01Icon} size={16} />
+                    {values.scheduledAt ? format(values.scheduledAt, "MMM d, yyyy") : "Pick a date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={values.scheduledAt ?? undefined}
+                    onSelect={(date) => applyDateTime(date, time)}
+                    disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label>Time</Label>
+              <Input
+                type="time"
+                value={time}
+                onChange={(e) => {
+                  setTime(e.target.value);
+                  applyDateTime(values.scheduledAt ?? undefined, e.target.value);
+                }}
+                className="w-[130px]"
               />
-            </PopoverContent>
-          </Popover>
+            </div>
+          </div>
+
+          {values.scheduledAt && (
+            <p className="text-xs text-muted-foreground">
+              Sends on {format(values.scheduledAt, "EEEE, MMM d 'at' h:mm a")}
+            </p>
+          )}
           {errors.scheduledAt && (
             <p className="text-xs text-destructive">{errors.scheduledAt.message}</p>
           )}

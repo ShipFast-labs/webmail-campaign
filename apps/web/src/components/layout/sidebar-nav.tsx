@@ -15,10 +15,10 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { to: "/dashboard", label: "Dashboard", icon: Home01Icon },
-  { to: "/campaigns", label: "Campaigns", icon: Mail01Icon },
   { to: "/contacts", label: "Contacts", icon: UserGroupIcon },
   { to: "/lists", label: "Lists", icon: UserListIcon },
   { to: "/templates", label: "Templates", icon: Layout02Icon },
+  { to: "/campaigns", label: "Campaigns", icon: Mail01Icon },
   { to: "/analytics", label: "Analytics", icon: ChartAnalysisIcon },
 ] as const;
 
