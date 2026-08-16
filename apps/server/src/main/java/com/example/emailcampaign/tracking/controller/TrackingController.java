@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Base64;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -48,10 +49,12 @@ public class TrackingController {
 
     @GetMapping("/c/{token}")
     public ResponseEntity<Void> trackClick(@PathVariable UUID token) {
-        return trackingService.recordClickAndGetRedirectUrl(token)
-                .map(url -> ResponseEntity.<Void>status(HttpStatus.FOUND)
-                        .header(HttpHeaders.LOCATION, url)
-                        .build())
-                .orElse(ResponseEntity.<Void>notFound().build());
+        Optional<String> url = trackingService.recordClickAndGetRedirectUrl(token);
+        if (url.isPresent()) {
+            return ResponseEntity.<Void>status(HttpStatus.FOUND)
+                    .header(HttpHeaders.LOCATION, url.get())
+                    .build();
+        }
+        return ResponseEntity.<Void>notFound().build();
     }
 }
