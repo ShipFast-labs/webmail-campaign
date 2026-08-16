@@ -47,14 +47,17 @@ public class RateLimiterService {
     }
 
     public boolean tryConsume(UUID workspaceId, int tokens) {
-        String key = keyPrefix + "rate_limit:" + workspaceId;
+        return tryConsumeForKey("rate_limit:" + workspaceId, tokens, bucketConfig);
+    }
+
+    public boolean tryConsumeForKey(String key, int tokens, Supplier<BucketConfiguration> config) {
         boolean allowed = proxyManager
                 .builder()
-                .build(key, bucketConfig)
+                .build(keyPrefix + key, config)
                 .tryConsume(tokens);
 
         if (!allowed) {
-            log.warn("Rate limit hit: workspace={}", workspaceId);
+            log.warn("Rate limit hit: key={}", key);
         }
         return allowed;
     }
