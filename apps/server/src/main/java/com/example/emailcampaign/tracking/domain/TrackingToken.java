@@ -39,7 +39,7 @@ public class TrackingToken {
     private UUID workspaceId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "token_type", nullable = false, length = 10)
+    @Column(name = "token_type", nullable = false, length = 15)
     private TrackingTokenType tokenType;
 
     @Column(name = "original_url", columnDefinition = "text")
