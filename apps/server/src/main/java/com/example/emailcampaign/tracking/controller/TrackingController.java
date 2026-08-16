@@ -52,6 +52,6 @@ public class TrackingController {
                 .map(url -> ResponseEntity.<Void>status(HttpStatus.FOUND)
                         .header(HttpHeaders.LOCATION, url)
                         .build())
-                .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.<Void>notFound().build());
     }
 }
