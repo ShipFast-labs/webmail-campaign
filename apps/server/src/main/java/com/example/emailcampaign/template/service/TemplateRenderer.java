@@ -16,6 +16,10 @@ import java.util.function.Function;
 @Service
 public class TemplateRenderer {
 
+    public String renderSubject(String subject, Map<String, String> variables) {
+        return renderFreemarker(subject, variables);
+    }
+
     /**
      * Renders Freemarker variables for the preview endpoint (no link rewriting).
      */
@@ -58,8 +62,11 @@ public class TemplateRenderer {
 
     private String renderFreemarker(String content, Map<String, String> variables) {
         try {
+            // Support both {{var}} (Handlebars-style) and ${var} (Freemarker-native)
+            String normalized = content.replaceAll("\\{\\{(\\w+)\\}\\}", "\\${$1}");
+
             StringTemplateLoader loader = new StringTemplateLoader();
-            loader.putTemplate("tpl", content);
+            loader.putTemplate("tpl", normalized);
 
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_33);
             cfg.setTemplateLoader(loader);

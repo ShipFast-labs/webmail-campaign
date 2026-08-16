@@ -3,6 +3,8 @@ package com.example.emailcampaign.kafka.consumer;
 import com.example.emailcampaign.campaign.domain.CampaignContact;
 import com.example.emailcampaign.campaign.domain.CampaignContactId;
 import com.example.emailcampaign.campaign.domain.CampaignContactStatus;
+import com.example.emailcampaign.campaign.domain.CampaignStatus;
+import com.example.emailcampaign.campaign.domain.CampaignStateMachine;
 import com.example.emailcampaign.campaign.domain.Campaign;
 import com.example.emailcampaign.campaign.repository.CampaignContactRepository;
 import com.example.emailcampaign.campaign.repository.CampaignRepository;
@@ -77,6 +79,8 @@ public class EmailSenderConsumer {
                 silentlyUpdateStatus(batch.campaignId(), contact.contactId(), CampaignContactStatus.FAILED);
             }
         }
+
+        checkAndCompleteIfDone(batch.campaignId());
     }
 
     private void processContact(Campaign campaign, EmailContactInfo contact, UUID workspaceId) {
@@ -112,12 +116,14 @@ public class EmailSenderConsumer {
                 appProperties.getBaseUrl() + "/t/o/" + openTokenId
         );
 
+        String renderedSubject = templateRenderer.renderSubject(campaign.getTemplate().getSubject(), vars);
+
         emailProvider.send(new EmailMessage(
                 contact.email(),
                 contact.firstName(),
                 campaign.getFromEmail(),
                 campaign.getFromName(),
-                campaign.getTemplate().getSubject(),
+                renderedSubject,
                 renderedHtml,
                 campaignId + "::" + contactId
         ));
@@ -157,6 +163,20 @@ public class EmailSenderConsumer {
         } catch (JsonProcessingException e) {
             log.error("Failed to publish tracking event campaign={} type={}: {}", campaignId, eventType, e.getMessage());
         }
+    }
+
+    private void checkAndCompleteIfDone(UUID campaignId) {
+        long pending = campaignContactRepository.countById_CampaignIdAndStatus(campaignId, CampaignContactStatus.PENDING);
+        if (pending > 0) return;
+        campaignRepository.findById(campaignId).ifPresent(campaign -> {
+            try {
+                CampaignStateMachine.transition(campaign, CampaignStatus.COMPLETED);
+                campaignRepository.save(campaign);
+                log.info("Campaign completed: {}", campaignId);
+            } catch (Exception e) {
+                log.debug("Campaign already completed or invalid transition: {}", campaignId);
+            }
+        });
     }
 
     private void silentlyUpdateStatus(UUID campaignId, UUID contactId, CampaignContactStatus status) {
