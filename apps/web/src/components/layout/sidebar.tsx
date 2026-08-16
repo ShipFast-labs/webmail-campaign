@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft01Icon, Logout01Icon, Settings01Icon } from "@hugeicons/core-free-icons";
+import { ArrowLeft01Icon, Logout01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { motion } from "motion/react";
 
@@ -56,27 +56,6 @@ export function Sidebar() {
 
         {/* Footer */}
         <div className="px-2 py-3 border-t border-sidebar-border space-y-0.5 shrink-0">
-          <motion.div whileHover={{ x: 3 }} transition={{ duration: 0.15 }}>
-            <Button
-              asChild
-              variant="ghost"
-              className={cn(
-                "w-full justify-start gap-3 text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent",
-                sidebarCollapsed && "md:justify-center md:px-0",
-              )}
-              title={sidebarCollapsed ? "Settings" : undefined}
-            >
-              <Link to="/settings" onClick={() => setMobileSidebarOpen(false)}>
-                <HugeiconsIcon
-                  icon={Settings01Icon}
-                  size={18}
-                  className="shrink-0 text-sidebar-foreground/60"
-                />
-                <span className={cn(sidebarCollapsed && "md:hidden")}>Settings</span>
-              </Link>
-            </Button>
-          </motion.div>
-
           <motion.div whileHover={{ x: 3 }} transition={{ duration: 0.15 }}>
             <Button
               variant="ghost"

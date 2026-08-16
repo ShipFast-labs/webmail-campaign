@@ -59,6 +59,11 @@ function NavItem({ to, label, icon, active, collapsed }: NavItemProps) {
   );
 }
 
+function isNavActive(to: string, pathname: string): boolean {
+  if (pathname.includes("/analytics")) return to === "/analytics";
+  return pathname.startsWith(to);
+}
+
 export function SidebarNav({ collapsed }: { collapsed: boolean }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -70,7 +75,7 @@ export function SidebarNav({ collapsed }: { collapsed: boolean }) {
           to={to}
           label={label}
           icon={icon}
-          active={pathname.startsWith(to)}
+          active={isNavActive(to, pathname)}
           collapsed={collapsed}
         />
       ))}

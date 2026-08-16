@@ -32,7 +32,7 @@ export function TopBar() {
 
       <Avatar className="h-8 w-8 cursor-pointer" title={user?.email}>
         <AvatarImage src={user?.avatarUrl} alt={user?.fullName || user?.email} referrerPolicy="no-referrer" />
-        <AvatarFallback className="bg-primary/15 text-primary text-xs font-semibold select-none">
+        <AvatarFallback className="bg-[#1a3300]/10 text-[#1a3300] text-xs font-semibold select-none">
           {initials}
         </AvatarFallback>
       </Avatar>
