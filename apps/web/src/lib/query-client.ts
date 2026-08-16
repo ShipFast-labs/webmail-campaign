@@ -1,4 +1,10 @@
 import { QueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+
+function getErrorMessage(error: unknown): string {
+  const err = error as { response?: { data?: { message?: string } }; message?: string };
+  return err?.response?.data?.message ?? err?.message ?? "Something went wrong";
+}
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -12,6 +18,9 @@ export const queryClient = new QueryClient({
     },
     mutations: {
       retry: false,
+      onError: (error) => {
+        toast.error(getErrorMessage(error));
+      },
     },
   },
 });

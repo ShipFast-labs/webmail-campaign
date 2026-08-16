@@ -1,57 +1,48 @@
-# email-campaign
+# NamiSend
 
-This project was created with [Better Fullstack](https://github.com/Marve10s/Better-Fullstack) using the multi-ecosystem project graph.
+NamiSend is an email campaign platform. You can import contacts, build HTML email templates, send campaigns to your lists, and track opens and clicks in real time.
+
+Live at https://namisend.com
+
+## What it does
+
+Send bulk emails to your contacts with personalized content using variables like `{{firstName}}`. Schedule campaigns for a future time or send immediately. Every email gets a unique open pixel and click tracking link per recipient. Analytics show you exactly who opened and clicked.
 
 ## Stack
 
-- Frontend: tanstack-router (typescript)
-- Backend: Java Spring Boot (java)
+Frontend is React with TanStack Router and Tailwind. Backend is Java Spring Boot. Emails go through Resend. Contacts are uploaded via CSV to S3. The sending pipeline runs through Kafka so large lists don't block the API. Quartz handles scheduled campaigns and persists jobs in Postgres so they survive restarts. Redis handles rate limiting.
 
-## Project Structure
+## Running locally
 
-```text
-email-campaign/
-├── apps/
-│   ├── web/         # Frontend application
-│   └── server/      # Backend application
-└── package.json     # Root scripts for the generated graph
+You need Postgres, Redis, and Kafka running. The easiest way is Docker.
+
+```sh
+docker compose up -d
 ```
 
-## Local Development
+For the backend, copy the example env file and fill in your keys, then start the server.
 
-Install the JavaScript workspace dependencies first. If you created the project with `--no-install`, this step has not run yet.
+```sh
+cd apps/server
+cp .env.example .env
+./mvnw spring-boot:run
+```
+
+For the frontend:
 
 ```sh
 bun install
+bun dev
 ```
 
-Database-backed backend selections expect a local postgres database or a matching `DATABASE_URL` in the backend environment before you start the server. Copy the backend `.env.example` to `.env` and adjust it for your machine.
+The app runs on port 5173, the API on port 8080.
 
-Run the generated apps in separate terminals so each ecosystem keeps its native watcher and logs.
+## Environment variables
 
-```sh
-bun dev:web
-```
+See `apps/server/.env.example` for the full list. The ones you actually need to fill in are the database URL, a JWT secret, Google OAuth credentials, a Resend API key, and AWS credentials for S3.
 
-Start the backend:
+The frontend only needs one variable: `VITE_API_URL` pointing to the backend.
 
-```sh
-cd apps/server && ./mvnw spring-boot:run
-```
+## API docs
 
-The frontend is configured to call the backend at `http://localhost:8080`. The generated health check reads the matching public server URL from the web environment file and targets `/health`.
-
-## Root Scripts
-
-- `dev` starts the primary generated workspace for graph projects.
-- `dev:web` starts the frontend workspace.
-
-- `dev:server` starts the generated backend.
-- `check:server` runs the backend compile/check lane.
-- `test:server` runs backend tests.
-
-## Compatibility Notes
-
-- TypeScript frontends can be generated with Elixir Phoenix backends; Phoenix runs on port 4000 and exposes `/api/health`.
-- Astro frontends can be generated with Rust backends; Rust web servers run on port 3000 and expose `/health`.
-- Cross-ecosystem graph projects share an HTTP boundary. Framework-specific API clients such as tRPC are not assumed across language boundaries; the scaffold wires the frontend to the backend base URL and health endpoint.
+Scalar UI is available at `http://localhost:8080/api-docs` when the server is running.

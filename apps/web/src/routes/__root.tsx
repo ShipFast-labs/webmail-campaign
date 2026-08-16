@@ -20,9 +20,17 @@ export interface RouterAppContext {
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({
   component: RootComponent,
+  errorComponent: ({ error }) => (
+    <div className="flex h-screen items-center justify-center p-8 text-center">
+      <div>
+        <p className="text-2xl font-bold mb-2">Something went wrong</p>
+        <p className="text-muted-foreground text-sm">{(error as Error)?.message ?? "An unexpected error occurred."}</p>
+      </div>
+    </div>
+  ),
   head: () => ({
     meta: [
-      { title: "Campaign — Email campaigns that deliver" },
+      { title: "NamiSend — Email campaigns that deliver" },
       {
         name: "description",
         content: "Build, send, and track email campaigns to your contact lists.",
