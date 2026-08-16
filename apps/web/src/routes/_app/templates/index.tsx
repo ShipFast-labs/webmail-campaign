@@ -54,44 +54,28 @@ function TemplatesPage() {
           </div>
         ) : (
           templates?.map((tpl) => (
-            <Card key={tpl.id} className="p-0 overflow-hidden flex flex-col group relative hover:border-primary/50 transition-colors">
-              <div className="h-32 bg-muted flex items-center justify-center border-b relative overflow-hidden">
-                <div 
-                  className="absolute top-0 left-0 pointer-events-none opacity-90 bg-white"
-                  style={{ width: '400%', height: '400%', transform: 'scale(0.25)', transformOrigin: 'top left' }}
-                >
-                  <iframe 
-                    srcDoc={tpl.htmlContent}
-                    className="w-full h-full border-0 pointer-events-none select-none"
-                    tabIndex={-1}
-                    sandbox=""
-                  />
+            <Card key={tpl.id} className="group relative hover:border-primary/50 transition-colors">
+              <Link to="/templates/$templateId" params={{ templateId: tpl.id }} className="absolute inset-0 z-0" />
+              <div className="p-3 flex flex-col gap-1 relative z-10 pointer-events-none">
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="font-semibold line-clamp-1 text-sm">{tpl.name}</h3>
+                  <div className="flex gap-0.5 shrink-0 pointer-events-auto">
+                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={(e) => { e.preventDefault(); duplicateTemplate.mutate(tpl.id); }}>
+                      <HugeiconsIcon icon={Copy01Icon} size={13} />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={(e) => { e.preventDefault(); deleteTemplate.mutate(tpl.id); }}>
+                      <HugeiconsIcon icon={Delete02Icon} size={13} />
+                    </Button>
+                  </div>
                 </div>
-                
-                <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                  <Button size="sm" asChild>
-                    <Link to="/templates/$templateId" params={{ templateId: tpl.id }}>
-                      Edit Template
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-
-              <div className="p-4 flex items-start justify-between bg-card">
-                <div>
-                  <h3 className="font-semibold line-clamp-1">{tpl.name}</h3>
-                  <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
-                    {tpl.subject}
+                <p className="text-xs text-muted-foreground line-clamp-1">
+                  {tpl.subject || <span className="italic">No subject</span>}
+                </p>
+                {tpl.htmlContent && (
+                  <p className="text-xs text-muted-foreground/50 line-clamp-2 leading-relaxed pt-1.5 border-t mt-0.5">
+                    {tpl.htmlContent.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 140)}
                   </p>
-                </div>
-                <div className="flex gap-1 -mr-2">
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" onClick={() => duplicateTemplate.mutate(tpl.id)}>
-                    <HugeiconsIcon icon={Copy01Icon} size={14} />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={() => deleteTemplate.mutate(tpl.id)}>
-                    <HugeiconsIcon icon={Delete02Icon} size={14} />
-                  </Button>
-                </div>
+                )}
               </div>
             </Card>
           ))
