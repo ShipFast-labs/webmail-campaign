@@ -19,7 +19,6 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 public class PublicApiRateLimitFilter extends OncePerRequestFilter {
 
-    // 5 registrations per hour per IP — prevents mass account creation
     private static final Supplier<BucketConfiguration> REGISTER_CONFIG = () ->
             BucketConfiguration.builder()
                     .addLimit(Bandwidth.builder()
@@ -28,7 +27,6 @@ public class PublicApiRateLimitFilter extends OncePerRequestFilter {
                             .build())
                     .build();
 
-    // 20 login attempts per 10 minutes per IP — brute force protection
     private static final Supplier<BucketConfiguration> LOGIN_CONFIG = () ->
             BucketConfiguration.builder()
                     .addLimit(Bandwidth.builder()

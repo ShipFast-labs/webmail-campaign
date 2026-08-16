@@ -4,28 +4,27 @@ import { Suspense, lazy } from "react";
 import { Button } from "@/components/ui/button";
 import { TIMING } from "@/remotion/constants";
 
-const LazyHeroPlayer = lazy(() => 
-  Promise.all([
-    import("@remotion/player"),
-    import("@/remotion/HeroDemo")
-  ]).then(([playerModule, demoModule]) => ({
-    default: () => (
-      <playerModule.Player
-        component={demoModule.HeroDemo}
-        durationInFrames={TIMING.heroDuration}
-        compositionWidth={1280}
-        compositionHeight={720}
-        fps={TIMING.fps}
-        autoPlay
-        loop
-        style={{
-          width: "100%",
-          aspectRatio: "16 / 9",
-          display: "block"
-        }}
-      />
-    )
-  }))
+const LazyHeroPlayer = lazy(() =>
+  Promise.all([import("@remotion/player"), import("@/remotion/HeroDemo")]).then(
+    ([playerModule, demoModule]) => ({
+      default: () => (
+        <playerModule.Player
+          component={demoModule.HeroDemo}
+          durationInFrames={TIMING.heroDuration}
+          compositionWidth={1280}
+          compositionHeight={720}
+          fps={TIMING.fps}
+          autoPlay
+          loop
+          style={{
+            width: "100%",
+            aspectRatio: "16 / 9",
+            display: "block",
+          }}
+        />
+      ),
+    }),
+  ),
 );
 
 export function Hero() {
@@ -44,10 +43,8 @@ export function Hero() {
             linear-gradient(to bottom, #e2e8f0 1px, transparent 1px)
           `,
           backgroundSize: "20px 30px",
-          WebkitMaskImage:
-            "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
-          maskImage:
-            "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
+          WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
+          maskImage: "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
         }}
       />
       <div className="relative z-10 w-full max-w-[90rem] mx-auto px-4 lg:px-8 xl:px-12">
@@ -64,15 +61,13 @@ export function Hero() {
                 fontFamily: "var(--font-display)",
                 fontWeight: 500,
                 fontSize: "clamp(48px, 6vw, 96px)",
-                letterSpacing: "var(--mm-tracking-display)",
+                letterSpacing: "-0.01em",
                 lineHeight: "0.95",
                 color: "var(--color-mm-ink-black)",
               }}
             >
               Email campaigns that{" "}
-              <span style={{ color: "var(--color-mm-fresh-grass)" }}>
-                Deliver
-              </span>
+              <span style={{ color: "var(--color-mm-fresh-grass)" }}>Deliver</span>
             </motion.h1>
 
             {/* Subhead */}
@@ -84,11 +79,11 @@ export function Hero() {
               style={{
                 fontFamily: "var(--font-sans)",
                 color: "var(--color-mm-ink-black)",
-                opacity: 0.8
+                opacity: 0.8,
               }}
             >
-              Build, send, and track campaigns to your contact lists. Real-time analytics show you
-              what worked.
+              Import your contacts, pick a template, and hit send. See exactly who opened, clicked,
+              or bounced in real time.
             </motion.p>
 
             {/* CTA group */}
@@ -96,39 +91,31 @@ export function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
-              className="flex items-center gap-6 flex-wrap"
+              className="flex items-center gap-3 flex-wrap"
             >
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
-                <Button
-                  asChild
-                  className="rounded-full h-14 px-8 font-medium flex items-center gap-3 group relative overflow-hidden transition-transform"
-                  style={{
-                    backgroundColor: "var(--color-mm-pure-white)",
-                    color: "var(--color-mm-ink-black)",
-                    border: "1.5px solid var(--color-mm-ink-black)",
-                    fontSize: "17px"
-                  }}
-                >
-                  <Link to="/register">
-                    Get started
-                  </Link>
-                </Button>
-              </motion.div>
-
-              <motion.a
-                href="#how-it-works"
-                className="font-medium hover:opacity-70 transition-opacity"
+              <Button
+                asChild
+                className="rounded-full h-10 px-6 font-medium text-sm"
                 style={{
-                  color: "var(--color-mm-stone-gray)",
-                  fontSize: "16px",
-                  borderBottom: "1px solid var(--color-mm-stone-gray)",
-                  paddingBottom: "2px"
+                  backgroundColor: "var(--color-mm-fresh-grass)",
+                  color: "#000000",
                 }}
-                whileHover={{ y: -1 }}
-                transition={{ duration: 0.15, ease: "easeOut" }}
               >
-                How it works
-              </motion.a>
+                <Link to="/register">Send now</Link>
+              </Button>
+
+              <Button
+                asChild
+                variant="outline"
+                className="rounded-full h-10 px-6 font-medium text-sm"
+                style={{
+                  backgroundColor: "transparent",
+                  color: "#000000",
+                  border: "1.5px solid var(--color-mm-fresh-grass)",
+                }}
+              >
+                <a href="#how-it-works">Watch demo</a>
+              </Button>
             </motion.div>
           </div>
 
@@ -139,51 +126,24 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="w-full relative lg:col-span-7"
           >
-            {/* Decorative background blob for the video */}
-            <div 
-              className="absolute -inset-4 bg-[var(--color-mm-fresh-grass)] opacity-20 blur-3xl rounded-full z-0" 
-              aria-hidden 
-            />
-
-            <div
-              className="absolute z-0 hidden lg:block"
-              aria-hidden
-              style={{
-                bottom: "-40px",
-                left: "-60px",
-                transform: "rotate(24deg) scaleY(-1)",
-                transformOrigin: "center"
-              }}
-            >
-              <svg width="140" height="180" viewBox="0 0 140 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-                {/* Green pill */}
-                <rect x="0" y="50" width="32" height="100" rx="16" fill="var(--color-mm-fresh-grass)" stroke="var(--color-mm-ink-black)" strokeWidth="2" />
-                {/* Coral pill */}
-                <rect x="46" y="10" width="32" height="140" rx="16" fill="var(--color-mm-coral-pop)" stroke="var(--color-mm-ink-black)" strokeWidth="2" />
-                {/* Yellow pill */}
-                <rect x="92" y="70" width="32" height="80" rx="16" fill="var(--color-mm-sunshine-pop)" stroke="var(--color-mm-ink-black)" strokeWidth="2" />
-              </svg>
-            </div>
-            
             <div
               className="w-full overflow-hidden relative z-10"
               style={{
                 borderRadius: "var(--mm-radius-small)",
                 border: "1.5px solid var(--color-mm-ink-black)",
-                boxShadow:
-                  "0 25px 50px -12px rgba(0,0,0,0.15), 0 8px 24px -8px rgba(0,0,0,0.1)",
+                boxShadow: "0 25px 50px -12px rgba(0,0,0,0.15), 0 8px 24px -8px rgba(0,0,0,0.1)",
               }}
             >
-              <Suspense 
+              <Suspense
                 fallback={
-                  <div 
-                    style={{ 
-                      width: "100%", 
-                      aspectRatio: "16 / 9", 
+                  <div
+                    style={{
+                      width: "100%",
+                      aspectRatio: "16 / 9",
                       backgroundColor: "var(--color-mm-cream-paper)",
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "center"
+                      justifyContent: "center",
                     }}
                   />
                 }

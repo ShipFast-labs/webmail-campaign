@@ -4,11 +4,11 @@ import { COLORS, FONTS } from "../constants";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Home01Icon,
-  Mail01Icon,
   UserGroupIcon,
-  ChartAnalysisIcon,
+  UserListIcon,
   Layout02Icon,
-  Settings01Icon,
+  Mail01Icon,
+  ChartAnalysisIcon,
 } from "@hugeicons/core-free-icons";
 import { NamiSendLogo } from "@/components/ui/namis-end-logo";
 
@@ -16,6 +16,8 @@ interface AppFrameProps {
   children: ReactNode;
   /** Active sidebar item label */
   activeItem?: string;
+  /** Set false for scenes 2+ so sidebar doesn't re-animate on every scene change */
+  animateIn?: boolean;
 }
 
 const SIDEBAR_WIDTH = 200;
@@ -23,28 +25,32 @@ const TOPBAR_HEIGHT = 48;
 
 const SIDEBAR_ITEMS = [
   { label: "Dashboard", icon: Home01Icon },
-  { label: "Campaigns", icon: Mail01Icon },
   { label: "Contacts", icon: UserGroupIcon },
-  { label: "Analytics", icon: ChartAnalysisIcon },
+  { label: "Lists", icon: UserListIcon },
   { label: "Templates", icon: Layout02Icon },
-  { label: "Settings", icon: Settings01Icon },
+  { label: "Campaigns", icon: Mail01Icon },
+  { label: "Analytics", icon: ChartAnalysisIcon },
 ];
 
-export function AppFrame({ children, activeItem = "Dashboard" }: AppFrameProps) {
+export function AppFrame({ children, activeItem = "Dashboard", animateIn = true }: AppFrameProps) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Sidebar slides in from left
-  const sidebarX = interpolate(frame, [0, 0.6 * fps], [-SIDEBAR_WIDTH, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  // Only slide in on the first scene; subsequent scenes start fully visible
+  const sidebarX = animateIn
+    ? interpolate(frame, [0, 0.6 * fps], [-SIDEBAR_WIDTH, 0], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+      })
+    : 0;
 
-  // Content fades in slightly after
-  const contentOpacity = interpolate(frame, [0.3 * fps, 0.7 * fps], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  // Content fades in on first scene; instant on subsequent scenes
+  const contentOpacity = animateIn
+    ? interpolate(frame, [0.3 * fps, 0.7 * fps], [0, 1], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+      })
+    : 1;
 
   return (
     <AbsoluteFill

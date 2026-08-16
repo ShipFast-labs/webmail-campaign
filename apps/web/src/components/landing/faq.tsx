@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
-import { Button } from "@/components/ui/button";
-
 interface FaqItem {
   question: string;
   answer: string;
@@ -10,27 +8,34 @@ interface FaqItem {
 
 const FAQ_ITEMS: FaqItem[] = [
   {
-    question: "Which email providers do you support?",
-    answer: "Resend and AWS SES. Switch between them in settings without changing your templates.",
-  },
-  {
-    question: "Can I schedule campaigns in advance?",
-    answer: "Yes. Set a date and time. The system sends automatically when the time arrives.",
-  },
-  {
-    question: "How does CSV import work?",
+    question: "How quickly can I send my first campaign?",
     answer:
-      "Upload any CSV. Map your column headers to contact fields. We process in batches and show progress as it runs.",
+      "Most people send their first campaign within 10 minutes. Import your contacts, pick a template, write your subject line, and hit send. No technical setup required.",
   },
   {
-    question: "Is click tracking automatic?",
+    question: "Can I see who opened and clicked my emails?",
     answer:
-      "Yes. Every link in your template gets wrapped with a tracking URL. You do not need to modify your HTML.",
+      "Yes. Every campaign shows a real-time breakdown of opens, clicks, bounces, and unsubscribes down to the individual contact level.",
   },
   {
-    question: "What happens when someone unsubscribes?",
+    question: "How do I add my contacts?",
     answer:
-      "Their contact status updates immediately. They will not receive future campaigns from your account.",
+      "Upload a CSV file or add contacts one at a time. You can tag them, group them into lists, and filter by any combination so the right people always get the right email.",
+  },
+  {
+    question: "Can I personalise emails with each contact's name?",
+    answer:
+      "Yes. Use merge tags like {{firstName}} anywhere in your subject line or body. They get replaced automatically at send time.",
+  },
+  {
+    question: "What happens if someone unsubscribes?",
+    answer:
+      "Their status updates instantly and they are excluded from all future campaigns. You never have to manage it manually.",
+  },
+  {
+    question: "Can I schedule campaigns to send later?",
+    answer:
+      "Yes. Pick any future date and time when creating your campaign. NamiSend handles the rest even if you close the browser.",
   },
 ];
 
@@ -39,25 +44,22 @@ function FaqRow({ question, answer }: FaqItem) {
 
   return (
     <div style={{ borderBottom: "1px solid var(--color-pencil-gray)" }}>
-      <motion.div whileTap={{ scale: 0.998 }}>
-        <Button
-          variant="ghost"
-          onClick={() => setOpen((prev) => !prev)}
-          aria-expanded={open}
-          className="w-full justify-between py-5 h-auto text-left gap-4 rounded-none px-0 hover:bg-transparent focus-visible:ring-2 focus-visible:ring-ring"
+      <button
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+        className="w-full flex items-center justify-between gap-4 py-5 text-left bg-transparent border-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+      >
+        <span className="font-medium text-base text-foreground">{question}</span>
+        <motion.span
+          animate={{ rotate: open ? 45 : 0 }}
+          transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
+          className="shrink-0 text-2xl leading-none select-none"
+          style={{ color: "var(--color-pencil-gray)" }}
+          aria-hidden
         >
-          <span className="font-medium text-base text-foreground">{question}</span>
-          <motion.span
-            animate={{ rotate: open ? 45 : 0 }}
-            transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
-            className="shrink-0 text-2xl leading-none select-none"
-            style={{ color: "var(--color-pencil-gray)" }}
-            aria-hidden
-          >
-            +
-          </motion.span>
-        </Button>
-      </motion.div>
+          +
+        </motion.span>
+      </button>
 
       <AnimatePresence initial={false}>
         {open && (
@@ -94,7 +96,7 @@ export function Faq() {
           lineHeight: 1.05,
         }}
       >
-        Questions.
+        Questions
       </motion.h2>
 
       <motion.div

@@ -62,7 +62,6 @@ public class TemplateRenderer {
 
     private String renderFreemarker(String content, Map<String, String> variables) {
         try {
-            // Support both {{var}} (Handlebars-style) and ${var} (Freemarker-native)
             String normalized = content.replaceAll("\\{\\{(\\w+)\\}\\}", "\\${$1}");
 
             StringTemplateLoader loader = new StringTemplateLoader();

@@ -1,6 +1,4 @@
 import { cn } from "@/lib/utils";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { AiMail02Icon, SentIcon } from "@hugeicons/core-free-icons";
 
 interface NamiSendLogoProps {
   size?: number;
@@ -15,17 +13,28 @@ export function NamiSendLogo({
   showWordmark = true,
   className,
 }: NamiSendLogoProps) {
-  const iconSize = Math.round(size * 0.55);
   const textSize = wordmarkSize ?? Math.max(Math.round(size * 0.56), 14);
 
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
-      <span
-        className="shrink-0 inline-flex items-center justify-center bg-primary/90 rounded-(--radius)"
-        style={{ width: size, height: size }}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 32 32"
+        width={size}
+        height={size}
+        className="shrink-0"
+        aria-hidden="true"
       >
-        <HugeiconsIcon icon={AiMail02Icon} size={iconSize} color="var(--color-forest-ink)" strokeWidth={1.8} />
-      </span>
+        <rect width="32" height="32" rx="8" fill="#1a3300" />
+        <polyline
+          points="8,25 8,7 24,25 24,7"
+          fill="none"
+          stroke="#ffe95c"
+          strokeWidth="4.5"
+          strokeLinecap="butt"
+          strokeLinejoin="round"
+        />
+      </svg>
 
       {showWordmark && (
         <span

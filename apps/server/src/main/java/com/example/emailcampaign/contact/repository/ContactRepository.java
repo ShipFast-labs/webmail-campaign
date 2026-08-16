@@ -27,4 +27,9 @@ public interface ContactRepository extends JpaRepository<Contact, UUID>, JpaSpec
     @Modifying
     @Query("UPDATE Contact c SET c.status = :status WHERE c.id = :contactId AND c.status = 'ACTIVE'")
     void updateStatusIfActive(@Param("contactId") UUID contactId, @Param("status") Status status);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Contact c SET c.status = 'UNSUBSCRIBED' WHERE c.id = :contactId AND c.status <> 'CLEANED'")
+    void markUnsubscribed(@Param("contactId") UUID contactId);
 }

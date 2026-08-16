@@ -46,8 +46,8 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     public CampaignAnalyticsResponse getCampaignAnalytics(UUID campaignId) {
         long totalSent         = campaignContactRepository.countById_CampaignIdAndStatusNot(campaignId, CampaignContactStatus.PENDING);
         long totalDelivered    = campaignContactRepository.countById_CampaignIdAndStatus(campaignId, CampaignContactStatus.DELIVERED);
-        long totalOpened       = trackingEventRepository.countByCampaignIdAndEventType(campaignId, "OPENED");
-        long totalClicked      = trackingEventRepository.countByCampaignIdAndEventType(campaignId, "CLICKED");
+        long totalOpened       = trackingEventRepository.countDistinctContactsByCampaignIdAndEventType(campaignId, "OPENED");
+        long totalClicked      = trackingEventRepository.countDistinctContactsByCampaignIdAndEventType(campaignId, "CLICKED");
         long totalBounced      = campaignContactRepository.countById_CampaignIdAndStatus(campaignId, CampaignContactStatus.BOUNCED);
         long totalUnsubscribed = campaignContactRepository.countById_CampaignIdAndStatus(campaignId, CampaignContactStatus.UNSUBSCRIBED);
 

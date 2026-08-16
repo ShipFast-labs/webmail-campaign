@@ -42,7 +42,7 @@ const PRESETS = [
         </td></tr>
         <tr><td style="background:#f9f9f9;padding:24px 40px;border-top:1px solid #eee;text-align:center;">
           <p style="margin:0;color:#999;font-size:12px;">You're receiving this because you signed up at NamiSend.<br/>
-          <a href="https://namisend.com" style="color:#999;">Unsubscribe</a></p>
+          <a href="{{unsubscribeUrl}}" style="color:#999;">Unsubscribe</a></p>
         </td></tr>
       </table>
     </td></tr>
@@ -77,7 +77,7 @@ const PRESETS = [
         </td></tr>
         <tr><td style="background:#f9f9f9;padding:24px 40px;border-top:1px solid #eee;text-align:center;">
           <p style="margin:0;color:#999;font-size:12px;">You're receiving this because you're subscribed to our updates.<br/>
-          <a href="https://namisend.com" style="color:#999;">Unsubscribe</a></p>
+          <a href="{{unsubscribeUrl}}" style="color:#999;">Unsubscribe</a></p>
         </td></tr>
       </table>
     </td></tr>
@@ -122,7 +122,7 @@ const PRESETS = [
         </td></tr>
         <tr><td style="background:#f9f9f9;padding:24px 40px;border-top:1px solid #eee;text-align:center;">
           <p style="margin:0;color:#999;font-size:12px;">You're receiving this monthly newsletter from NamiSend.<br/>
-          <a href="https://namisend.com" style="color:#999;">Unsubscribe</a></p>
+          <a href="{{unsubscribeUrl}}" style="color:#999;">Unsubscribe</a></p>
         </td></tr>
       </table>
     </td></tr>
@@ -175,7 +175,7 @@ function TemplateEditorPage() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-3 flex-wrap">
+      <div className="flex items-center gap-3 flex-wrap bg-card border rounded-xl px-3 py-2">
         <Button variant="ghost" size="icon" asChild className="shrink-0 text-muted-foreground">
           <Link to="/templates">
             <HugeiconsIcon icon={ArrowLeft01Icon} size={18} />
@@ -188,7 +188,7 @@ function TemplateEditorPage() {
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="h-8 w-44 font-semibold bg-transparent border-transparent hover:border-input focus-visible:border-input px-2"
+            className="h-8 w-44 font-semibold border-transparent hover:border-input focus-visible:border-input px-2"
           />
         )}
 
