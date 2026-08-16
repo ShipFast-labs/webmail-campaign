@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as UnsubscribedRouteImport } from './routes/unsubscribed'
 import { Route as AppAnalyticsRouteImport } from './routes/_app/analytics'
 import { Route as AppContactsRouteImport } from './routes/_app/contacts'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
@@ -45,6 +46,11 @@ const LoginRoute = LoginRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnsubscribedRoute = UnsubscribedRouteImport.update({
+  id: '/unsubscribed',
+  path: '/unsubscribed',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/unsubscribed': typeof UnsubscribedRoute
   '/analytics': typeof AppAnalyticsRoute
   '/contacts': typeof AppContactsRoute
   '/dashboard': typeof AppDashboardRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/unsubscribed': typeof UnsubscribedRoute
   '/analytics': typeof AppAnalyticsRoute
   '/contacts': typeof AppContactsRoute
   '/dashboard': typeof AppDashboardRoute
@@ -163,6 +171,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/unsubscribed': typeof UnsubscribedRoute
   '/_app/analytics': typeof AppAnalyticsRoute
   '/_app/contacts': typeof AppContactsRoute
   '/_app/dashboard': typeof AppDashboardRoute
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
+    | '/unsubscribed'
     | '/analytics'
     | '/contacts'
     | '/dashboard'
@@ -203,6 +213,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
+    | '/unsubscribed'
     | '/analytics'
     | '/contacts'
     | '/dashboard'
@@ -222,6 +233,7 @@ export interface FileRouteTypes {
     | '/_app'
     | '/login'
     | '/register'
+    | '/unsubscribed'
     | '/_app/analytics'
     | '/_app/contacts'
     | '/_app/dashboard'
@@ -243,6 +255,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  UnsubscribedRoute: typeof UnsubscribedRoute
   Oauth2RedirectRoute: typeof Oauth2RedirectRoute
 }
 
@@ -274,6 +287,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/unsubscribed': {
+      id: '/unsubscribed'
+      path: '/unsubscribed'
+      fullPath: '/unsubscribed'
+      preLoaderRoute: typeof UnsubscribedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/analytics': {
@@ -428,6 +448,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  UnsubscribedRoute: UnsubscribedRoute,
   Oauth2RedirectRoute: Oauth2RedirectRoute,
 }
 export const routeTree = rootRouteImport

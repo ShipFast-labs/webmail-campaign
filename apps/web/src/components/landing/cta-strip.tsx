@@ -2,7 +2,6 @@ import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
-import { TIMING } from "@/remotion/constants";
 
 export function CtaStrip() {
   return (
@@ -11,25 +10,15 @@ export function CtaStrip() {
       aria-labelledby="cta-heading"
       style={{ backgroundColor: "var(--color-forest-ink)" }}
     >
-      {/* Animated background — replaces static dot texture */}
-      {/* <div
-        className="absolute inset-0 pointer-events-none"
+      {/* White dot grid */}
+      <div
         aria-hidden
-      >
-        <Player
-          component={CtaBackground}
-          durationInFrames={TIMING.ctaLoop.duration}
-          compositionWidth={1280}
-          compositionHeight={600}
-          fps={TIMING.fps}
-          autoPlay
-          loop
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
-        />
-      </div> */}
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+        }}
+      />
 
       <div className="relative max-w-3xl mx-auto text-center">
 

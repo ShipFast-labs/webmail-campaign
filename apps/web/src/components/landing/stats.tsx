@@ -94,11 +94,20 @@ export function Stats() {
   return (
     <section
       ref={ref}
-      className="px-6 py-20 overflow-hidden"
+      className="relative px-6 py-20 overflow-hidden"
       aria-label="Platform statistics"
       style={{ backgroundColor: "var(--color-forest-ink)" }}
     >
-      <div className="max-w-5xl mx-auto">
+      {/* White dot grid */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+        }}
+      />
+      <div className="relative max-w-5xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6 text-center">
           {STATS.map((stat, i) => (
             <motion.div

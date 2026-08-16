@@ -36,7 +36,7 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
         content: "Build, send, and track email campaigns to your contact lists.",
       },
     ],
-    links: [{ rel: "icon", href: "/favicon.ico" }],
+    links: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
   }),
 });
 

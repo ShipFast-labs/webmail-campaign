@@ -104,10 +104,16 @@ public class EmailSenderConsumer {
         UUID openTokenId = deterministicToken(campaignId, contactId, "OPEN");
         trackingTokenRepository.insertIfAbsent(openTokenId, campaignId, contactId, workspaceId, "OPEN", null);
 
+        UUID unsubTokenId = deterministicToken(campaignId, contactId, "UNSUB");
+        trackingTokenRepository.insertIfAbsent(unsubTokenId, campaignId, contactId, workspaceId, "UNSUBSCRIBE", null);
+        vars.put("unsubscribeUrl", appProperties.getBaseUrl() + "/t/u/" + unsubTokenId);
+
+        String trackingPrefix = appProperties.getBaseUrl() + "/t/";
         String renderedHtml = templateRenderer.renderForSend(
                 campaign.getTemplate().getHtmlContent(),
                 vars,
                 originalUrl -> {
+                    if (originalUrl.startsWith(trackingPrefix)) return originalUrl;
                     UUID clickTokenId = deterministicToken(campaignId, contactId, originalUrl);
                     trackingTokenRepository.insertIfAbsent(
                             clickTokenId, campaignId, contactId, workspaceId, "CLICK", originalUrl);

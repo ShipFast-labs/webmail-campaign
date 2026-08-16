@@ -5,64 +5,61 @@ import { motion } from "motion/react";
 import { Suspense, lazy } from "react";
 import { TIMING } from "@/remotion/constants";
 
-const LazySendAtScale = lazy(() => 
-  Promise.all([
-    import("@remotion/player"),
-    import("@/remotion/features/SendAtScaleDemo")
-  ]).then(([playerModule, demoModule]) => ({
-    default: () => (
-      <playerModule.Player
-        component={demoModule.SendAtScaleDemo}
-        durationInFrames={TIMING.features.duration}
-        compositionWidth={TIMING.features.width}
-        compositionHeight={TIMING.features.height}
-        fps={TIMING.fps}
-        autoPlay
-        loop
-        style={{ width: "100%", height: "100%" }}
-      />
-    )
-  }))
+const LazySendAtScale = lazy(() =>
+  Promise.all([import("@remotion/player"), import("@/remotion/features/SendAtScaleDemo")]).then(
+    ([playerModule, demoModule]) => ({
+      default: () => (
+        <playerModule.Player
+          component={demoModule.SendAtScaleDemo}
+          durationInFrames={TIMING.features.duration}
+          compositionWidth={TIMING.features.width}
+          compositionHeight={TIMING.features.height}
+          fps={TIMING.fps}
+          autoPlay
+          loop
+          style={{ width: "100%", height: "100%" }}
+        />
+      ),
+    }),
+  ),
 );
 
-const LazyManageContacts = lazy(() => 
-  Promise.all([
-    import("@remotion/player"),
-    import("@/remotion/features/ManageContactsDemo")
-  ]).then(([playerModule, demoModule]) => ({
-    default: () => (
-      <playerModule.Player
-        component={demoModule.ManageContactsDemo}
-        durationInFrames={TIMING.features.duration}
-        compositionWidth={TIMING.features.width}
-        compositionHeight={TIMING.features.height}
-        fps={TIMING.fps}
-        autoPlay
-        loop
-        style={{ width: "100%", height: "100%" }}
-      />
-    )
-  }))
+const LazyManageContacts = lazy(() =>
+  Promise.all([import("@remotion/player"), import("@/remotion/features/ManageContactsDemo")]).then(
+    ([playerModule, demoModule]) => ({
+      default: () => (
+        <playerModule.Player
+          component={demoModule.ManageContactsDemo}
+          durationInFrames={TIMING.features.duration}
+          compositionWidth={TIMING.features.width}
+          compositionHeight={TIMING.features.height}
+          fps={TIMING.fps}
+          autoPlay
+          loop
+          style={{ width: "100%", height: "100%" }}
+        />
+      ),
+    }),
+  ),
 );
 
-const LazyTrackResults = lazy(() => 
-  Promise.all([
-    import("@remotion/player"),
-    import("@/remotion/features/TrackResultsDemo")
-  ]).then(([playerModule, demoModule]) => ({
-    default: () => (
-      <playerModule.Player
-        component={demoModule.TrackResultsDemo}
-        durationInFrames={TIMING.features.duration}
-        compositionWidth={TIMING.features.width}
-        compositionHeight={TIMING.features.height}
-        fps={TIMING.fps}
-        autoPlay
-        loop
-        style={{ width: "100%", height: "100%" }}
-      />
-    )
-  }))
+const LazyTrackResults = lazy(() =>
+  Promise.all([import("@remotion/player"), import("@/remotion/features/TrackResultsDemo")]).then(
+    ([playerModule, demoModule]) => ({
+      default: () => (
+        <playerModule.Player
+          component={demoModule.TrackResultsDemo}
+          durationInFrames={TIMING.features.duration}
+          compositionWidth={TIMING.features.width}
+          compositionHeight={TIMING.features.height}
+          fps={TIMING.fps}
+          autoPlay
+          loop
+          style={{ width: "100%", height: "100%" }}
+        />
+      ),
+    }),
+  ),
 );
 
 interface Feature {
@@ -94,7 +91,7 @@ const FEATURES: Feature[] = [
     icon: ChartAnalysisIcon,
     title: "Track results",
     description:
-      "Open rates, click rates, and bounce data update in real time. No waiting for next-day reports.",
+      "Open rates, click rates, and bounce data update in real time. No waiting for next day reports.",
     cardBg: "var(--color-sticky-note-blush)",
     DemoComponent: LazyTrackResults,
   },
@@ -102,7 +99,11 @@ const FEATURES: Feature[] = [
 
 export function Features() {
   return (
-    <section id="features" className="px-6 py-24 max-w-5xl mx-auto" aria-labelledby="features-heading">
+    <section
+      id="features"
+      className="px-6 py-24 max-w-5xl mx-auto"
+      aria-labelledby="features-heading"
+    >
       <motion.h2
         id="features-heading"
         initial={{ opacity: 0, y: 20 }}
@@ -118,7 +119,7 @@ export function Features() {
           lineHeight: 1.05,
         }}
       >
-        What you get.
+        What you get
       </motion.h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -146,7 +147,11 @@ export function Features() {
                 height: 160,
               }}
             >
-              <Suspense fallback={<div style={{ width: "100%", height: "100%", backgroundColor: cardBg }} />}>
+              <Suspense
+                fallback={
+                  <div style={{ width: "100%", height: "100%", backgroundColor: cardBg }} />
+                }
+              >
                 <DemoComponent />
               </Suspense>
             </div>
@@ -157,7 +162,12 @@ export function Features() {
                 className="w-8 h-8 flex items-center justify-center rounded-lg shrink-0"
                 style={{ backgroundColor: "rgba(26,51,0,0.10)" }}
               >
-                <HugeiconsIcon icon={icon} size={16} primaryColor="var(--color-forest-ink)" strokeWidth={1.5} />
+                <HugeiconsIcon
+                  icon={icon}
+                  size={16}
+                  primaryColor="var(--color-forest-ink)"
+                  strokeWidth={1.5}
+                />
               </div>
               <h3
                 className="font-semibold text-foreground text-lg"

@@ -22,6 +22,7 @@ public class AppProperties {
     @Data
     public static class Frontend {
         private String oauth2RedirectUrl;
+        private String url = "http://localhost:5173";
     }
 
     @Data

@@ -1,101 +1,33 @@
 import { motion } from "motion/react";
 import { Suspense, lazy } from "react";
-import { TIMING } from "@/remotion/constants";
+import { HOW_IT_WORKS_DURATION } from "@/remotion/HowItWorksDemo";
 
-const LazyStep1 = lazy(() => 
-  Promise.all([
-    import("@remotion/player"),
-    import("@/remotion/how-it-works/Step1Import")
-  ]).then(([playerModule, demoModule]) => ({
-    default: () => (
-      <playerModule.Player
-        component={demoModule.Step1Import}
-        durationInFrames={90}
-        compositionWidth={320}
-        compositionHeight={140}
-        fps={TIMING.fps}
-        autoPlay
-        loop
-        style={{ width: "100%", height: "100%" }}
-      />
-    )
-  }))
-);
-
-const LazyStep2 = lazy(() => 
-  Promise.all([
-    import("@remotion/player"),
-    import("@/remotion/how-it-works/Step2Build")
-  ]).then(([playerModule, demoModule]) => ({
-    default: () => (
-      <playerModule.Player
-        component={demoModule.Step2Build}
-        durationInFrames={90}
-        compositionWidth={320}
-        compositionHeight={140}
-        fps={TIMING.fps}
-        autoPlay
-        loop
-        style={{ width: "100%", height: "100%" }}
-      />
-    )
-  }))
-);
-
-const LazyStep3 = lazy(() => 
-  Promise.all([
-    import("@remotion/player"),
-    import("@/remotion/how-it-works/Step3Send")
-  ]).then(([playerModule, demoModule]) => ({
-    default: () => (
-      <playerModule.Player
-        component={demoModule.Step3Send}
-        durationInFrames={90}
-        compositionWidth={320}
-        compositionHeight={140}
-        fps={TIMING.fps}
-        autoPlay
-        loop
-        style={{ width: "100%", height: "100%" }}
-      />
-    )
-  }))
-);
-
-interface Step {
-  number: string;
-  title: string;
-  description: string;
-  cardBg: string;
-  DemoComponent: React.ComponentType;
-}
-
-const STEPS: Step[] = [
-  {
-    number: "01",
-    title: "Import your contacts",
-    description:
-      "Upload a CSV file. Map your column headers to contact fields. We process in batches and show progress as it runs.",
-    cardBg: "var(--color-sticky-note-mint)",
-    DemoComponent: LazyStep1,
-  },
-  {
-    number: "02",
-    title: "Build your template",
-    description:
-      "Write your email in the template editor. Preview it with real contact data before you commit.",
-    cardBg: "var(--color-sticky-note-teal)",
-    DemoComponent: LazyStep2,
-  },
-  {
-    number: "03",
-    title: "Send and watch",
-    description:
-      "Schedule a campaign or send now. Analytics update as your audience opens and clicks.",
-    cardBg: "var(--color-sticky-note-blush)",
-    DemoComponent: LazyStep3,
-  },
+const STEPS = [
+  { n: "01", label: "Add contacts" },
+  { n: "02", label: "Create a list" },
+  { n: "03", label: "Build template" },
+  { n: "04", label: "Create campaign" },
+  { n: "05", label: "Watch analytics" },
 ];
+
+const LazyHowItWorksPlayer = lazy(() =>
+  Promise.all([import("@remotion/player"), import("@/remotion/HowItWorksDemo")]).then(
+    ([playerModule, demoModule]) => ({
+      default: () => (
+        <playerModule.Player
+          component={demoModule.HowItWorksDemo}
+          durationInFrames={HOW_IT_WORKS_DURATION}
+          compositionWidth={1280}
+          compositionHeight={720}
+          fps={30}
+          autoPlay
+          loop
+          style={{ width: "100%", aspectRatio: "16 / 9", display: "block" }}
+        />
+      ),
+    }),
+  ),
+);
 
 export function HowItWorks() {
   return (
@@ -105,131 +37,60 @@ export function HowItWorks() {
       aria-labelledby="how-it-works-heading"
       style={{ backgroundColor: "var(--color-cream-paper)" }}
     >
-      {/* Subtle dot texture */}
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle, var(--color-pencil-gray) 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-          opacity: 0.18,
-        }}
-      />
-
       <div className="relative max-w-5xl mx-auto">
-        {/* Section heading */}
-        <motion.h2
-          id="how-it-works-heading"
+        {/* Heading */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-20 text-center text-foreground"
-          style={{
-            fontFamily: "var(--font-display)",
-            fontWeight: 800,
-            fontSize: "clamp(2.5rem, 5vw + 1rem, 4.5rem)",
-            letterSpacing: "0.04em",
-            lineHeight: 1.05,
-          }}
+          className="mb-10 text-center"
         >
-          How it{" "}
-          <span
+          <h2
+            id="how-it-works-heading"
+            className="text-foreground"
             style={{
-              backgroundColor: "var(--color-highlighter-yellow)",
-              padding: "0 0.1em",
+              fontFamily: "var(--font-display)",
+              fontWeight: 700,
+              fontSize: "clamp(2.5rem, 5vw + 1rem, 4.5rem)",
+              letterSpacing: "-0.01em",
+              lineHeight: 1.1,
             }}
           >
-            works.
-          </span>
-        </motion.h2>
+            See the full workflow
+          </h2>
+          <p className="mt-4 text-base text-muted-foreground mx-auto whitespace-nowrap">
+            Import contacts, build a campaign, and watch the results roll in.
+          </p>
+        </motion.div>
 
-        {/* Steps grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 relative">
-
-          {/* Desktop connector — sits behind the cards, aligned to the badge row */}
-          <div
-            aria-hidden
-            className="hidden md:block absolute"
-            style={{
-              top: "1.75rem",
-              left: "calc(16.67% + 1.5rem)",
-              right: "calc(16.67% + 1.5rem)",
-              height: "1px",
-              borderTop: "2px dashed var(--color-pencil-gray)",
-              zIndex: 0,
-            }}
-          />
-
-          {STEPS.map(({ number, title, description, cardBg, DemoComponent }, i) => (
-            <motion.div
-              key={number}
-              initial={{ opacity: 0, y: 36 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.55, delay: i * 0.13, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ y: -6 }}
-              className="relative flex flex-col gap-5 rounded-xl p-6 cursor-default"
-              style={{
-                backgroundColor: cardBg,
-                border: "1px solid var(--color-forest-ink)",
-                zIndex: 1,
-              }}
-            >
-              {/* Remotion micro-demo */}
+        {/* Player */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full overflow-hidden"
+          style={{
+            borderRadius: "var(--mm-radius-small)",
+            border: "1.5px solid var(--color-mm-ink-black)",
+            boxShadow: "0 25px 50px -12px rgba(0,0,0,0.12), 0 8px 24px -8px rgba(0,0,0,0.08)",
+          }}
+        >
+          <Suspense
+            fallback={
               <div
-                className="w-full overflow-hidden"
                 style={{
-                  borderRadius: 8,
-                  border: "1px solid var(--color-forest-ink)",
+                  width: "100%",
+                  aspectRatio: "16 / 9",
                   backgroundColor: "var(--color-cream-paper)",
-                  height: 140,
                 }}
-              >
-                <Suspense fallback={<div style={{ width: "100%", height: "100%", backgroundColor: cardBg }} />}>
-                  <DemoComponent />
-                </Suspense>
-              </div>
-
-              {/* Step badge */}
-              <div className="flex items-center gap-3">
-                <span
-                  className="inline-flex items-center justify-center w-9 h-9 rounded-full text-sm font-extrabold shrink-0"
-                  style={{
-                    backgroundColor: "var(--color-highlighter-yellow)",
-                    color: "var(--color-forest-ink)",
-                    border: "1.5px solid var(--color-forest-ink)",
-                    fontFamily: "var(--font-mono)",
-                  }}
-                >
-                  {number}
-                </span>
-                <div
-                  className="flex-1 h-px"
-                  style={{ backgroundColor: "var(--color-forest-ink)", opacity: 0.15 }}
-                  aria-hidden
-                />
-              </div>
-
-              {/* Content */}
-              <div className="space-y-2">
-                <h3
-                  className="font-semibold text-foreground"
-                  style={{ fontSize: "17px", lineHeight: 1.3 }}
-                >
-                  {title}
-                </h3>
-                <p
-                  className="text-sm leading-relaxed"
-                  style={{ color: "var(--color-forest-ink)", opacity: 0.62 }}
-                >
-                  {description}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              />
+            }
+          >
+            <LazyHowItWorksPlayer />
+          </Suspense>
+        </motion.div>
       </div>
     </section>
   );
