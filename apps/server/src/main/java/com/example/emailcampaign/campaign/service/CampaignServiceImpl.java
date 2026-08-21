@@ -13,10 +13,12 @@ import com.example.emailcampaign.campaign.mapper.CampaignMapper;
 import com.example.emailcampaign.campaign.repository.CampaignContactRepository;
 import com.example.emailcampaign.campaign.repository.CampaignRepository;
 import com.example.emailcampaign.campaign.scheduler.CampaignSchedulerService;
+import com.example.emailcampaign.billing.service.CreditService;
 import com.example.emailcampaign.common.api.ApiResponse;
 import com.example.emailcampaign.common.api.PageResponse;
 import com.example.emailcampaign.common.exception.ApiException;
 import com.example.emailcampaign.list.repository.AudienceListRepository;
+import com.example.emailcampaign.list.repository.ListContactRepository;
 import com.example.emailcampaign.template.repository.TemplateRepository;
 import com.example.emailcampaign.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +42,11 @@ public class CampaignServiceImpl implements CampaignService {
     private final WorkspaceRepository workspaceRepository;
     private final TemplateRepository templateRepository;
     private final AudienceListRepository listRepository;
+    private final ListContactRepository listContactRepository;
     private final CampaignMapper campaignMapper;
     private final CampaignSchedulerService schedulerService;
     private final CampaignSendOrchestrator orchestrator;
+    private final CreditService creditService;
 
     @Override
     @Transactional(readOnly = true)
@@ -93,6 +97,11 @@ public class CampaignServiceImpl implements CampaignService {
     @Transactional
     public CampaignResponse schedule(UUID workspaceId, UUID campaignId, ScheduleCampaignRequest request) {
         Campaign campaign = findOrThrow(workspaceId, campaignId);
+        long recipientCount = listContactRepository.countById_ListId(campaign.getTargetList().getId());
+        if (!creditService.hasSufficientCredits(workspaceId, recipientCount)) {
+            throw ApiException.paymentRequired("INSUFFICIENT_CREDITS",
+                    "Not enough email credits to schedule this campaign");
+        }
         CampaignStateMachine.transition(campaign, SCHEDULED);
         campaign.setScheduledAt(request.scheduledAt());
         CampaignResponse response = campaignMapper.toResponse(campaignRepository.save(campaign));

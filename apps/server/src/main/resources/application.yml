@@ -87,6 +87,11 @@ app:
     region: ${AWS_REGION:us-east-1}
     s3:
       bucket-name: ${AWS_BUCKET_NAME}
+  dodo:
+    api-key: ${DODO_API_KEY:}
+    api-base-url: ${DODO_API_BASE_URL:https://test.dodopayments.com}
+    webhook-secret: ${DODO_WEBHOOK_SECRET:}
+    return-url: ${DODO_RETURN_URL:http://localhost:5173/billing/return}
 
 springdoc:
   scalar:

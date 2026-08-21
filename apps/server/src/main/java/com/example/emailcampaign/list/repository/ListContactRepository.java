@@ -17,6 +17,8 @@ public interface ListContactRepository extends JpaRepository<ListContact, ListCo
 
     List<ListContact> findAllById_ListId(UUID listId);
 
+    long countById_ListId(UUID listId);
+
     @Query("SELECT lc FROM ListContact lc JOIN FETCH lc.contact WHERE lc.id.listId = :listId")
     Page<ListContact> findByListIdWithContact(@Param("listId") UUID listId, Pageable pageable);
 }

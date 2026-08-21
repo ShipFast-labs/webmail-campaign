@@ -2,6 +2,7 @@ import axios from "axios";
 
 
 import { useAuthStore } from "@/store/auth-store";
+import { usePaywallStore } from "@/store/paywall-store";
 import { authService } from "@/lib/auth-service";
 
 export const api = axios.create({
@@ -33,6 +34,11 @@ api.interceptors.response.use(
   (r) => r,
   async (error) => {
     const original = error.config;
+
+    if (error.response?.status === 402) {
+      usePaywallStore.getState().openPaywall();
+      return Promise.reject(error);
+    }
 
     if (error.response?.status !== 401 || original._retry || original.url?.includes("/auth/refresh")) {
       return Promise.reject(error);

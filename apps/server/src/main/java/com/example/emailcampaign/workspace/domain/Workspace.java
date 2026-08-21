@@ -26,5 +26,4 @@ public class Workspace extends BaseEntity {
     @Column(nullable = false)
     private UUID ownerId;
 
-   
 }
