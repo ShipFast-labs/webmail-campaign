@@ -13,10 +13,19 @@ public class AppProperties {
     private final Email email = new Email();
     private final Frontend frontend = new Frontend();
     private final Webhook webhook = new Webhook();
+    private final Dodo dodo = new Dodo();
 
     @Data
     public static class Webhook {
         private String resendSigningSecret = "";
+    }
+
+    @Data
+    public static class Dodo {
+        private String apiKey = "";
+        private String apiBaseUrl = "https://test.dodopayments.com";
+        private String webhookSecret = "";
+        private String returnUrl = "http://localhost:5173/billing/return";
     }
 
     @Data

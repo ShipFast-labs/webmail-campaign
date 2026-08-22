@@ -1,5 +1,6 @@
 package com.example.emailcampaign.kafka.consumer;
 
+import com.example.emailcampaign.billing.service.CreditService;
 import com.example.emailcampaign.campaign.domain.CampaignContact;
 import com.example.emailcampaign.campaign.domain.CampaignContactId;
 import com.example.emailcampaign.campaign.domain.CampaignContactStatus;
@@ -53,6 +54,7 @@ public class EmailSenderConsumer {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
     private final AppProperties appProperties;
+    private final CreditService creditService;
 
     @RetryableTopic(
             attempts = "3",
@@ -99,50 +101,77 @@ public class EmailSenderConsumer {
             throw new RateLimitExceededException("Rate limit exhausted for workspace=" + workspaceId);
         }
 
-        Map<String, String> vars = buildVars(contact, campaign);
+        boolean sendAttempted = false;
+        try {
+            Map<String, String> vars = buildVars(contact, campaign);
 
-        UUID openTokenId = deterministicToken(campaignId, contactId, "OPEN");
-        trackingTokenRepository.insertIfAbsent(openTokenId, campaignId, contactId, workspaceId, "OPEN", null);
+            UUID openTokenId = deterministicToken(campaignId, contactId, "OPEN");
+            trackingTokenRepository.insertIfAbsent(openTokenId, campaignId, contactId, workspaceId, "OPEN", null);
 
-        UUID unsubTokenId = deterministicToken(campaignId, contactId, "UNSUB");
-        trackingTokenRepository.insertIfAbsent(unsubTokenId, campaignId, contactId, workspaceId, "UNSUBSCRIBE", null);
-        vars.put("unsubscribeUrl", appProperties.getBaseUrl() + "/t/u/" + unsubTokenId);
+            UUID unsubTokenId = deterministicToken(campaignId, contactId, "UNSUB");
+            trackingTokenRepository.insertIfAbsent(unsubTokenId, campaignId, contactId, workspaceId, "UNSUBSCRIBE", null);
+            vars.put("unsubscribeUrl", appProperties.getBaseUrl() + "/t/u/" + unsubTokenId);
 
-        String trackingPrefix = appProperties.getBaseUrl() + "/t/";
-        String renderedHtml = templateRenderer.renderForSend(
-                campaign.getTemplate().getHtmlContent(),
-                vars,
-                originalUrl -> {
-                    if (originalUrl.startsWith(trackingPrefix)) return originalUrl;
-                    UUID clickTokenId = deterministicToken(campaignId, contactId, originalUrl);
-                    trackingTokenRepository.insertIfAbsent(
-                            clickTokenId, campaignId, contactId, workspaceId, "CLICK", originalUrl);
-                    return appProperties.getBaseUrl() + "/t/c/" + clickTokenId;
-                },
-                appProperties.getBaseUrl() + "/t/o/" + openTokenId
-        );
+            String trackingPrefix = appProperties.getBaseUrl() + "/t/";
+            String renderedHtml = templateRenderer.renderForSend(
+                    campaign.getTemplate().getHtmlContent(),
+                    vars,
+                    originalUrl -> {
+                        if (originalUrl.startsWith(trackingPrefix)) return originalUrl;
+                        UUID clickTokenId = deterministicToken(campaignId, contactId, originalUrl);
+                        trackingTokenRepository.insertIfAbsent(
+                                clickTokenId, campaignId, contactId, workspaceId, "CLICK", originalUrl);
+                        return appProperties.getBaseUrl() + "/t/c/" + clickTokenId;
+                    },
+                    appProperties.getBaseUrl() + "/t/o/" + openTokenId
+            );
 
-        String renderedSubject = templateRenderer.renderSubject(campaign.getTemplate().getSubject(), vars);
+            String renderedSubject = templateRenderer.renderSubject(campaign.getTemplate().getSubject(), vars);
 
-        emailProvider.send(new EmailMessage(
-                contact.email(),
-                contact.firstName(),
-                campaign.getFromEmail(),
-                campaign.getFromName(),
-                renderedSubject,
-                renderedHtml,
-                campaignId + "::" + contactId
-        ));
+            sendAttempted = true;
+            emailProvider.send(new EmailMessage(
+                    contact.email(),
+                    contact.firstName(),
+                    campaign.getFromEmail(),
+                    campaign.getFromName(),
+                    renderedSubject,
+                    renderedHtml,
+                    campaignId + "::" + contactId
+            ));
 
-        campaignContactRepository.updateStatus(campaignId, contactId, CampaignContactStatus.SENT);
-        publishTrackingEvent(campaignId, contactId, workspaceId, "SENT");
+            campaignContactRepository.updateStatus(campaignId, contactId, CampaignContactStatus.SENT);
+            publishTrackingEvent(campaignId, contactId, workspaceId, "SENT");
 
-        log.debug("Sent: campaign={} contact={} email={}", campaignId, contactId, contact.email());
+            log.debug("Sent: campaign={} contact={} email={}", campaignId, contactId, contact.email());
+        } catch (Exception e) {
+            if (!sendAttempted) {
+                creditService.refundCredits(workspaceId, 1);
+                log.info("Refunded 1 credit workspace={} contact={} — failed before send was attempted", workspaceId, contactId);
+            }
+            throw e;
+        }
     }
 
     @DltHandler
     public void onDeadLetter(String payload, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
         log.error("Email batch permanently failed after all retries. topic={} payload={}", topic, payload);
+        try {
+            EmailSendBatchMessage batch = objectMapper.readValue(payload, EmailSendBatchMessage.class);
+            for (EmailContactInfo contact : batch.contacts()) {
+                CampaignContact cc = campaignContactRepository
+                        .findById(new CampaignContactId(batch.campaignId(), contact.contactId()))
+                        .orElse(null);
+                if (cc != null && cc.getStatus() == CampaignContactStatus.PENDING) {
+                    silentlyUpdateStatus(batch.campaignId(), contact.contactId(), CampaignContactStatus.FAILED);
+                    creditService.refundCredits(batch.workspaceId(), 1);
+                    log.info("Refunded 1 credit workspace={} contact={} — never attempted, batch dead-lettered",
+                            batch.workspaceId(), contact.contactId());
+                }
+            }
+            checkAndCompleteIfDone(batch.campaignId());
+        } catch (JsonProcessingException e) {
+            log.error("Failed to parse dead-lettered payload, cannot reconcile credits/status: {}", e.getMessage());
+        }
     }
 
     private UUID deterministicToken(UUID campaignId, UUID contactId, String discriminator) {

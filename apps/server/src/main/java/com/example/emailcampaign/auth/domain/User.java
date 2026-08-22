@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter
@@ -35,6 +36,10 @@ public class User extends BaseEntity {
 
     @Column
     private String avatarUrl;
+
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private long emailCredits = 0;
 
     public User(String email, String passwordHash, String fullName) {
         this.email = email;

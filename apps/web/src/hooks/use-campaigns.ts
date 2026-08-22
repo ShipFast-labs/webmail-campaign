@@ -1,6 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import { campaignsApi, type CreateCampaignPayload } from "@/api/campaigns";
 import { toast } from "sonner";
+
+function isPaymentRequired(error: unknown) {
+  return axios.isAxiosError(error) && error.response?.status === 402;
+}
 
 export function useCampaigns() {
   return useQuery({
@@ -38,7 +43,9 @@ export function useScheduleCampaign() {
       qc.invalidateQueries({ queryKey: ["campaigns", campaign.id] });
       toast.success("Campaign scheduled");
     },
-    onError: () => toast.error("Failed to schedule campaign"),
+    onError: (error) => {
+      if (!isPaymentRequired(error)) toast.error("Failed to schedule campaign");
+    },
   });
 }
 
@@ -51,7 +58,9 @@ export function useSendCampaignNow() {
       qc.invalidateQueries({ queryKey: ["campaigns", campaign.id] });
       toast.success("Campaign is now sending!");
     },
-    onError: () => toast.error("Failed to send campaign"),
+    onError: (error) => {
+      if (!isPaymentRequired(error)) toast.error("Failed to send campaign");
+    },
   });
 }
 

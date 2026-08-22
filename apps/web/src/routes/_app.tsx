@@ -2,6 +2,7 @@ import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
 import { Sidebar } from "@/components/layout/sidebar"
 import { TopBar } from "@/components/layout/topbar"
+import { PaywallModal } from "@/components/billing/paywall-modal"
 
 
 export const Route = createFileRoute("/_app")({
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/_app")({
 function AppShell() {
   return (
     <div className="flex h-svh overflow-hidden bg-background">
+      <PaywallModal />
       <Sidebar />
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         <TopBar />

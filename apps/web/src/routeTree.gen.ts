@@ -19,6 +19,7 @@ import { Route as AppContactsRouteImport } from './routes/_app/contacts'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as Oauth2RedirectRouteImport } from './routes/oauth2.redirect'
+import { Route as AppBillingReturnRouteImport } from './routes/_app/billing/return'
 import { Route as AppCampaignsIndexRouteImport } from './routes/_app/campaigns/index'
 import { Route as AppCampaignsCampaignIdRouteImport } from './routes/_app/campaigns/$campaignId'
 import { Route as AppCampaignsNewRouteImport } from './routes/_app/campaigns/new'
@@ -78,6 +79,11 @@ const Oauth2RedirectRoute = Oauth2RedirectRouteImport.update({
   path: '/oauth2/redirect',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppBillingReturnRoute = AppBillingReturnRouteImport.update({
+  id: '/billing/return',
+  path: '/billing/return',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCampaignsIndexRoute = AppCampaignsIndexRouteImport.update({
   id: '/campaigns/',
   path: '/campaigns/',
@@ -136,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AppDashboardRoute
   '/settings': typeof AppSettingsRoute
   '/oauth2/redirect': typeof Oauth2RedirectRoute
+  '/billing/return': typeof AppBillingReturnRoute
   '/campaigns/$campaignId': typeof AppCampaignsCampaignIdRouteWithChildren
   '/campaigns/new': typeof AppCampaignsNewRoute
   '/lists/$listId': typeof AppListsListIdRoute
@@ -156,6 +163,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AppDashboardRoute
   '/settings': typeof AppSettingsRoute
   '/oauth2/redirect': typeof Oauth2RedirectRoute
+  '/billing/return': typeof AppBillingReturnRoute
   '/campaigns/new': typeof AppCampaignsNewRoute
   '/lists/$listId': typeof AppListsListIdRoute
   '/templates/$templateId': typeof AppTemplatesTemplateIdRoute
@@ -177,6 +185,7 @@ export interface FileRoutesById {
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/settings': typeof AppSettingsRoute
   '/oauth2/redirect': typeof Oauth2RedirectRoute
+  '/_app/billing/return': typeof AppBillingReturnRoute
   '/_app/campaigns/$campaignId': typeof AppCampaignsCampaignIdRouteWithChildren
   '/_app/campaigns/new': typeof AppCampaignsNewRoute
   '/_app/lists/$listId': typeof AppListsListIdRoute
@@ -199,6 +208,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/settings'
     | '/oauth2/redirect'
+    | '/billing/return'
     | '/campaigns/$campaignId'
     | '/campaigns/new'
     | '/lists/$listId'
@@ -219,6 +229,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/settings'
     | '/oauth2/redirect'
+    | '/billing/return'
     | '/campaigns/new'
     | '/lists/$listId'
     | '/templates/$templateId'
@@ -239,6 +250,7 @@ export interface FileRouteTypes {
     | '/_app/dashboard'
     | '/_app/settings'
     | '/oauth2/redirect'
+    | '/_app/billing/return'
     | '/_app/campaigns/$campaignId'
     | '/_app/campaigns/new'
     | '/_app/lists/$listId'
@@ -331,6 +343,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Oauth2RedirectRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/billing/return': {
+      id: '/_app/billing/return'
+      path: '/billing/return'
+      fullPath: '/billing/return'
+      preLoaderRoute: typeof AppBillingReturnRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/campaigns/': {
       id: '/_app/campaigns/'
       path: '/campaigns'
@@ -418,6 +437,7 @@ interface AppRouteChildren {
   AppContactsRoute: typeof AppContactsRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppSettingsRoute: typeof AppSettingsRoute
+  AppBillingReturnRoute: typeof AppBillingReturnRoute
   AppCampaignsCampaignIdRoute: typeof AppCampaignsCampaignIdRouteWithChildren
   AppCampaignsNewRoute: typeof AppCampaignsNewRoute
   AppListsListIdRoute: typeof AppListsListIdRoute
@@ -432,6 +452,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppContactsRoute: AppContactsRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppSettingsRoute: AppSettingsRoute,
+  AppBillingReturnRoute: AppBillingReturnRoute,
   AppCampaignsCampaignIdRoute: AppCampaignsCampaignIdRouteWithChildren,
   AppCampaignsNewRoute: AppCampaignsNewRoute,
   AppListsListIdRoute: AppListsListIdRoute,

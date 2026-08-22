@@ -33,4 +33,8 @@ public class ApiException extends RuntimeException {
     public static ApiException conflict(String code, String message) {
         return new ApiException(code, message, HttpStatus.CONFLICT);
     }
+
+    public static ApiException paymentRequired(String code, String message) {
+        return new ApiException(code, message, HttpStatus.PAYMENT_REQUIRED);
+    }
 }
